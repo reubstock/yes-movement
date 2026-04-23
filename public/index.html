@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YES Movement</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-brand">YES Movement</a>
+  <ul class="nav-links">
+    <li><a href="/events.html">Events</a></li>
+    <li><a href="/members.html">Members</a></li>
+    <li><a href="/about.html">About</a></li>
+  </ul>
+  <button class="nav-toggle" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<section class="hero">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-emblem">✦</div>
+    <h1>YES Movement</h1>
+    <p class="tagline">Say yes. Show up. Do the work.</p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+      <a href="/about.html" class="btn btn-primary">Learn More</a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-header">
+    <p class="section-label">On The Horizon</p>
+    <h2 class="section-title">Upcoming <span>Events</span></h2>
+    <div class="section-rule"></div>
+  </div>
+  <div class="events-grid" id="home-events">
+    <div class="loading">Loading events…</div>
+  </div>
+  <div style="text-align:center;margin-top:2.5rem;">
+    <a href="/events.html" class="btn btn-outline">All Events</a>
+  </div>
+</section>
+
+<div class="cta-section">
+  <h2>Ready to Join?</h2>
+  <p>Membership is open to those who are ready to say yes.</p>
+  <a href="/about.html#join" class="btn btn-primary">Get Involved</a>
+</div>
+
+<footer>
+  <div class="footer-brand">✦ YES Movement</div>
+  <p>Say yes to what matters.</p>
+</footer>
+
+<script src="/js/nav.js"></script>
+<script>
+  async function loadHomeData() {
+    try {
+      const res = await fetch('/api/events?upcoming=true');
+      const events = await res.json();
+      const el = document.getElementById('home-events');
+      if (events.length === 0) {
+        el.innerHTML = '<div class="empty-state"><div class="empty-icon">🗓</div><p>No upcoming events.</p></div>';
+      } else {
+        el.innerHTML = events.slice(0, 3).map(ev => {
+          const d = new Date(ev.date + 'T00:00:00');
+          const dateStr = d.toLocaleDateString('en', { day: 'numeric', month: 'long', year: 'numeric' });
+          return `<div class="card">
+            <h3>${ev.title}</h3>
+            <p style="margin-bottom:0.5rem;">📍 ${ev.location}, ${ev.country}</p>
+            <p>📅 ${dateStr}${ev.host_name ? ' &middot; 👤 ' + ev.host_name : ''}</p>
+            ${ev.description ? '<p style="margin-top:0.5rem;">' + ev.description + '</p>' : ''}
+          </div>`;
+        }).join('');
+      }
+    } catch (e) { console.error(e); }
+  }
+  loadHomeData();
+</script>
+</body>
+</html>
