@@ -50,6 +50,7 @@ nav {
   display: flex;
   gap: 2rem;
   list-style: none;
+  align-items: center;
 }
 
 .nav-links a {
@@ -118,6 +119,7 @@ nav {
 .hero-emblem {
   font-size: 4rem;
   margin-bottom: 1rem;
+  color: #ffffff;
   filter: drop-shadow(0 0 20px rgba(255,255,255,0.2));
 }
 
