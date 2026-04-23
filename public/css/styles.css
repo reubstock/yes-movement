@@ -43,7 +43,7 @@ nav {
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--accent-light);
+  color: #ffffff;
 }
 
 .nav-links {
@@ -105,7 +105,7 @@ nav {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: rgba(10,10,10,0.45);
+  background: rgba(10,10,10,0.62);
 }
 
 .hero-content {
@@ -126,7 +126,7 @@ nav {
   font-weight: 400;
   letter-spacing: 0.06em;
   margin-bottom: 1.2rem;
-  color: var(--accent-light);
+  color: rgba(255,255,255,0.82);
 }
 
 .tagline {
