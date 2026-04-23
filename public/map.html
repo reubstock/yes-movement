@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Map — YES Movement</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    #map {
+      width: 100%;
+      height: 70vh;
+      border: 1px solid var(--border);
+    }
+    .legend {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-family: Arial, sans-serif;
+      font-size: 0.85rem;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      cursor: pointer;
+      color: var(--accent);
+    }
+    .legend-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid rgba(0,0,0,0.2);
+    }
+    .legend-item.muted { opacity: 0.35; }
+    .leaflet-popup-content-wrapper {
+      border-radius: 2px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    }
+    .leaflet-popup-content h4 { margin-bottom: 0.25rem; font-size: 0.95rem; }
+    .leaflet-popup-content p { font-size: 0.82rem; color: #555; margin: 0; font-family: Arial, sans-serif; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-brand">YES Movement</a>
+  <ul class="nav-links">
+    <li><a href="/map.html">Map</a></li>
+    <li><a href="/events.html">Summits</a></li>
+    <li><a href="/members.html">Members</a></li>
+    <li><a href="/about.html">About</a></li>
+  </ul>
+  <button class="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="page-header">
+  <h1>Map</h1>
+  <p>Groups and Summits around the world.</p>
+</div>
+
+<section class="section" style="padding-top:2rem;">
+  <div class="legend">
+    <div class="legend-item" id="toggle-groups" onclick="toggleLayer('groups')">
+      <div class="legend-dot" style="background:#2563eb;"></div>
+      <span>Groups</span>
+    </div>
+    <div class="legend-item" id="toggle-summits" onclick="toggleLayer('summits')">
+      <div class="legend-dot" style="background:#dc2626;"></div>
+      <span>Summits</span>
+    </div>
+  </div>
+  <div id="map"></div>
+</section>
+
+<footer>
+  <div class="footer-brand">✦ YES Movement</div>
+  <p>Say yes to what matters.</p>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="/js/nav.js"></script>
+<script>
+  const map = L.map('map', { scrollWheelZoom: false }).setView([35, -20], 2);
+
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles &copy; Esri',
+    maxZoom: 18,
+  }).addTo(map);
+
+  const groupIcon = L.divIcon({
+    className: '',
+    html: '<div style="width:14px;height:14px;border-radius:50%;background:#2563eb;border:2px solid rgba(0,0,0,0.2);box-shadow:0 0 6px rgba(37,99,235,0.5);"></div>',
+    iconSize: [14, 14], iconAnchor: [7, 7], popupAnchor: [0, -10],
+  });
+
+  const summitIcon = L.divIcon({
+    className: '',
+    html: '<div style="width:14px;height:14px;border-radius:50%;background:#dc2626;border:2px solid rgba(0,0,0,0.2);box-shadow:0 0 6px rgba(220,38,38,0.5);"></div>',
+    iconSize: [14, 14], iconAnchor: [7, 7], popupAnchor: [0, -10],
+  });
+
+  const layers = { groups: L.layerGroup().addTo(map), summits: L.layerGroup().addTo(map) };
+  const visible = { groups: true, summits: true };
+
+  async function geocode(location, country) {
+    const q = encodeURIComponent(`${location}, ${country}`);
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=1`, {
+        headers: { 'Accept-Language': 'en' }
+      });
+      const data = await res.json();
+      return data.length ? { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) } : null;
+    } catch { return null; }
+  }
+
+  async function plotGroups() {
+    const res = await fetch('/api/groups');
+    const groups = await res.json();
+    for (let i = 0; i < groups.length; i++) {
+      if (i > 0) await new Promise(r => setTimeout(r, 1100));
+      const g = groups[i];
+      const coords = await geocode(g.location, g.country);
+      if (!coords) continue;
+      L.marker([coords.lat, coords.lng], { icon: groupIcon })
+        .bindPopup(`<h4>${g.name}</h4><p>📍 ${g.location}, ${g.country}${g.contact ? '<br>👤 ' + g.contact : ''}</p>${g.description ? '<p style="margin-top:4px;">' + g.description + '</p>' : ''}`)
+        .addTo(layers.groups);
+    }
+  }
+
+  async function plotSummits() {
+    const res = await fetch('/api/summits');
+    const summits = await res.json();
+    for (let i = 0; i < summits.length; i++) {
+      if (i > 0) await new Promise(r => setTimeout(r, 1100));
+      const s = summits[i];
+      const coords = await geocode(s.location, s.country);
+      if (!coords) continue;
+      const d = new Date(s.date + 'T00:00:00');
+      const dateStr = d.toLocaleDateString('en', { day: 'numeric', month: 'long', year: 'numeric' });
+      L.marker([coords.lat, coords.lng], { icon: summitIcon })
+        .bindPopup(`<h4>${s.title}</h4><p>📍 ${s.location}, ${s.country}<br>📅 ${dateStr}${s.host_name ? '<br>👤 ' + s.host_name : ''}</p>`)
+        .addTo(layers.summits);
+    }
+  }
+
+  function toggleLayer(type) {
+    visible[type] = !visible[type];
+    if (visible[type]) {
+      map.addLayer(layers[type]);
+      document.getElementById('toggle-' + type).classList.remove('muted');
+    } else {
+      map.removeLayer(layers[type]);
+      document.getElementById('toggle-' + type).classList.add('muted');
+    }
+  }
+
+  plotGroups();
+  plotSummits();
+</script>
+</body>
+</html>

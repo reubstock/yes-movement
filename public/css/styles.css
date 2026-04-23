@@ -2,13 +2,13 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #0a0a0a;
-  --surface: #111111;
-  --accent: #e8e8e8;
-  --accent-light: #ffffff;
-  --muted: #888888;
-  --border: #222222;
-  --gold: #c9a84c;
+  --bg: #ffffff;
+  --surface: #f5f5f5;
+  --accent: #111111;
+  --accent-light: #000000;
+  --muted: #555555;
+  --border: #dddddd;
+  --gold: #1a1a1a;
 }
 
 html { scroll-behavior: smooth; }
