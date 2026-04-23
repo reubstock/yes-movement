@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>YES Movement</title>
   <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
 
@@ -21,6 +22,7 @@
 </nav>
 
 <section class="hero">
+  <div id="hero-map"></div>
   <div class="hero-overlay"></div>
   <div class="hero-content">
     <div class="hero-emblem">✦</div>
@@ -57,6 +59,26 @@
   <p>Say yes to what matters.</p>
 </footer>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  window.onload = function () {
+    const heroMap = L.map('hero-map', {
+      zoomControl: false,
+      scrollWheelZoom: false,
+      dragging: false,
+      touchZoom: false,
+      doubleClickZoom: false,
+      keyboard: false,
+      attributionControl: false,
+    }).setView([35, -20], 2);
+
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 18,
+    }).addTo(heroMap);
+
+    heroMap.invalidateSize();
+  };
+</script>
 <script src="/js/nav.js"></script>
 <script>
   async function loadHomeData() {

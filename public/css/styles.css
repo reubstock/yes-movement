@@ -93,10 +93,19 @@ nav {
   background: var(--bg);
 }
 
+#hero-map {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(10,10,10,0.5);
+  z-index: 1;
+  background: rgba(10,10,10,0.45);
 }
 
 .hero-content {
