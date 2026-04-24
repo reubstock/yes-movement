@@ -118,7 +118,7 @@ nav {
 
 .hero-emblem {
   font-size: 4rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.4rem;
   color: #ffffff;
   filter: drop-shadow(0 0 20px rgba(255,255,255,0.2));
 }
@@ -127,14 +127,14 @@ nav {
   font-size: clamp(2.5rem, 6vw, 5rem);
   font-weight: 700;
   letter-spacing: 0.06em;
-  margin-bottom: 1.2rem;
+  margin-bottom: 0.4rem;
   color: rgba(255,255,255,0.82);
 }
 
 .tagline {
   font-size: clamp(1rem, 2vw, 1.3rem);
   color: rgba(255,255,255,0.85);
-  margin-bottom: 2.5rem;
+  margin-bottom: 1.5rem;
   font-style: italic;
 }
 
