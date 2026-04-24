@@ -34,7 +34,7 @@ nav {
   padding: 1rem 2rem;
   background: rgba(10,10,10,0.95);
   backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--border);
+  border-bottom: none;
 }
 
 .nav-brand {
