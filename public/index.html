@@ -42,9 +42,13 @@
       box-shadow: 0 4px 16px rgba(0,0,0,0.5);
     }
     .dark-popup .leaflet-popup-tip { background: rgba(10,10,10,0.92); }
-    /* let Leaflet marker/popup layers receive pointer events above the overlay */
-    .leaflet-pane { z-index: 4 !important; }
-    .leaflet-top, .leaflet-bottom { z-index: 5 !important; }
+    /* Lift Leaflet layers above the hero overlay (z-index 1) and content (z-index 2) */
+    .leaflet-pane         { z-index: 400 !important; }
+    .leaflet-top,
+    .leaflet-bottom       { z-index: 500 !important; }
+    .leaflet-marker-pane  { pointer-events: auto !important; }
+    .leaflet-marker-icon,
+    .leaflet-marker-shadow { pointer-events: auto !important; }
   </style>
 </head>
 <body>
@@ -160,19 +164,21 @@
     } catch { return null; }
   }
 
+  function makePopup(html) {
+    return L.popup({ className: 'dark-popup', maxWidth: 280, autoPan: false });
+  }
+
   async function plotMarkersOnHero() {
     try {
-      // fetch both in parallel
       const [summitsRes, groupsRes] = await Promise.all([
         fetch('/api/summits'), fetch('/api/groups')
       ]);
       const summits = await summitsRes.json();
-      const groups = await groupsRes.json();
+      const groups  = await groupsRes.json();
 
-      // interleave items with rate-limit delay
       const items = [
         ...summits.map(s => ({ type: 'summit', data: s })),
-        ...groups.map(g => ({ type: 'group', data: g })),
+        ...groups.map(g =>  ({ type: 'group',  data: g })),
       ];
 
       for (let i = 0; i < items.length; i++) {
@@ -181,19 +187,52 @@
         const coords = await geocode(data.location, data.country);
         if (!coords) continue;
 
+        let popupHtml, icon;
+
         if (type === 'summit') {
           const d = new Date(data.date + 'T00:00:00');
           const dateStr = d.toLocaleDateString('en', { day: 'numeric', month: 'long', year: 'numeric' });
-          const m = L.marker([coords.lat, coords.lng], { icon: summitIcon })
-            .bindPopup(`<h4 style="margin-bottom:0.25rem;font-size:0.95rem;color:#fff;">${data.title}</h4><p style="font-size:0.82rem;color:rgba(255,255,255,0.75);margin:0;font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}<br>📅 ${dateStr}</p>`, { className: 'dark-popup' })
-            .addTo(heroMap);
-          m.on('mouseover', function() { this.openPopup(); });
+          icon = summitIcon;
+          popupHtml = `
+            <div style="min-width:180px;">
+              <div style="font-family:Arial,sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#dc2626;margin-bottom:0.35rem;">Summit</div>
+              <h4 style="margin:0 0 0.4rem;font-size:1rem;color:#fff;font-family:Georgia,serif;">${data.title}</h4>
+              <p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}</p>
+              <p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">📅 ${dateStr}${data.time ? ' at ' + data.time : ''}</p>
+              ${data.host_name ? `<p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">👤 ${data.host_name}</p>` : ''}
+              ${data.description ? `<p style="margin:0.5rem 0 0;font-size:0.82rem;color:rgba(255,255,255,0.65);font-family:Arial,sans-serif;">${data.description}</p>` : ''}
+              <a href="/events.html" style="display:inline-block;margin-top:0.75rem;font-size:0.75rem;font-family:Arial,sans-serif;color:#dc2626;text-decoration:none;letter-spacing:0.05em;">View all summits →</a>
+            </div>`;
         } else {
-          const m = L.marker([coords.lat, coords.lng], { icon: groupIcon })
-            .bindPopup(`<h4 style="margin-bottom:0.25rem;font-size:0.95rem;color:#fff;">${data.name}</h4><p style="font-size:0.82rem;color:rgba(255,255,255,0.75);margin:0;font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}${data.contact ? '<br>👤 ' + data.contact : ''}</p>`, { className: 'dark-popup' })
-            .addTo(heroMap);
-          m.on('mouseover', function() { this.openPopup(); });
+          icon = groupIcon;
+          popupHtml = `
+            <div style="min-width:180px;">
+              <div style="font-family:Arial,sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#16a34a;margin-bottom:0.35rem;">Group</div>
+              <h4 style="margin:0 0 0.4rem;font-size:1rem;color:#fff;font-family:Georgia,serif;">${data.name}</h4>
+              <p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}</p>
+              ${data.contact ? `<p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">👤 ${data.contact}</p>` : ''}
+              ${data.description ? `<p style="margin:0.5rem 0 0;font-size:0.82rem;color:rgba(255,255,255,0.65);font-family:Arial,sans-serif;">${data.description}</p>` : ''}
+              <a href="/members.html" style="display:inline-block;margin-top:0.75rem;font-size:0.75rem;font-family:Arial,sans-serif;color:#16a34a;text-decoration:none;letter-spacing:0.05em;">View all groups →</a>
+            </div>`;
         }
+
+        const popup = L.popup({ className: 'dark-popup', maxWidth: 280, autoPan: false })
+          .setContent(popupHtml);
+
+        const m = L.marker([coords.lat, coords.lng], { icon, interactive: true })
+          .bindPopup(popup)
+          .addTo(heroMap);
+
+        m.on('click',     function() { this.openPopup(); });
+        m.on('mouseover', function() { this.openPopup(); });
+        m.on('mouseout',  function() {
+          // keep popup open if it was clicked; close on pure hover-away
+          if (!this._popupClicked) this.closePopup();
+        });
+        m.on('click', function() { this._popupClicked = true; });
+        m.getPopup().on('remove', function() {
+          if (m._popupClicked) m._popupClicked = false;
+        });
       }
     } catch (e) { console.error(e); }
   }
