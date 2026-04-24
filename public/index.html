@@ -6,6 +6,37 @@
   <title>YES Movement</title>
   <link rel="stylesheet" href="/css/styles.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    @keyframes pulse-ring {
+      0%   { transform: scale(1);   opacity: 0.8; }
+      70%  { transform: scale(2.4); opacity: 0;   }
+      100% { transform: scale(2.4); opacity: 0;   }
+    }
+    .summit-marker {
+      position: relative;
+      width: 22px; height: 22px;
+    }
+    .summit-marker .dot {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: #dc2626;
+      border: 2.5px solid #fff;
+      box-shadow: 0 0 8px rgba(220,38,38,0.9);
+      position: relative; z-index: 2;
+    }
+    .summit-marker .ring {
+      position: absolute;
+      top: 0; left: 0;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: rgba(220,38,38,0.45);
+      animation: pulse-ring 1.8s ease-out infinite;
+      z-index: 1;
+    }
+    /* let Leaflet marker/popup layers receive pointer events above the overlay */
+    .leaflet-pane { z-index: 4 !important; }
+    .leaflet-top, .leaflet-bottom { z-index: 5 !important; }
+  </style>
 </head>
 <body>
 
@@ -25,12 +56,12 @@
 <section class="hero">
   <div id="hero-map"></div>
   <div class="hero-overlay" style="pointer-events:none;"></div>
-  <div class="hero-content">
+  <div class="hero-content" style="pointer-events:none;">
     <div class="hero-emblem">✦</div>
     <h1>The YES Movement</h1>
     <p class="tagline">Join others. Restore our world.</p>
     <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
-      <a href="/about.html" class="btn btn-primary">Learn More</a>
+      <a href="/about.html" class="btn btn-primary" style="pointer-events:auto;">Learn More</a>
     </div>
   </div>
 </section>
@@ -78,8 +109,8 @@
 
   const summitIcon = L.divIcon({
     className: '',
-    html: '<div style="width:20px;height:20px;border-radius:50%;background:#dc2626;border:2px solid rgba(255,255,255,0.8);box-shadow:0 0 10px rgba(220,38,38,0.8);cursor:pointer;"></div>',
-    iconSize: [20, 20], iconAnchor: [10, 10], popupAnchor: [0, -14],
+    html: '<div class="summit-marker"><div class="ring"></div><div class="dot"></div></div>',
+    iconSize: [22, 22], iconAnchor: [11, 11], popupAnchor: [0, -14],
   });
 
   async function geocode(location, country) {
