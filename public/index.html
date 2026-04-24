@@ -33,6 +33,14 @@
       animation: pulse-ring 1.8s ease-out infinite;
       z-index: 1;
     }
+    /* dark popup */
+    .dark-popup .leaflet-popup-content-wrapper {
+      background: rgba(10,10,10,0.92);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+    }
+    .dark-popup .leaflet-popup-tip { background: rgba(10,10,10,0.92); }
     /* let Leaflet marker/popup layers receive pointer events above the overlay */
     .leaflet-pane { z-index: 4 !important; }
     .leaflet-top, .leaflet-bottom { z-index: 5 !important; }
@@ -134,7 +142,7 @@
         const d = new Date(s.date + 'T00:00:00');
         const dateStr = d.toLocaleDateString('en', { day: 'numeric', month: 'long', year: 'numeric' });
         const marker = L.marker([coords.lat, coords.lng], { icon: summitIcon })
-          .bindPopup(`<h4 style="margin-bottom:0.25rem;font-size:0.95rem;">${s.title}</h4><p style="font-size:0.82rem;color:#555;margin:0;font-family:Arial,sans-serif;">📍 ${s.location}, ${s.country}<br>📅 ${dateStr}</p>`)
+          .bindPopup(`<h4 style="margin-bottom:0.25rem;font-size:0.95rem;color:#fff;">${s.title}</h4><p style="font-size:0.82rem;color:rgba(255,255,255,0.75);margin:0;font-family:Arial,sans-serif;">📍 ${s.location}, ${s.country}<br>📅 ${dateStr}</p>`, { className: 'dark-popup' })
           .addTo(heroMap);
         marker.on('mouseover', function() { this.openPopup(); });
       }
