@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Telescope — YES Movement</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+  <style>
+    .telescope-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    @media (max-width: 640px) { .telescope-grid { grid-template-columns: 1fr; } }
+
+    .t-card {
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.75rem;
+    }
+    .t-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: Arial, sans-serif;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--accent-light);
+      margin-bottom: 0.75rem;
+    }
+    .t-card p, .t-card li {
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+    .t-card ul { padding-left: 1.2rem; }
+    .t-card li { margin-bottom: 0.3rem; }
+
+    .budget-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+    .budget-row:last-child { border-bottom: none; }
+    .budget-row .role { color: var(--accent); }
+    .budget-row .amount { font-family: Arial, sans-serif; color: var(--muted); font-size: 0.85rem; }
+
+    .stat-banner {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    @media (max-width: 640px) { .stat-banner { grid-template-columns: 1fr; } }
+    .stat {
+      text-align: center;
+      padding: 2rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+    .stat .num {
+      font-size: 2rem;
+      font-weight: 700;
+      font-family: Arial, sans-serif;
+      color: var(--accent-light);
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+    .stat .label {
+      font-family: Arial, sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .section-label-left {
+      font-family: Arial, sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+    .section-divider {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+      margin: 3rem 0;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-brand">YES</a>
+  <ul class="nav-links">
+    <li><a href="/telescope.html" style="display:flex;align-items:center;gap:0.35rem;position:relative;top:3px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/></svg>The Telescope</a></li>
+    <li><a href="/events.html">Summits</a></li>
+    <li><a href="/members.html">Groups</a></li>
+    <li><a href="/about.html">About</a></li>
+  </ul>
+  <button class="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="page-header">
+  <h1>The Telescope</h1>
+  <p>Media, motion, and movement — the EBF production framework.</p>
+</div>
+
+<section class="section">
+
+  <!-- Stats -->
+  <div class="stat-banner">
+    <div class="stat">
+      <span class="num">$72,430</span>
+      <span class="label">Monthly Operating Cost</span>
+    </div>
+    <div class="stat">
+      <span class="num">$40,950</span>
+      <span class="label">One-Time Startup Cost</span>
+    </div>
+    <div class="stat">
+      <span class="num">$124,000</span>
+      <span class="label">Annual Livestream Budget</span>
+    </div>
+  </div>
+
+  <!-- Video & Content -->
+  <p class="section-label-left">Video Brand & Media</p>
+  <h2 style="font-size:1.6rem;font-weight:400;margin-bottom:2rem;color:var(--accent-light);">Environmental Benefits Framework</h2>
+
+  <div class="telescope-grid">
+    <div class="t-card">
+      <h3>3× Daily Show</h3>
+      <p>A flagship program translating complex climate policy into compelling narratives with tangible stakes. Episodes explain and track quarterly assignments, feature expert contributors providing context, and highlight work from organisational cells nationwide.</p>
+    </div>
+    <div class="t-card">
+      <h3>Short Form Video</h3>
+      <p>Weekly content serving four functions: reframing climate discussions from EBF's perspective, demonstrating extractive thinking patterns and solutions, celebrating wins, and illustrating how conscious choices create global impact. Converts subscribers into committed advocates.</p>
+    </div>
+    <div class="t-card">
+      <h3>Social Clips</h3>
+      <p>Short, shareable content introducing EBF's work across TikTok, Instagram, Facebook, and additional platforms — driving audiences toward the main show, newsletter, and subscriber community.</p>
+    </div>
+    <div class="t-card">
+      <h3>Distribution Infrastructure</h3>
+      <p>Multi-channel system centred on email — owned audience protected from algorithm changes — with social amplification layered strategically across platforms.</p>
+    </div>
+  </div>
+
+  <div class="t-card" style="margin-bottom:3rem;">
+    <h3>Quarterly Event Livestream</h3>
+    <p>Full-day live production built around Action Day ($31,000 per event · $124,000 annually), featuring field producers reporting live on community projects. This flagship moment celebrates collective action, drives subscriptions, and documents movement momentum in real time.</p>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- Weekly Series -->
+  <p class="section-label-left">Programming</p>
+  <h2 style="font-size:1.6rem;font-weight:400;margin-bottom:2rem;color:var(--accent-light);">Weekly Series Structure</h2>
+
+  <div class="telescope-grid">
+    <div class="t-card">
+      <h3>Field Notes <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:0.85rem;color:var(--muted);">35–40 min · 1–2× weekly</span></h3>
+      <ul>
+        <li><strong>Segment 1</strong> — Expert contributor discussion (~12 min)</li>
+        <li><strong>Segment 2</strong> — Local cell leader field piece and live interview (~18 min)</li>
+        <li><strong>Segment 3</strong> — Concrete community action (~6 min)</li>
+      </ul>
+    </div>
+    <div class="t-card">
+      <h3>Season Finale Livestream <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:0.85rem;color:var(--muted);">2–3 hrs · quarterly</span></h3>
+      <ul>
+        <li>Action Day highlight reel (~25 min)</li>
+        <li>Live field reports from regional leaders (~70 min)</li>
+        <li>Policy connection segment (~25 min)</li>
+        <li>Next season announcement (~20 min)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- Team & Budget -->
+  <p class="section-label-left">Team Structure</p>
+  <h2 style="font-size:1.6rem;font-weight:400;margin-bottom:2rem;color:var(--accent-light);">Budget Breakdown</h2>
+
+  <div style="max-width:560px;">
+    <div class="budget-row">
+      <span class="role">Project Lead <span style="color:var(--muted);font-size:0.8rem;">40 hrs/wk</span></span>
+      <span class="amount">$20,800 / mo</span>
+    </div>
+    <div class="budget-row">
+      <span class="role">Senior Editor <span style="color:var(--muted);font-size:0.8rem;">40 hrs/wk</span></span>
+      <span class="amount">$15,600 / mo</span>
+    </div>
+    <div class="budget-row">
+      <span class="role">Show Producer <span style="color:var(--muted);font-size:0.8rem;">3 shows/wk</span></span>
+      <span class="amount">$10,140 / mo</span>
+    </div>
+    <div class="budget-row">
+      <span class="role">Social / Copywriter <span style="color:var(--muted);font-size:0.8rem;">30 hrs/wk</span></span>
+      <span class="amount">$10,140 / mo</span>
+    </div>
+    <div class="budget-row">
+      <span class="role">Assistant Editor <span style="color:var(--muted);font-size:0.8rem;">40 hrs/wk</span></span>
+      <span class="amount">$6,240 / mo</span>
+    </div>
+    <div class="budget-row">
+      <span class="role">Tech Director <span style="color:var(--muted);font-size:0.8rem;">3 days/wk</span></span>
+      <span class="amount">$5,460 / mo</span>
+    </div>
+    <div class="budget-row">
+      <span class="role">Designer <span style="color:var(--muted);font-size:0.8rem;">5–20 hrs/wk</span></span>
+      <span class="amount">$3,250 / mo</span>
+    </div>
+    <div class="budget-row">
+      <span class="role">Tech Stack</span>
+      <span class="amount">$800 / mo</span>
+    </div>
+    <div class="budget-row" style="border-top:2px solid var(--accent);margin-top:0.5rem;padding-top:0.75rem;">
+      <span class="role" style="font-weight:700;">Monthly Total</span>
+      <span class="amount" style="color:var(--accent-light);font-weight:700;font-size:1rem;">$72,430</span>
+    </div>
+  </div>
+
+</section>
+
+<footer>
+  <div class="footer-brand">✦ YES Movement</div>
+  <p>Say yes to what matters.</p>
+</footer>
+
+<script src="/js/nav.js"></script>
+</body>
+</html>
