@@ -133,7 +133,7 @@ nav {
 
 .tagline {
   font-size: clamp(1rem, 2vw, 1.3rem);
-  color: var(--muted);
+  color: rgba(255,255,255,0.85);
   margin-bottom: 2.5rem;
   font-style: italic;
 }
