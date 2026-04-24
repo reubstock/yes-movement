@@ -12,27 +12,36 @@
       70%  { transform: scale(2.4); opacity: 0;   }
       100% { transform: scale(2.4); opacity: 0;   }
     }
-    .summit-marker {
-      position: relative;
-      width: 22px; height: 22px;
-    }
-    .summit-marker .dot {
-      width: 22px; height: 22px;
-      border-radius: 50%;
-      background: #dc2626;
-      border: 2.5px solid #fff;
-      box-shadow: 0 0 8px rgba(220,38,38,0.9);
-      position: relative; z-index: 2;
-    }
+    /* Summit marker — bright red, mountain climber */
+    .summit-marker { position: relative; width: 36px; height: 36px; }
     .summit-marker .ring {
-      position: absolute;
-      top: 0; left: 0;
-      width: 22px; height: 22px;
-      border-radius: 50%;
-      background: rgba(220,38,38,0.45);
-      animation: pulse-ring 1.8s ease-out infinite;
-      z-index: 1;
+      position: absolute; top: 7px; left: 7px;
+      width: 22px; height: 22px; border-radius: 50%;
+      background: rgba(220,38,38,0.4);
+      animation: pulse-ring 1.8s ease-out infinite; z-index: 1;
     }
+    .summit-marker .bg {
+      position: absolute; top: 7px; left: 7px;
+      width: 22px; height: 22px; border-radius: 50%;
+      background: #dc2626; border: 2.5px solid #fff;
+      box-shadow: 0 0 8px rgba(220,38,38,0.9); z-index: 2;
+    }
+    .summit-marker svg { position: absolute; top: 7px; left: 7px; z-index: 3; }
+    /* Group marker — orange, two people */
+    .group-marker { position: relative; width: 36px; height: 36px; }
+    .group-marker .ring {
+      position: absolute; top: 7px; left: 7px;
+      width: 22px; height: 22px; border-radius: 50%;
+      background: rgba(234,88,12,0.4);
+      animation: pulse-ring 1.8s ease-out infinite; z-index: 1;
+    }
+    .group-marker .bg {
+      position: absolute; top: 7px; left: 7px;
+      width: 22px; height: 22px; border-radius: 50%;
+      background: #ea580c; border: 2.5px solid #fff;
+      box-shadow: 0 0 8px rgba(234,88,12,0.9); z-index: 2;
+    }
+    .group-marker svg { position: absolute; top: 7px; left: 7px; z-index: 3; }
     /* dark popup */
     .dark-popup .leaflet-popup-content-wrapper {
       background: rgba(10,10,10,0.92);
@@ -115,10 +124,41 @@
     maxZoom: 18,
   }).addTo(heroMap);
 
+  // Summit icon — red circle + mountain climber SVG
   const summitIcon = L.divIcon({
     className: '',
-    html: '<div class="summit-marker"><div class="ring"></div><div class="dot"></div></div>',
-    iconSize: [22, 22], iconAnchor: [11, 11], popupAnchor: [0, -14],
+    html: `<div class="summit-marker">
+      <div class="ring"></div><div class="bg"></div>
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+        <!-- mountain -->
+        <polyline points="3,17 11,6 19,17" stroke="#fff" stroke-width="1.6" stroke-linejoin="round" fill="none"/>
+        <!-- flag -->
+        <line x1="11" y1="6" x2="11" y2="3" stroke="#fff" stroke-width="1.4"/>
+        <polygon points="11,3 15,4.5 11,6" fill="#fff"/>
+        <!-- person at peak -->
+        <circle cx="11" cy="8.5" r="1.2" fill="#fff"/>
+      </svg>
+    </div>`,
+    iconSize: [36, 36], iconAnchor: [18, 18], popupAnchor: [0, -20],
+  });
+
+  // Group icon — orange circle + two people SVG
+  const groupIcon = L.divIcon({
+    className: '',
+    html: `<div class="group-marker">
+      <div class="ring"></div><div class="bg"></div>
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+        <!-- left person -->
+        <circle cx="8" cy="8" r="2" fill="#fff"/>
+        <path d="M4 18 Q4 13 8 13 Q10 13 11 14" stroke="#fff" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+        <!-- right person -->
+        <circle cx="14" cy="8" r="2" fill="#fff"/>
+        <path d="M18 18 Q18 13 14 13 Q12 13 11 14" stroke="#fff" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+        <!-- joined hands -->
+        <line x1="9.5" y1="15" x2="12.5" y2="15" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+    </div>`,
+    iconSize: [36, 36], iconAnchor: [18, 18], popupAnchor: [0, -20],
   });
 
   async function geocode(location, country) {
@@ -130,26 +170,45 @@
     } catch { return null; }
   }
 
-  async function plotSummitsOnHero() {
+  async function plotMarkersOnHero() {
     try {
-      const res = await fetch('/api/summits');
-      const summits = await res.json();
-      for (let i = 0; i < summits.length; i++) {
+      // fetch both in parallel
+      const [summitsRes, groupsRes] = await Promise.all([
+        fetch('/api/summits'), fetch('/api/groups')
+      ]);
+      const summits = await summitsRes.json();
+      const groups = await groupsRes.json();
+
+      // interleave items with rate-limit delay
+      const items = [
+        ...summits.map(s => ({ type: 'summit', data: s })),
+        ...groups.map(g => ({ type: 'group', data: g })),
+      ];
+
+      for (let i = 0; i < items.length; i++) {
         if (i > 0) await new Promise(r => setTimeout(r, 1100));
-        const s = summits[i];
-        const coords = await geocode(s.location, s.country);
+        const { type, data } = items[i];
+        const coords = await geocode(data.location, data.country);
         if (!coords) continue;
-        const d = new Date(s.date + 'T00:00:00');
-        const dateStr = d.toLocaleDateString('en', { day: 'numeric', month: 'long', year: 'numeric' });
-        const marker = L.marker([coords.lat, coords.lng], { icon: summitIcon })
-          .bindPopup(`<h4 style="margin-bottom:0.25rem;font-size:0.95rem;color:#fff;">${s.title}</h4><p style="font-size:0.82rem;color:rgba(255,255,255,0.75);margin:0;font-family:Arial,sans-serif;">📍 ${s.location}, ${s.country}<br>📅 ${dateStr}</p>`, { className: 'dark-popup' })
-          .addTo(heroMap);
-        marker.on('mouseover', function() { this.openPopup(); });
+
+        if (type === 'summit') {
+          const d = new Date(data.date + 'T00:00:00');
+          const dateStr = d.toLocaleDateString('en', { day: 'numeric', month: 'long', year: 'numeric' });
+          const m = L.marker([coords.lat, coords.lng], { icon: summitIcon })
+            .bindPopup(`<h4 style="margin-bottom:0.25rem;font-size:0.95rem;color:#fff;">${data.title}</h4><p style="font-size:0.82rem;color:rgba(255,255,255,0.75);margin:0;font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}<br>📅 ${dateStr}</p>`, { className: 'dark-popup' })
+            .addTo(heroMap);
+          m.on('mouseover', function() { this.openPopup(); });
+        } else {
+          const m = L.marker([coords.lat, coords.lng], { icon: groupIcon })
+            .bindPopup(`<h4 style="margin-bottom:0.25rem;font-size:0.95rem;color:#fff;">${data.name}</h4><p style="font-size:0.82rem;color:rgba(255,255,255,0.75);margin:0;font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}${data.contact ? '<br>👤 ' + data.contact : ''}</p>`, { className: 'dark-popup' })
+            .addTo(heroMap);
+          m.on('mouseover', function() { this.openPopup(); });
+        }
       }
     } catch (e) { console.error(e); }
   }
 
-  plotSummitsOnHero();
+  plotMarkersOnHero();
 </script>
 <script src="/js/nav.js"></script>
 <script>
