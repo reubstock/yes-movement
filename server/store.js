@@ -1,4 +1,15 @@
-const { sql } = require('@vercel/postgres');
+const { Pool } = require('pg');
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false,
+});
+
+const sql = (strings, ...values) => {
+  let text = '';
+  strings.forEach((s, i) => { text += s; if (i < values.length) text += `$${i + 1}`; });
+  return pool.query(text, values);
+};
 
 async function init() {
   await sql`
@@ -70,58 +81,58 @@ module.exports = {
 
   members: {
     all: async () => {
-      const { rows } = await sql`SELECT * FROM members ORDER BY joined_year ASC`;
+      const { rows } = await pool.query('SELECT * FROM members ORDER BY joined_year ASC');
       return rows;
     },
     get: async (id) => {
-      const { rows } = await sql`SELECT * FROM members WHERE id = ${id}`;
+      const { rows } = await pool.query('SELECT * FROM members WHERE id = $1', [id]);
       return rows[0] || null;
     },
     insert: async ({ name, location, country, bio, avatar_url, joined_year }) => {
-      const { rows } = await sql`
-        INSERT INTO members (name, location, country, bio, avatar_url, joined_year)
-        VALUES (${name}, ${location}, ${country}, ${bio || null}, ${avatar_url || null}, ${joined_year ? parseInt(joined_year) : null})
-        RETURNING *`;
+      const { rows } = await pool.query(
+        'INSERT INTO members (name, location, country, bio, avatar_url, joined_year) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *',
+        [name, location, country, bio || null, avatar_url || null, joined_year ? parseInt(joined_year) : null]
+      );
       return rows[0];
     },
   },
 
   summits: {
     all: async () => {
-      const { rows } = await sql`SELECT * FROM summits ORDER BY date ASC`;
+      const { rows } = await pool.query('SELECT * FROM summits ORDER BY date ASC');
       return rows;
     },
     upcoming: async () => {
-      const { rows } = await sql`SELECT * FROM summits WHERE date >= ${today()} ORDER BY date ASC`;
+      const { rows } = await pool.query('SELECT * FROM summits WHERE date >= $1 ORDER BY date ASC', [today()]);
       return rows;
     },
     get: async (id) => {
-      const { rows } = await sql`SELECT * FROM summits WHERE id = ${id}`;
+      const { rows } = await pool.query('SELECT * FROM summits WHERE id = $1', [id]);
       return rows[0] || null;
     },
     insert: async ({ title, description, location, country, date, time, host_name }) => {
-      const { rows } = await sql`
-        INSERT INTO summits (title, description, location, country, date, time, host_name)
-        VALUES (${title}, ${description || null}, ${location}, ${country}, ${date}, ${time || null}, ${host_name || null})
-        RETURNING *`;
+      const { rows } = await pool.query(
+        'INSERT INTO summits (title, description, location, country, date, time, host_name) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *',
+        [title, description || null, location, country, date, time || null, host_name || null]
+      );
       return rows[0];
     },
   },
 
   groups: {
     all: async () => {
-      const { rows } = await sql`SELECT * FROM groups ORDER BY id ASC`;
+      const { rows } = await pool.query('SELECT * FROM groups ORDER BY id ASC');
       return rows;
     },
     get: async (id) => {
-      const { rows } = await sql`SELECT * FROM groups WHERE id = ${id}`;
+      const { rows } = await pool.query('SELECT * FROM groups WHERE id = $1', [id]);
       return rows[0] || null;
     },
     insert: async ({ name, description, location, country, contact, image }) => {
-      const { rows } = await sql`
-        INSERT INTO groups (name, description, location, country, contact, image)
-        VALUES (${name}, ${description || null}, ${location}, ${country}, ${contact || null}, ${image || null})
-        RETURNING *`;
+      const { rows } = await pool.query(
+        'INSERT INTO groups (name, description, location, country, contact, image) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *',
+        [name, description || null, location, country, contact || null, image || null]
+      );
       return rows[0];
     },
   },
