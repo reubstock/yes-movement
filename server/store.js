@@ -1,76 +1,128 @@
-const fs = require('fs');
-const path = require('path');
+const { sql } = require('@vercel/postgres');
 
-const DB_PATH = path.join('/tmp', 'yes-data-v4.json');
+async function init() {
+  await sql`
+    CREATE TABLE IF NOT EXISTS members (
+      id SERIAL PRIMARY KEY,
+      name TEXT NOT NULL,
+      location TEXT,
+      country TEXT,
+      bio TEXT,
+      avatar_url TEXT,
+      joined_year INT
+    )
+  `;
+  await sql`
+    CREATE TABLE IF NOT EXISTS summits (
+      id SERIAL PRIMARY KEY,
+      title TEXT NOT NULL,
+      description TEXT,
+      location TEXT,
+      country TEXT,
+      date TEXT,
+      time TEXT,
+      host_name TEXT
+    )
+  `;
+  await sql`
+    CREATE TABLE IF NOT EXISTS groups (
+      id SERIAL PRIMARY KEY,
+      name TEXT NOT NULL,
+      description TEXT,
+      location TEXT,
+      country TEXT,
+      contact TEXT,
+      image TEXT
+    )
+  `;
 
-const SEED = {
-  members: [
-    { id: 1, name: 'Reuben Steiger', location: 'Princeton', country: 'United States', bio: '', avatar_url: null, joined_year: 2025 },
-  ],
-  summits: [
-    { id: 1, title: 'Inaugural Summit', description: 'YES Movement summit.', location: 'Princeton', country: 'United States', date: '2026-07-01', time: '18:00', host_name: 'Reuben Steiger' },
-  ],
-  groups: [
-    { id: 1, name: 'Red Barn Posse', description: 'YES Movement group based in Petaluma, CA.', location: 'Petaluma', country: 'United States', contact: 'Reuben Steiger', image: '/images/groups/red-barn-posse.jpg' },
-    { id: 2, name: '6 to 1', description: 'A group of environmental ninjas rebooting the planet.', location: 'Princeton', country: 'United States', contact: 'Reuben Steiger', image: '/images/groups/6-to-1.webp' },
-  ],
-  nextMemberId: 2,
-  nextSummitId: 2,
-  nextGroupId: 3,
-};
+  // Seed members
+  const { rows: m } = await sql`SELECT COUNT(*) FROM members`;
+  if (parseInt(m[0].count) === 0) {
+    await sql`INSERT INTO members (name, location, country, bio, joined_year)
+      VALUES ('Reuben Steiger', 'Princeton', 'United States', '', 2025)`;
+  }
 
-function load() {
-  try {
-    if (fs.existsSync(DB_PATH)) {
-      return JSON.parse(fs.readFileSync(DB_PATH, 'utf8'));
-    }
-  } catch (e) { /* fall through to seed */ }
-  return JSON.parse(JSON.stringify(SEED));
+  // Seed summits
+  const { rows: s } = await sql`SELECT COUNT(*) FROM summits`;
+  if (parseInt(s[0].count) === 0) {
+    await sql`INSERT INTO summits (title, description, location, country, date, time, host_name)
+      VALUES ('Inaugural Summit', 'YES Movement summit.', 'Princeton', 'United States', '2026-07-01', '18:00', 'Reuben Steiger')`;
+  }
+
+  // Seed groups
+  const { rows: g } = await sql`SELECT COUNT(*) FROM groups`;
+  if (parseInt(g[0].count) === 0) {
+    await sql`INSERT INTO groups (name, description, location, country, contact, image)
+      VALUES ('Red Barn Posse', 'YES Movement group based in Petaluma, CA.', 'Petaluma', 'United States', 'Reuben Steiger', '/images/groups/red-barn-posse.jpg')`;
+    await sql`INSERT INTO groups (name, description, location, country, contact, image)
+      VALUES ('6 to 1', 'A group of environmental ninjas rebooting the planet.', 'Princeton', 'United States', 'Reuben Steiger', '/images/groups/6-to-1.webp')`;
+  }
 }
 
-function save(db) {
-  try { fs.writeFileSync(DB_PATH, JSON.stringify(db)); } catch (e) { /* ignore write errors */ }
-}
-
-// initialise
-let db = load();
+// run init once on startup (non-blocking — routes wait for it via initPromise)
+const initPromise = init().catch(err => console.error('DB init error:', err));
 
 const today = () => new Date().toISOString().split('T')[0];
 
 module.exports = {
+  ready: () => initPromise,
+
   members: {
-    all: () => [...db.members].sort((a, b) => a.joined_year - b.joined_year),
-    get: (id) => db.members.find(m => m.id === parseInt(id)) || null,
-    insert({ name, location, country, bio, avatar_url, joined_year }) {
-      const m = { id: db.nextMemberId++, name, location, country,
-        bio: bio || null, avatar_url: avatar_url || null,
-        joined_year: joined_year ? parseInt(joined_year) : null };
-      db.members.push(m);
-      save(db);
-      return m;
+    all: async () => {
+      const { rows } = await sql`SELECT * FROM members ORDER BY joined_year ASC`;
+      return rows;
+    },
+    get: async (id) => {
+      const { rows } = await sql`SELECT * FROM members WHERE id = ${id}`;
+      return rows[0] || null;
+    },
+    insert: async ({ name, location, country, bio, avatar_url, joined_year }) => {
+      const { rows } = await sql`
+        INSERT INTO members (name, location, country, bio, avatar_url, joined_year)
+        VALUES (${name}, ${location}, ${country}, ${bio || null}, ${avatar_url || null}, ${joined_year ? parseInt(joined_year) : null})
+        RETURNING *`;
+      return rows[0];
     },
   },
+
   summits: {
-    all: () => [...db.summits].sort((a, b) => a.date.localeCompare(b.date)),
-    upcoming: () => db.summits.filter(e => e.date >= today()).sort((a, b) => a.date.localeCompare(b.date)),
-    get: (id) => db.summits.find(e => e.id === parseInt(id)) || null,
-    insert({ title, description, location, country, date, time, host_name }) {
-      const e = { id: db.nextSummitId++, title, description: description || null,
-        location, country, date, time: time || null, host_name: host_name || null };
-      db.summits.push(e);
-      save(db);
-      return e;
+    all: async () => {
+      const { rows } = await sql`SELECT * FROM summits ORDER BY date ASC`;
+      return rows;
+    },
+    upcoming: async () => {
+      const { rows } = await sql`SELECT * FROM summits WHERE date >= ${today()} ORDER BY date ASC`;
+      return rows;
+    },
+    get: async (id) => {
+      const { rows } = await sql`SELECT * FROM summits WHERE id = ${id}`;
+      return rows[0] || null;
+    },
+    insert: async ({ title, description, location, country, date, time, host_name }) => {
+      const { rows } = await sql`
+        INSERT INTO summits (title, description, location, country, date, time, host_name)
+        VALUES (${title}, ${description || null}, ${location}, ${country}, ${date}, ${time || null}, ${host_name || null})
+        RETURNING *`;
+      return rows[0];
     },
   },
+
   groups: {
-    all: () => [...db.groups],
-    get: (id) => db.groups.find(g => g.id === parseInt(id)) || null,
-    insert({ name, description, location, country, contact, image }) {
-      const g = { id: db.nextGroupId++, name, description: description || null,
-        location, country, contact: contact || null, image: image || null };
-      db.groups.push(g);
-      save(db);
-      return g;
+    all: async () => {
+      const { rows } = await sql`SELECT * FROM groups ORDER BY id ASC`;
+      return rows;
+    },
+    get: async (id) => {
+      const { rows } = await sql`SELECT * FROM groups WHERE id = ${id}`;
+      return rows[0] || null;
+    },
+    insert: async ({ name, description, location, country, contact, image }) => {
+      const { rows } = await sql`
+        INSERT INTO groups (name, description, location, country, contact, image)
+        VALUES (${name}, ${description || null}, ${location}, ${country}, ${contact || null}, ${image || null})
+        RETURNING *`;
+      return rows[0];
     },
   },
 };
