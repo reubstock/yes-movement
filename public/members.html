@@ -196,6 +196,9 @@
   }
   document.getElementById('create-form').addEventListener('submit', async e => {
     e.preventDefault();
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.textContent = 'Creating…';
+    btn.disabled = true;
     const data = Object.fromEntries(new FormData(e.target));
     // attach base64 image if provided
     const fileInput = document.getElementById('group-image-input');
@@ -206,9 +209,17 @@
         reader.readAsDataURL(fileInput.files[0]);
       });
     }
-    await fetch('/api/groups', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-    closeCreateModal();
-    loadGroups();
+    try {
+      const res = await fetch('/api/groups', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+      if (!res.ok) throw new Error(`Server error ${res.status}`);
+      closeCreateModal();
+      loadGroups();
+    } catch (err) {
+      console.error(err);
+      alert('Something went wrong creating the group. Please try again.');
+      btn.textContent = 'Create Group';
+      btn.disabled = false;
+    }
   });
 
   loadGroups();

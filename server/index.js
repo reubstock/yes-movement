@@ -10,7 +10,7 @@ if (!process.env.VERCEL) {
 }
 
 const app = express();
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
 app.use('/api/members', require('./routes/members'));
