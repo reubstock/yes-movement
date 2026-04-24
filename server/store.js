@@ -12,7 +12,7 @@ const summits = [
 ];
 
 const groups = [
-  { id: 1, name: 'Princeton Group', description: 'YES Movement chapter in Princeton, NJ.', location: 'Princeton', country: 'United States', contact: 'Reuben Steiger' },
+  { id: 1, name: 'Red Barn Posse', description: 'YES Movement group based in Petaluma, CA.', location: 'Petaluma', country: 'United States', contact: 'Reuben Steiger' },
 ];
 
 const today = () => new Date().toISOString().split('T')[0];

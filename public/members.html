@@ -21,27 +21,67 @@
 
 <div class="page-header">
   <h1>Groups</h1>
-  <p>The people who said yes.</p>
+  <p>Find your people. Start something new.</p>
 </div>
 
 <section class="section">
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;max-width:560px;margin:0 auto 2.5rem;">
-    <div class="form-group" style="margin:0;">
-      <input type="text" id="search-name" placeholder="Search by name…" oninput="filterMembers()" />
+
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:2rem;">
+    <div style="display:flex;gap:1rem;flex:1;min-width:240px;max-width:520px;">
+      <div class="form-group" style="margin:0;flex:1;">
+        <input type="text" id="search-name" placeholder="Search by name…" oninput="filterGroups()" />
+      </div>
+      <div class="form-group" style="margin:0;flex:1;">
+        <input type="text" id="search-region" placeholder="Search by region…" oninput="filterGroups()" />
+      </div>
     </div>
-    <div class="form-group" style="margin:0;">
-      <input type="text" id="search-region" placeholder="Search by region…" oninput="filterMembers()" />
-    </div>
+    <button class="btn btn-primary" onclick="openCreateModal()">+ Create New Group</button>
   </div>
 
-  <div class="members-grid" id="members-list">
-    <div class="loading">Loading members…</div>
+  <div class="members-grid" id="groups-list">
+    <div class="loading">Loading groups…</div>
   </div>
 
   <div id="load-more-wrap" style="text-align:center;margin-top:2.5rem;display:none;">
     <button class="btn btn-outline" onclick="showMore()">Load More</button>
   </div>
 </section>
+
+<!-- Join Modal -->
+<div id="join-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;align-items:center;justify-content:center;">
+  <div style="background:#fff;border:1px solid #ddd;border-radius:4px;padding:2rem;max-width:420px;width:90%;position:relative;text-align:center;">
+    <button onclick="closeJoinModal()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:#888;font-size:1.5rem;cursor:pointer;">&times;</button>
+    <div style="font-size:2rem;margin-bottom:0.75rem;">✦</div>
+    <h3 id="join-group-name" style="margin-bottom:0.5rem;font-weight:400;"></h3>
+    <p style="color:#555;margin-bottom:1.5rem;font-size:0.9rem;">📍 <span id="join-group-location"></span></p>
+    <form id="join-form">
+      <div class="form-group"><input type="text" name="name" placeholder="Your name *" required /></div>
+      <div class="form-group"><input type="email" name="email" placeholder="Your email *" required /></div>
+      <button type="submit" class="btn btn-primary" style="width:100%;">Request to Join</button>
+    </form>
+    <div id="join-success-msg" style="display:none;padding:1rem 0;color:#333;">
+      <p>✓ Request sent. The group organiser will be in touch.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Create New Group Modal -->
+<div id="create-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;align-items:center;justify-content:center;">
+  <div style="background:#fff;border:1px solid #ddd;border-radius:4px;padding:2rem;max-width:480px;width:90%;position:relative;">
+    <button onclick="closeCreateModal()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:#888;font-size:1.5rem;cursor:pointer;">&times;</button>
+    <h3 style="margin-bottom:1.5rem;font-weight:400;">Create New Group</h3>
+    <form id="create-form">
+      <div class="form-group"><label>Group Name *</label><input type="text" name="name" required /></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div class="form-group"><label>City *</label><input type="text" name="location" required /></div>
+        <div class="form-group"><label>Country *</label><input type="text" name="country" required /></div>
+      </div>
+      <div class="form-group"><label>Your Name</label><input type="text" name="contact" /></div>
+      <div class="form-group"><label>Description</label><textarea name="description" style="min-height:80px;" placeholder="What does your group do?"></textarea></div>
+      <button type="submit" class="btn btn-primary" style="width:100%;">Create Group</button>
+    </form>
+  </div>
+</div>
 
 <footer>
   <div class="footer-brand">✦ YES Movement</div>
@@ -51,63 +91,94 @@
 <script src="/js/nav.js"></script>
 <script>
   const PAGE_SIZE = 10;
-  let allMembers = [];
+  let allGroups = [];
   let filtered = [];
   let shown = 0;
 
-  async function loadMembers() {
-    const res = await fetch('/api/members');
-    allMembers = await res.json();
-    filtered = allMembers;
+  async function loadGroups() {
+    const res = await fetch('/api/groups');
+    allGroups = await res.json();
+    filtered = allGroups;
     shown = 0;
-    renderMembers();
+    renderGroups();
   }
 
-  function filterMembers() {
+  function filterGroups() {
     const name = document.getElementById('search-name').value.trim().toLowerCase();
     const region = document.getElementById('search-region').value.trim().toLowerCase();
-    filtered = allMembers.filter(m => {
-      const matchName = !name || m.name.toLowerCase().includes(name);
+    filtered = allGroups.filter(g => {
+      const matchName = !name || g.name.toLowerCase().includes(name);
       const matchRegion = !region ||
-        m.location.toLowerCase().includes(region) ||
-        m.country.toLowerCase().includes(region);
+        g.location.toLowerCase().includes(region) ||
+        g.country.toLowerCase().includes(region);
       return matchName && matchRegion;
     });
     shown = 0;
-    renderMembers();
+    renderGroups();
   }
 
-  function renderMembers() {
-    const el = document.getElementById('members-list');
+  function renderGroups() {
+    const el = document.getElementById('groups-list');
     const wrap = document.getElementById('load-more-wrap');
     const slice = filtered.slice(0, shown + PAGE_SIZE);
     shown = slice.length;
 
     if (filtered.length === 0) {
-      el.innerHTML = '<div class="empty-state"><p>No members found.</p></div>';
+      el.innerHTML = '<div class="empty-state"><p>No groups found.</p></div>';
       wrap.style.display = 'none';
       return;
     }
 
-    el.innerHTML = slice.map(m => {
-      const initials = m.name.split(' ').map(n => n[0]).join('');
-      return `<div class="card" style="text-align:center;">
-        <div style="width:52px;height:52px;border-radius:50%;background:#e8e8e8;border:1px solid #ccc;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.1rem;color:#333;font-family:Arial,sans-serif;font-weight:600;">${initials}</div>
-        <h3>${m.name}</h3>
-        <p>📍 ${m.location}, ${m.country}</p>
-        ${m.bio ? '<p style="margin-top:0.5rem;">' + m.bio + '</p>' : ''}
-        ${m.joined_year ? '<p style="margin-top:0.5rem;font-size:0.8rem;color:#888;">Member since ' + m.joined_year + '</p>' : ''}
-      </div>`;
-    }).join('');
+    el.innerHTML = slice.map(g => `
+      <div class="card">
+        <h3 style="margin-bottom:0.4rem;">${g.name}</h3>
+        <p style="margin-bottom:0.25rem;">📍 ${g.location}, ${g.country}</p>
+        ${g.contact ? `<p style="margin-bottom:0.75rem;">👤 ${g.contact}</p>` : '<p style="margin-bottom:0.75rem;"></p>'}
+        ${g.description ? `<p style="margin-bottom:1rem;">${g.description}</p>` : ''}
+        <button class="btn btn-primary" style="width:100%;margin-top:auto;" onclick="openJoinModal(${g.id}, '${g.name.replace(/'/g,"\\'")}', '${g.location}, ${g.country}')">Join</button>
+      </div>
+    `).join('');
 
     wrap.style.display = shown < filtered.length ? 'block' : 'none';
   }
 
-  function showMore() {
-    renderMembers();
-  }
+  function showMore() { renderGroups(); }
 
-  loadMembers();
+  // Join modal
+  function openJoinModal(id, name, location) {
+    document.getElementById('join-group-name').textContent = name;
+    document.getElementById('join-group-location').textContent = location;
+    document.getElementById('join-form').style.display = '';
+    document.getElementById('join-success-msg').style.display = 'none';
+    document.getElementById('join-modal').style.display = 'flex';
+  }
+  function closeJoinModal() {
+    document.getElementById('join-modal').style.display = 'none';
+    document.getElementById('join-form').reset();
+  }
+  document.getElementById('join-form').addEventListener('submit', e => {
+    e.preventDefault();
+    document.getElementById('join-form').style.display = 'none';
+    document.getElementById('join-success-msg').style.display = 'block';
+  });
+
+  // Create modal
+  function openCreateModal() {
+    document.getElementById('create-modal').style.display = 'flex';
+  }
+  function closeCreateModal() {
+    document.getElementById('create-modal').style.display = 'none';
+    document.getElementById('create-form').reset();
+  }
+  document.getElementById('create-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.target));
+    await fetch('/api/groups', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+    closeCreateModal();
+    loadGroups();
+  });
+
+  loadGroups();
 </script>
 </body>
 </html>
