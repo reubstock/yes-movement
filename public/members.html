@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Members — YES Movement</title>
+  <title>Groups — YES Movement</title>
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body>
@@ -13,20 +13,33 @@
   <ul class="nav-links">
     <li><a href="#" style="display:flex;align-items:center;gap:0.35rem;position:relative;top:3px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/></svg>The Telescope</a></li>
     <li><a href="/events.html">Summits</a></li>
-    <li><a href="/members.html">Members</a></li>
+    <li><a href="/members.html">Groups</a></li>
     <li><a href="/about.html">About</a></li>
   </ul>
   <button class="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
 </nav>
 
 <div class="page-header">
-  <h1>Members</h1>
+  <h1>Groups</h1>
   <p>The people who said yes.</p>
 </div>
 
 <section class="section">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;max-width:560px;margin:0 auto 2.5rem;">
+    <div class="form-group" style="margin:0;">
+      <input type="text" id="search-name" placeholder="Search by name…" oninput="filterMembers()" />
+    </div>
+    <div class="form-group" style="margin:0;">
+      <input type="text" id="search-region" placeholder="Search by region…" oninput="filterMembers()" />
+    </div>
+  </div>
+
   <div class="members-grid" id="members-list">
     <div class="loading">Loading members…</div>
+  </div>
+
+  <div id="load-more-wrap" style="text-align:center;margin-top:2.5rem;display:none;">
+    <button class="btn btn-outline" onclick="showMore()">Load More</button>
   </div>
 </section>
 
@@ -37,21 +50,63 @@
 
 <script src="/js/nav.js"></script>
 <script>
+  const PAGE_SIZE = 10;
+  let allMembers = [];
+  let filtered = [];
+  let shown = 0;
+
   async function loadMembers() {
     const res = await fetch('/api/members');
-    const members = await res.json();
+    allMembers = await res.json();
+    filtered = allMembers;
+    shown = 0;
+    renderMembers();
+  }
+
+  function filterMembers() {
+    const name = document.getElementById('search-name').value.trim().toLowerCase();
+    const region = document.getElementById('search-region').value.trim().toLowerCase();
+    filtered = allMembers.filter(m => {
+      const matchName = !name || m.name.toLowerCase().includes(name);
+      const matchRegion = !region ||
+        m.location.toLowerCase().includes(region) ||
+        m.country.toLowerCase().includes(region);
+      return matchName && matchRegion;
+    });
+    shown = 0;
+    renderMembers();
+  }
+
+  function renderMembers() {
     const el = document.getElementById('members-list');
-    el.innerHTML = members.map(m => {
+    const wrap = document.getElementById('load-more-wrap');
+    const slice = filtered.slice(0, shown + PAGE_SIZE);
+    shown = slice.length;
+
+    if (filtered.length === 0) {
+      el.innerHTML = '<div class="empty-state"><p>No members found.</p></div>';
+      wrap.style.display = 'none';
+      return;
+    }
+
+    el.innerHTML = slice.map(m => {
       const initials = m.name.split(' ').map(n => n[0]).join('');
       return `<div class="card" style="text-align:center;">
-        <div style="width:52px;height:52px;border-radius:50%;background:#1a1a1a;border:1px solid #333;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.1rem;color:#ccc;">${initials}</div>
+        <div style="width:52px;height:52px;border-radius:50%;background:#e8e8e8;border:1px solid #ccc;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.1rem;color:#333;font-family:Arial,sans-serif;font-weight:600;">${initials}</div>
         <h3>${m.name}</h3>
         <p>📍 ${m.location}, ${m.country}</p>
         ${m.bio ? '<p style="margin-top:0.5rem;">' + m.bio + '</p>' : ''}
-        ${m.joined_year ? '<p style="margin-top:0.5rem;font-size:0.8rem;color:#555;">Member since ' + m.joined_year + '</p>' : ''}
+        ${m.joined_year ? '<p style="margin-top:0.5rem;font-size:0.8rem;color:#888;">Member since ' + m.joined_year + '</p>' : ''}
       </div>`;
     }).join('');
+
+    wrap.style.display = shown < filtered.length ? 'block' : 'none';
   }
+
+  function showMore() {
+    renderMembers();
+  }
+
   loadMembers();
 </script>
 </body>

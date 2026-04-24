@@ -14,7 +14,7 @@
   <ul class="nav-links">
     <li><a href="#" style="display:flex;align-items:center;gap:0.35rem;position:relative;top:3px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/></svg>The Telescope</a></li>
     <li><a href="/events.html">Summits</a></li>
-    <li><a href="/members.html">Members</a></li>
+    <li><a href="/members.html">Groups</a></li>
     <li><a href="/about.html">About</a></li>
   </ul>
   <button class="nav-toggle" aria-label="Toggle menu">
@@ -78,8 +78,8 @@
 
   const summitIcon = L.divIcon({
     className: '',
-    html: '<div style="width:14px;height:14px;border-radius:50%;background:#dc2626;border:2px solid rgba(255,255,255,0.6);box-shadow:0 0 8px rgba(220,38,38,0.7);"></div>',
-    iconSize: [14, 14], iconAnchor: [7, 7], popupAnchor: [0, -12],
+    html: '<div style="width:20px;height:20px;border-radius:50%;background:#dc2626;border:2px solid rgba(255,255,255,0.8);box-shadow:0 0 10px rgba(220,38,38,0.8);cursor:pointer;"></div>',
+    iconSize: [20, 20], iconAnchor: [10, 10], popupAnchor: [0, -14],
   });
 
   async function geocode(location, country) {
@@ -102,9 +102,10 @@
         if (!coords) continue;
         const d = new Date(s.date + 'T00:00:00');
         const dateStr = d.toLocaleDateString('en', { day: 'numeric', month: 'long', year: 'numeric' });
-        L.marker([coords.lat, coords.lng], { icon: summitIcon })
+        const marker = L.marker([coords.lat, coords.lng], { icon: summitIcon })
           .bindPopup(`<h4 style="margin-bottom:0.25rem;font-size:0.95rem;">${s.title}</h4><p style="font-size:0.82rem;color:#555;margin:0;font-family:Arial,sans-serif;">📍 ${s.location}, ${s.country}<br>📅 ${dateStr}</p>`)
           .addTo(heroMap);
+        marker.on('mouseover', function() { this.openPopup(); });
       }
     } catch (e) { console.error(e); }
   }
