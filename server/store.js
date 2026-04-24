@@ -1,5 +1,5 @@
 let nextMemberId = 2;
-let nextSummitId = 2;
+let nextSummitId = 3;
 let nextGroupId = 2;
 
 const members = [
@@ -7,7 +7,8 @@ const members = [
 ];
 
 const summits = [
-  { id: 1, title: 'Inaugural Summit', description: 'First YES Movement summit.', location: 'Princeton', country: 'United States', date: '2026-06-01', time: '18:00', host_name: 'Reuben Steiger' },
+  { id: 1, title: 'Red Barn Posse — The Lexicon Says "Yes"', description: 'The first YES Movement summit.', location: 'Petaluma', country: 'United States', date: '2026-06-01', time: '18:00', host_name: 'Reuben Steiger' },
+  { id: 2, title: 'Inaugural Summit', description: 'YES Movement summit.', location: 'Princeton', country: 'United States', date: '2026-07-01', time: '18:00', host_name: 'Reuben Steiger' },
 ];
 
 const groups = [

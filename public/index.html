@@ -24,7 +24,7 @@
 
 <section class="hero">
   <div id="hero-map"></div>
-  <div class="hero-overlay"></div>
+  <div class="hero-overlay" style="pointer-events:none;"></div>
   <div class="hero-content">
     <div class="hero-emblem">✦</div>
     <h1>The YES Movement</h1>
@@ -62,29 +62,60 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-  window.onload = function () {
-    const heroMap = L.map('hero-map', {
-      zoomControl: false,
-      scrollWheelZoom: false,
-      dragging: false,
-      touchZoom: false,
-      doubleClickZoom: false,
-      keyboard: false,
-      attributionControl: false,
-    }).setView([35, -20], 2);
+  const heroMap = L.map('hero-map', {
+    zoomControl: true,
+    scrollWheelZoom: true,
+    dragging: true,
+    touchZoom: true,
+    doubleClickZoom: true,
+    keyboard: true,
+    attributionControl: false,
+  }).setView([38, -96], 4);
 
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
-      maxZoom: 18,
-    }).addTo(heroMap);
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+    maxZoom: 18,
+  }).addTo(heroMap);
 
-    heroMap.invalidateSize();
-  };
+  const summitIcon = L.divIcon({
+    className: '',
+    html: '<div style="width:14px;height:14px;border-radius:50%;background:#dc2626;border:2px solid rgba(255,255,255,0.6);box-shadow:0 0 8px rgba(220,38,38,0.7);"></div>',
+    iconSize: [14, 14], iconAnchor: [7, 7], popupAnchor: [0, -12],
+  });
+
+  async function geocode(location, country) {
+    const q = encodeURIComponent(`${location}, ${country}`);
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=1`, { headers: { 'Accept-Language': 'en' } });
+      const data = await res.json();
+      return data.length ? { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) } : null;
+    } catch { return null; }
+  }
+
+  async function plotSummitsOnHero() {
+    try {
+      const res = await fetch('/api/summits');
+      const summits = await res.json();
+      for (let i = 0; i < summits.length; i++) {
+        if (i > 0) await new Promise(r => setTimeout(r, 1100));
+        const s = summits[i];
+        const coords = await geocode(s.location, s.country);
+        if (!coords) continue;
+        const d = new Date(s.date + 'T00:00:00');
+        const dateStr = d.toLocaleDateString('en', { day: 'numeric', month: 'long', year: 'numeric' });
+        L.marker([coords.lat, coords.lng], { icon: summitIcon })
+          .bindPopup(`<h4 style="margin-bottom:0.25rem;font-size:0.95rem;">${s.title}</h4><p style="font-size:0.82rem;color:#555;margin:0;font-family:Arial,sans-serif;">📍 ${s.location}, ${s.country}<br>📅 ${dateStr}</p>`)
+          .addTo(heroMap);
+      }
+    } catch (e) { console.error(e); }
+  }
+
+  plotSummitsOnHero();
 </script>
 <script src="/js/nav.js"></script>
 <script>
   async function loadHomeData() {
     try {
-      const res = await fetch('/api/events?upcoming=true');
+      const res = await fetch('/api/summits?upcoming=true');
       const events = await res.json();
       const el = document.getElementById('home-events');
       if (events.length === 0) {
