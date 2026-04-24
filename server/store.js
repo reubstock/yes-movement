@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const DB_PATH = path.join('/tmp', 'yes-data.json');
+const DB_PATH = path.join('/tmp', 'yes-data-v3.json');
 
 const SEED = {
   members: [
