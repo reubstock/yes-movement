@@ -117,10 +117,10 @@ nav {
 }
 
 .hero-emblem {
-  font-size: 4rem;
-  margin-bottom: 0.4rem;
-  color: #ffffff;
-  filter: drop-shadow(0 0 20px rgba(255,255,255,0.2));
+  margin-bottom: 0.6rem;
+  display: flex;
+  justify-content: center;
+  filter: drop-shadow(0 0 12px rgba(106,170,68,0.4));
 }
 
 .hero h1 {
