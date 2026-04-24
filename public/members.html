@@ -78,6 +78,13 @@
       </div>
       <div class="form-group"><label>Your Name</label><input type="text" name="contact" /></div>
       <div class="form-group"><label>Description</label><textarea name="description" style="min-height:80px;" placeholder="What does your group do?"></textarea></div>
+      <div class="form-group">
+        <label>Group Photo</label>
+        <input type="file" id="group-image-input" accept="image/*" style="width:100%;padding:0.5rem 0;font-family:Arial,sans-serif;font-size:0.85rem;color:#555;" onchange="previewImage(this)" />
+        <div id="image-preview-wrap" style="display:none;margin-top:0.75rem;">
+          <img id="image-preview" src="" alt="Preview" style="width:100%;height:140px;object-fit:cover;border-radius:2px;border:1px solid #ddd;" />
+        </div>
+      </div>
       <button type="submit" class="btn btn-primary" style="width:100%;">Create Group</button>
     </form>
   </div>
@@ -130,12 +137,15 @@
     }
 
     el.innerHTML = slice.map(g => `
-      <div class="card">
-        <h3 style="margin-bottom:0.4rem;">${g.name}</h3>
-        <p style="margin-bottom:0.25rem;">📍 ${g.location}, ${g.country}</p>
-        ${g.contact ? `<p style="margin-bottom:0.75rem;">👤 ${g.contact}</p>` : '<p style="margin-bottom:0.75rem;"></p>'}
-        ${g.description ? `<p style="margin-bottom:1rem;">${g.description}</p>` : ''}
-        <button class="btn btn-primary" style="width:100%;margin-top:auto;" onclick="openJoinModal(${g.id}, '${g.name.replace(/'/g,"\\'")}', '${g.location}, ${g.country}')">Join</button>
+      <div class="card" style="padding:0;overflow:hidden;display:flex;flex-direction:column;">
+        ${g.image ? `<img src="${g.image}" alt="${g.name}" style="width:100%;height:180px;object-fit:cover;display:block;" />` : `<div style="width:100%;height:180px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:2rem;">✦</div>`}
+        <div style="padding:1.25rem;flex:1;display:flex;flex-direction:column;">
+          <h3 style="margin-bottom:0.4rem;">${g.name}</h3>
+          <p style="margin-bottom:0.25rem;">📍 ${g.location}, ${g.country}</p>
+          ${g.contact ? `<p style="margin-bottom:0.75rem;">👤 ${g.contact}</p>` : '<p style="margin-bottom:0.75rem;"></p>'}
+          ${g.description ? `<p style="margin-bottom:1rem;">${g.description}</p>` : ''}
+          <button class="btn btn-primary" style="width:100%;margin-top:auto;" onclick="openJoinModal(${g.id}, '${g.name.replace(/'/g,"\\'")}', '${g.location}, ${g.country}')">Join</button>
+        </div>
       </div>
     `).join('');
 
@@ -162,6 +172,19 @@
     document.getElementById('join-success-msg').style.display = 'block';
   });
 
+  // Image preview
+  function previewImage(input) {
+    const wrap = document.getElementById('image-preview-wrap');
+    const preview = document.getElementById('image-preview');
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = e => { preview.src = e.target.result; wrap.style.display = 'block'; };
+      reader.readAsDataURL(input.files[0]);
+    } else {
+      wrap.style.display = 'none';
+    }
+  }
+
   // Create modal
   function openCreateModal() {
     document.getElementById('create-modal').style.display = 'flex';
@@ -169,10 +192,20 @@
   function closeCreateModal() {
     document.getElementById('create-modal').style.display = 'none';
     document.getElementById('create-form').reset();
+    document.getElementById('image-preview-wrap').style.display = 'none';
   }
   document.getElementById('create-form').addEventListener('submit', async e => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(e.target));
+    // attach base64 image if provided
+    const fileInput = document.getElementById('group-image-input');
+    if (fileInput.files && fileInput.files[0]) {
+      data.image = await new Promise(resolve => {
+        const reader = new FileReader();
+        reader.onload = ev => resolve(ev.target.result);
+        reader.readAsDataURL(fileInput.files[0]);
+      });
+    }
     await fetch('/api/groups', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
     closeCreateModal();
     loadGroups();

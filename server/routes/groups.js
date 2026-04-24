@@ -11,11 +11,11 @@ router.get('/:id', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-  const { name, description, location, country, contact } = req.body;
+  const { name, description, location, country, contact, image } = req.body;
   if (!name || !location || !country) {
     return res.status(400).json({ error: 'name, location, and country are required' });
   }
-  const group = store.groups.insert({ name, description, location, country, contact });
+  const group = store.groups.insert({ name, description, location, country, contact, image: image || null });
   res.status(201).json({ id: group.id });
 });
 

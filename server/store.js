@@ -12,7 +12,7 @@ const summits = [
 ];
 
 const groups = [
-  { id: 1, name: 'Red Barn Posse', description: 'YES Movement group based in Petaluma, CA.', location: 'Petaluma', country: 'United States', contact: 'Reuben Steiger' },
+  { id: 1, name: 'Red Barn Posse', description: 'YES Movement group based in Petaluma, CA.', location: 'Petaluma', country: 'United States', contact: 'Reuben Steiger', image: '/images/groups/red-barn-posse.jpg' },
 ];
 
 const today = () => new Date().toISOString().split('T')[0];
@@ -43,9 +43,9 @@ module.exports = {
   groups: {
     all: () => [...groups],
     get: (id) => groups.find(g => g.id === parseInt(id)) || null,
-    insert({ name, description, location, country, contact }) {
+    insert({ name, description, location, country, contact, image }) {
       const g = { id: nextGroupId++, name, description: description || null,
-        location, country, contact: contact || null };
+        location, country, contact: contact || null, image: image || null };
       groups.push(g);
       return g;
     },
