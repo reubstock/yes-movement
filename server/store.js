@@ -13,10 +13,11 @@ const SEED = {
   ],
   groups: [
     { id: 1, name: 'Red Barn Posse', description: 'YES Movement group based in Petaluma, CA.', location: 'Petaluma', country: 'United States', contact: 'Reuben Steiger', image: '/images/groups/red-barn-posse.jpg' },
+    { id: 2, name: 'Princeton Group', description: 'YES Movement chapter in Princeton, NJ.', location: 'Princeton', country: 'United States', contact: 'Reuben Steiger', image: null },
   ],
   nextMemberId: 2,
   nextSummitId: 3,
-  nextGroupId: 2,
+  nextGroupId: 3,
 };
 
 function load() {
