@@ -1,22 +1,21 @@
 const fs = require('fs');
 const path = require('path');
 
-const DB_PATH = path.join('/tmp', 'yes-data-v3.json');
+const DB_PATH = path.join('/tmp', 'yes-data-v4.json');
 
 const SEED = {
   members: [
     { id: 1, name: 'Reuben Steiger', location: 'Princeton', country: 'United States', bio: '', avatar_url: null, joined_year: 2025 },
   ],
   summits: [
-    { id: 1, title: 'Red Barn Posse — The Lexicon Says "Yes"', description: 'The first YES Movement summit.', location: 'Petaluma', country: 'United States', date: '2026-06-01', time: '18:00', host_name: 'Reuben Steiger' },
-    { id: 2, title: 'Inaugural Summit', description: 'YES Movement summit.', location: 'Princeton', country: 'United States', date: '2026-07-01', time: '18:00', host_name: 'Reuben Steiger' },
+    { id: 1, title: 'Inaugural Summit', description: 'YES Movement summit.', location: 'Princeton', country: 'United States', date: '2026-07-01', time: '18:00', host_name: 'Reuben Steiger' },
   ],
   groups: [
     { id: 1, name: 'Red Barn Posse', description: 'YES Movement group based in Petaluma, CA.', location: 'Petaluma', country: 'United States', contact: 'Reuben Steiger', image: '/images/groups/red-barn-posse.jpg' },
     { id: 2, name: '6 to 1', description: 'A group of environmental ninjas rebooting the planet.', location: 'Princeton', country: 'United States', contact: 'Reuben Steiger', image: '/images/groups/6-to-1.webp' },
   ],
   nextMemberId: 2,
-  nextSummitId: 3,
+  nextSummitId: 2,
   nextGroupId: 3,
 };
 
