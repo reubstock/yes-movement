@@ -5,92 +5,263 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The Telescope — YES Movement</title>
   <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
-    .telescope-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      margin-bottom: 3rem;
-    }
-    @media (max-width: 640px) { .telescope-grid { grid-template-columns: 1fr; } }
-
-    .t-card {
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 1.75rem;
-    }
-    .t-card h3 {
-      font-size: 1rem;
-      font-weight: 700;
-      font-family: Arial, sans-serif;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: var(--accent-light);
-      margin-bottom: 0.75rem;
-    }
-    .t-card p, .t-card li {
-      font-size: 0.95rem;
-      color: var(--muted);
-      line-height: 1.75;
-    }
-    .t-card ul { padding-left: 1.2rem; }
-    .t-card li { margin-bottom: 0.3rem; }
-
-    .budget-row {
+    /* ── Page header ── */
+    .telescope-header {
+      padding: 3rem 2rem 2.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
       display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      padding: 0.6rem 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 0.9rem;
-    }
-    .budget-row:last-child { border-bottom: none; }
-    .budget-row .role { color: var(--accent); }
-    .budget-row .amount { font-family: Arial, sans-serif; color: var(--muted); font-size: 0.85rem; }
-
-    .stat-banner {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      align-items: center;
       gap: 1.5rem;
-      margin-bottom: 3rem;
     }
-    @media (max-width: 640px) { .stat-banner { grid-template-columns: 1fr; } }
-    .stat {
-      text-align: center;
-      padding: 2rem 1rem;
-      border: 1px solid var(--border);
-      border-radius: 4px;
+    .telescope-logo {
+      flex-shrink: 0;
     }
-    .stat .num {
-      font-size: 2rem;
-      font-weight: 700;
+    .telescope-header-text h1 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      color: #111;
+      line-height: 1.1;
+    }
+    .telescope-header-text p {
       font-family: Arial, sans-serif;
-      color: var(--accent-light);
-      display: block;
-      margin-bottom: 0.4rem;
-    }
-    .stat .label {
-      font-family: Arial, sans-serif;
-      font-size: 0.75rem;
+      font-size: 0.82rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: var(--muted);
+      color: #888;
+      margin-top: 0.4rem;
     }
 
-    .section-label-left {
+    /* ── Main two-column layout ── */
+    .telescope-layout {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem 4rem;
+      align-items: start;
+    }
+    @media (max-width: 860px) {
+      .telescope-layout { grid-template-columns: 1fr; }
+    }
+
+    /* ── Left panel ── */
+    .left-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .panel-block {
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .panel-label {
       font-family: Arial, sans-serif;
-      font-size: 0.75rem;
-      letter-spacing: 0.2em;
+      font-size: 0.7rem;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 0.75rem;
+      color: #888;
+      padding: 0.75rem 1rem 0.6rem;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
-    .section-divider {
+    .panel-label .dot {
+      width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+    }
+    .dot-red   { background: #dc2626; }
+    .dot-green { background: #16a34a; }
+
+    /* field map */
+    #field-map {
       width: 100%;
-      height: 1px;
-      background: var(--border);
-      margin: 3rem 0;
+      height: 260px;
+      display: block;
     }
+
+    /* map legend */
+    .map-legend {
+      display: flex;
+      gap: 1.25rem;
+      padding: 0.6rem 1rem;
+      border-top: 1px solid #eee;
+      background: #fafafa;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: Arial, sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #777;
+    }
+    .legend-dot {
+      width: 9px; height: 9px; border-radius: 50%;
+    }
+
+    /* latest actions feed */
+    .actions-list {
+      list-style: none;
+      padding: 0;
+    }
+    .action-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .action-item:last-child { border-bottom: none; }
+    .action-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px;
+    }
+    .action-text {
+      font-size: 0.88rem;
+      line-height: 1.45;
+      color: #222;
+    }
+    .action-meta {
+      font-family: Arial, sans-serif;
+      font-size: 0.72rem;
+      color: #999;
+      margin-top: 0.2rem;
+    }
+    .actions-empty {
+      padding: 1.25rem 1rem;
+      font-size: 0.85rem;
+      color: #aaa;
+      font-family: Arial, sans-serif;
+    }
+
+    /* ── Right panel ── */
+    .right-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    /* Substack subscribe block */
+    .substack-block {
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .substack-hero {
+      padding: 2rem 2rem 1.75rem;
+      background: #111;
+      color: #fff;
+      text-align: center;
+    }
+    .substack-hero .brass-star {
+      font-size: 1.6rem;
+      color: #b8860b;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+    .substack-hero h2 {
+      font-size: 1.5rem;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.5rem;
+      color: #fff;
+    }
+    .substack-hero p {
+      font-family: Arial, sans-serif;
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.6);
+      letter-spacing: 0.03em;
+      line-height: 1.6;
+    }
+    .substack-embed {
+      padding: 1.5rem;
+      background: #fff;
+    }
+    /* Substack iframe embed */
+    .substack-embed iframe {
+      width: 100%;
+      border: none;
+      display: block;
+    }
+
+    /* Recent posts */
+    .posts-block {
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .post-item {
+      padding: 1.1rem 1.25rem;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      transition: background 0.15s;
+    }
+    .post-item:last-child { border-bottom: none; }
+    .post-item:hover { background: #fafafa; }
+    .post-item a { text-decoration: none; color: inherit; }
+    .post-title {
+      font-size: 0.98rem;
+      color: #111;
+      font-family: Georgia, serif;
+      line-height: 1.35;
+    }
+    .post-date {
+      font-family: Arial, sans-serif;
+      font-size: 0.72rem;
+      color: #999;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .post-excerpt {
+      font-size: 0.82rem;
+      color: #666;
+      line-height: 1.5;
+    }
+
+    /* Leaflet popup dark theme (same as homepage) */
+    .dark-popup .leaflet-popup-content-wrapper {
+      background: rgba(10,10,10,0.92);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    }
+    .dark-popup .leaflet-popup-tip { background: rgba(10,10,10,0.92); }
+
+    @keyframes pulse-ring {
+      0%   { transform: scale(1);   opacity: 0.8; }
+      70%  { transform: scale(2.4); opacity: 0;   }
+      100% { transform: scale(2.4); opacity: 0;   }
+    }
+    .map-marker {
+      display: flex; align-items: center; gap: 4px; pointer-events: auto;
+    }
+    .map-marker .dot-wrap { position: relative; width: 16px; height: 16px; flex-shrink: 0; }
+    .map-marker .ring {
+      position: absolute; inset: 0; border-radius: 50%;
+      animation: pulse-ring 1.8s ease-out infinite;
+    }
+    .map-marker .dot {
+      position: absolute; inset: 0; border-radius: 50%; border: 2px solid #fff;
+    }
+    .summit-marker .ring { background: rgba(220,38,38,0.4); }
+    .summit-marker .dot  { background: #dc2626; box-shadow: 0 0 6px rgba(220,38,38,0.8); }
+    .group-marker  .ring { background: rgba(22,163,74,0.4); }
+    .group-marker  .dot  { background: #16a34a; box-shadow: 0 0 6px rgba(22,163,74,0.8); }
+    .leaflet-pane        { z-index: 400 !important; }
+    .leaflet-top,
+    .leaflet-bottom      { z-index: 500 !important; }
+    .leaflet-marker-pane { pointer-events: auto !important; }
+    .leaflet-marker-icon { pointer-events: auto !important; }
   </style>
 </head>
 <body>
@@ -98,7 +269,10 @@
 <nav>
   <a href="/" class="nav-brand">YES</a>
   <ul class="nav-links">
-    <li><a href="/telescope.html" style="display:flex;align-items:center;gap:0.35rem;position:relative;top:3px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/></svg>The Telescope</a></li>
+    <li><a href="/telescope.html" style="display:flex;align-items:center;gap:0.35rem;position:relative;top:3px;">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/></svg>
+      The Telescope
+    </a></li>
     <li><a href="/events.html">Summits</a></li>
     <li><a href="/members.html">Groups</a></li>
     <li><a href="/about.html">About</a></li>
@@ -106,135 +280,226 @@
   <button class="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
 </nav>
 
-<div class="page-header">
-  <h1>The Telescope</h1>
-  <p>Media, motion, and movement — the EBF production framework.</p>
+<!-- Page header -->
+<div class="telescope-header">
+  <!-- Brass telescope SVG -->
+  <div class="telescope-logo">
+    <svg width="72" height="72" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- body of scope -->
+      <rect x="8" y="34" width="46" height="12" rx="3" fill="#b8860b"/>
+      <rect x="8" y="35.5" width="46" height="3" rx="1" fill="#d4a017" opacity="0.6"/>
+      <!-- wide bell -->
+      <path d="M8 34 L2 28 L2 52 L8 46 Z" fill="#9a6f0a"/>
+      <path d="M8 34 L2 28 L2 31 L8 37 Z" fill="#c9910e" opacity="0.5"/>
+      <!-- narrow eyepiece -->
+      <rect x="54" y="36.5" width="18" height="7" rx="2" fill="#9a6f0a"/>
+      <rect x="54" y="37" width="18" height="2" rx="1" fill="#c9910e" opacity="0.5"/>
+      <!-- band rings -->
+      <rect x="18" y="33" width="4" height="14" rx="1.5" fill="#9a6f0a"/>
+      <rect x="36" y="33" width="4" height="14" rx="1.5" fill="#9a6f0a"/>
+      <!-- tripod legs -->
+      <line x1="30" y1="46" x2="18" y2="70" stroke="#7a5608" stroke-width="3" stroke-linecap="round"/>
+      <line x1="30" y1="46" x2="30" y2="72" stroke="#7a5608" stroke-width="3" stroke-linecap="round"/>
+      <line x1="30" y1="46" x2="42" y2="70" stroke="#7a5608" stroke-width="3" stroke-linecap="round"/>
+      <!-- cross-brace -->
+      <line x1="20" y1="62" x2="40" y2="62" stroke="#7a5608" stroke-width="2" stroke-linecap="round"/>
+      <!-- lens glint -->
+      <circle cx="4.5" cy="34" r="1.5" fill="#f0c040" opacity="0.7"/>
+    </svg>
+  </div>
+  <div class="telescope-header-text">
+    <h1>The Telescope</h1>
+    <p>Dispatches from the YES Movement</p>
+  </div>
 </div>
 
-<section class="section">
+<!-- Main layout -->
+<div class="telescope-layout">
 
-  <!-- Stats -->
-  <div class="stat-banner">
-    <div class="stat">
-      <span class="num">$72,430</span>
-      <span class="label">Monthly Operating Cost</span>
-    </div>
-    <div class="stat">
-      <span class="num">$40,950</span>
-      <span class="label">One-Time Startup Cost</span>
-    </div>
-    <div class="stat">
-      <span class="num">$124,000</span>
-      <span class="label">Annual Livestream Budget</span>
-    </div>
-  </div>
+  <!-- ── LEFT PANEL ── -->
+  <div class="left-panel">
 
-  <!-- Video & Content -->
-  <p class="section-label-left">Video Brand & Media</p>
-  <h2 style="font-size:1.6rem;font-weight:400;margin-bottom:2rem;color:var(--accent-light);">Environmental Benefits Framework</h2>
-
-  <div class="telescope-grid">
-    <div class="t-card">
-      <h3>3× Daily Show</h3>
-      <p>A flagship program translating complex climate policy into compelling narratives with tangible stakes. Episodes explain and track quarterly assignments, feature expert contributors providing context, and highlight work from organisational cells nationwide.</p>
+    <!-- In the Field map -->
+    <div class="panel-block">
+      <div class="panel-label">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-green"></span>
+        In the Field
+      </div>
+      <div id="field-map"></div>
+      <div class="map-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#dc2626;"></div> Summits</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#16a34a;"></div> Groups</div>
+      </div>
     </div>
-    <div class="t-card">
-      <h3>Short Form Video</h3>
-      <p>Weekly content serving four functions: reframing climate discussions from EBF's perspective, demonstrating extractive thinking patterns and solutions, celebrating wins, and illustrating how conscious choices create global impact. Converts subscribers into committed advocates.</p>
-    </div>
-    <div class="t-card">
-      <h3>Social Clips</h3>
-      <p>Short, shareable content introducing EBF's work across TikTok, Instagram, Facebook, and additional platforms — driving audiences toward the main show, newsletter, and subscriber community.</p>
-    </div>
-    <div class="t-card">
-      <h3>Distribution Infrastructure</h3>
-      <p>Multi-channel system centred on email — owned audience protected from algorithm changes — with social amplification layered strategically across platforms.</p>
-    </div>
-  </div>
 
-  <div class="t-card" style="margin-bottom:3rem;">
-    <h3>Quarterly Event Livestream</h3>
-    <p>Full-day live production built around Action Day ($31,000 per event · $124,000 annually), featuring field producers reporting live on community projects. This flagship moment celebrates collective action, drives subscriptions, and documents movement momentum in real time.</p>
-  </div>
-
-  <div class="section-divider"></div>
-
-  <!-- Weekly Series -->
-  <p class="section-label-left">Programming</p>
-  <h2 style="font-size:1.6rem;font-weight:400;margin-bottom:2rem;color:var(--accent-light);">Weekly Series Structure</h2>
-
-  <div class="telescope-grid">
-    <div class="t-card">
-      <h3>Field Notes <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:0.85rem;color:var(--muted);">35–40 min · 1–2× weekly</span></h3>
-      <ul>
-        <li><strong>Segment 1</strong> — Expert contributor discussion (~12 min)</li>
-        <li><strong>Segment 2</strong> — Local cell leader field piece and live interview (~18 min)</li>
-        <li><strong>Segment 3</strong> — Concrete community action (~6 min)</li>
+    <!-- Latest Actions feed -->
+    <div class="panel-block">
+      <div class="panel-label" style="justify-content:space-between;">
+        <span>Latest Actions</span>
+        <span id="actions-count" style="background:#111;color:#fff;font-size:0.65rem;padding:0.15rem 0.5rem;border-radius:999px;"></span>
+      </div>
+      <ul class="actions-list" id="actions-list">
+        <li class="actions-empty">Loading…</li>
       </ul>
     </div>
-    <div class="t-card">
-      <h3>Season Finale Livestream <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:0.85rem;color:var(--muted);">2–3 hrs · quarterly</span></h3>
-      <ul>
-        <li>Action Day highlight reel (~25 min)</li>
-        <li>Live field reports from regional leaders (~70 min)</li>
-        <li>Policy connection segment (~25 min)</li>
-        <li>Next season announcement (~20 min)</li>
-      </ul>
-    </div>
+
   </div>
 
-  <div class="section-divider"></div>
+  <!-- ── RIGHT PANEL ── -->
+  <div class="right-panel">
 
-  <!-- Team & Budget -->
-  <p class="section-label-left">Team Structure</p>
-  <h2 style="font-size:1.6rem;font-weight:400;margin-bottom:2rem;color:var(--accent-light);">Budget Breakdown</h2>
+    <!-- Substack subscribe -->
+    <div class="substack-block">
+      <div class="substack-hero">
+        <span class="brass-star">✦</span>
+        <h2>The Telescope Newsletter</h2>
+        <p>Field reports, group news, and dispatches from the YES Movement — delivered to your inbox.</p>
+      </div>
+      <div class="substack-embed">
+        <!-- Replace the src URL below with your Substack publication URL once created -->
+        <!-- e.g. https://yesmovement.substack.com/embed -->
+        <iframe
+          src="https://yesmovement.substack.com/embed"
+          height="150"
+          frameborder="0"
+          scrolling="no"
+          style="width:100%;border:none;background:transparent;"
+        ></iframe>
+        <p style="font-family:Arial,sans-serif;font-size:0.72rem;color:#bbb;text-align:center;margin-top:0.75rem;">
+          Powered by <a href="https://substack.com" target="_blank" style="color:#bbb;">Substack</a>
+        </p>
+      </div>
+    </div>
 
-  <div style="max-width:560px;">
-    <div class="budget-row">
-      <span class="role">Project Lead <span style="color:var(--muted);font-size:0.8rem;">40 hrs/wk</span></span>
-      <span class="amount">$20,800 / mo</span>
+    <!-- Recent posts (populated from Substack RSS or static) -->
+    <div class="posts-block" id="posts-block">
+      <div class="panel-label">Recent Dispatches</div>
+      <div id="posts-list">
+        <!-- Placeholder posts — replace with RSS feed or Substack API once live -->
+        <div class="post-item">
+          <div class="post-date">Coming soon</div>
+          <div class="post-title">The first dispatch is on its way.</div>
+          <div class="post-excerpt">Subscribe above to be the first to receive field reports and movement updates from the YES network.</div>
+        </div>
+      </div>
     </div>
-    <div class="budget-row">
-      <span class="role">Senior Editor <span style="color:var(--muted);font-size:0.8rem;">40 hrs/wk</span></span>
-      <span class="amount">$15,600 / mo</span>
-    </div>
-    <div class="budget-row">
-      <span class="role">Show Producer <span style="color:var(--muted);font-size:0.8rem;">3 shows/wk</span></span>
-      <span class="amount">$10,140 / mo</span>
-    </div>
-    <div class="budget-row">
-      <span class="role">Social / Copywriter <span style="color:var(--muted);font-size:0.8rem;">30 hrs/wk</span></span>
-      <span class="amount">$10,140 / mo</span>
-    </div>
-    <div class="budget-row">
-      <span class="role">Assistant Editor <span style="color:var(--muted);font-size:0.8rem;">40 hrs/wk</span></span>
-      <span class="amount">$6,240 / mo</span>
-    </div>
-    <div class="budget-row">
-      <span class="role">Tech Director <span style="color:var(--muted);font-size:0.8rem;">3 days/wk</span></span>
-      <span class="amount">$5,460 / mo</span>
-    </div>
-    <div class="budget-row">
-      <span class="role">Designer <span style="color:var(--muted);font-size:0.8rem;">5–20 hrs/wk</span></span>
-      <span class="amount">$3,250 / mo</span>
-    </div>
-    <div class="budget-row">
-      <span class="role">Tech Stack</span>
-      <span class="amount">$800 / mo</span>
-    </div>
-    <div class="budget-row" style="border-top:2px solid var(--accent);margin-top:0.5rem;padding-top:0.75rem;">
-      <span class="role" style="font-weight:700;">Monthly Total</span>
-      <span class="amount" style="color:var(--accent-light);font-weight:700;font-size:1rem;">$72,430</span>
-    </div>
+
   </div>
 
-</section>
+</div>
 
 <footer>
   <div class="footer-brand">✦ YES Movement</div>
   <p>Say yes to what matters.</p>
 </footer>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="/js/nav.js"></script>
+<script>
+  // ── Field Map ──
+  const fieldMap = L.map('field-map', {
+    zoomControl: true,
+    scrollWheelZoom: false,
+    dragging: true,
+    attributionControl: false,
+  }).setView([38, -96], 3);
+
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+    maxZoom: 18,
+  }).addTo(fieldMap);
+
+  const mkIcon = (cls) => L.divIcon({
+    className: '',
+    html: `<div class="map-marker ${cls}"><div class="dot-wrap"><div class="ring"></div><div class="dot"></div></div></div>`,
+    iconSize: [16, 16], iconAnchor: [8, 8], popupAnchor: [0, -10],
+  });
+  const summitIcon = mkIcon('summit-marker');
+  const groupIcon  = mkIcon('group-marker');
+
+  async function geocode(location, country) {
+    const q = encodeURIComponent(`${location}, ${country}`);
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=1`, {
+        headers: { 'Accept-Language': 'en' }
+      });
+      const d = await res.json();
+      return d.length ? { lat: parseFloat(d[0].lat), lng: parseFloat(d[0].lon) } : null;
+    } catch { return null; }
+  }
+
+  async function plotFieldMap() {
+    const [sr, gr] = await Promise.all([fetch('/api/summits'), fetch('/api/groups')]);
+    const summits = await sr.json();
+    const groups  = await gr.json();
+    const items = [
+      ...summits.map(s => ({ type: 'summit', data: s })),
+      ...groups.map(g =>  ({ type: 'group',  data: g })),
+    ];
+    for (let i = 0; i < items.length; i++) {
+      if (i > 0) await new Promise(r => setTimeout(r, 1100));
+      const { type, data } = items[i];
+      const coords = await geocode(data.location, data.country);
+      if (!coords) continue;
+
+      let popupHtml, icon;
+      if (type === 'summit') {
+        const d = new Date(data.date + 'T00:00:00');
+        const ds = d.toLocaleDateString('en', { day: 'numeric', month: 'short', year: 'numeric' });
+        icon = summitIcon;
+        popupHtml = `<div style="min-width:150px;"><div style="font-family:Arial,sans-serif;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:#dc2626;margin-bottom:0.25rem;">Summit</div><strong style="color:#fff;font-size:0.9rem;">${data.title}</strong><br><span style="font-size:0.78rem;color:rgba(255,255,255,0.7);font-family:Arial,sans-serif;">📍 ${data.location}<br>📅 ${ds}</span></div>`;
+      } else {
+        icon = groupIcon;
+        popupHtml = `<div style="min-width:150px;"><div style="font-family:Arial,sans-serif;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:#16a34a;margin-bottom:0.25rem;">Group</div><strong style="color:#fff;font-size:0.9rem;">${data.name}</strong><br><span style="font-size:0.78rem;color:rgba(255,255,255,0.7);font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}${data.contact ? '<br>👤 ' + data.contact : ''}</span></div>`;
+      }
+
+      const popup = L.popup({ className: 'dark-popup', maxWidth: 220, autoPan: false }).setContent(popupHtml);
+      const m = L.marker([coords.lat, coords.lng], { icon, interactive: true })
+        .bindPopup(popup).addTo(fieldMap);
+      m.on('click',     function() { this._clicked = true;  this.openPopup(); });
+      m.on('mouseover', function() { this.openPopup(); });
+      m.on('mouseout',  function() { if (!this._clicked) this.closePopup(); });
+      m.getPopup().on('remove', function() { m._clicked = false; });
+    }
+  }
+  plotFieldMap();
+
+  // ── Latest Actions feed ──
+  async function loadActions() {
+    const [sr, gr] = await Promise.all([fetch('/api/summits'), fetch('/api/groups')]);
+    const summits = await sr.json();
+    const groups  = await gr.json();
+
+    const items = [
+      ...summits.map(s => ({ type: 'summit', name: s.title,    place: `${s.location}, ${s.country}`, extra: s.date })),
+      ...groups.map(g =>  ({ type: 'group',  name: g.name,     place: `${g.location}, ${g.country}`, extra: g.contact })),
+    ];
+
+    const list = document.getElementById('actions-list');
+    const count = document.getElementById('actions-count');
+
+    if (items.length === 0) {
+      list.innerHTML = '<li class="actions-empty">No activity yet.</li>';
+      return;
+    }
+
+    count.textContent = items.length;
+    list.innerHTML = items.map(item => {
+      const color = item.type === 'summit' ? '#dc2626' : '#16a34a';
+      const label = item.type === 'summit' ? 'Summit' : 'Group';
+      const sub   = item.type === 'summit'
+        ? `📅 ${new Date(item.extra + 'T00:00:00').toLocaleDateString('en', { month: 'short', day: 'numeric', year: 'numeric' })}`
+        : (item.extra ? `👤 ${item.extra}` : '');
+      return `<li class="action-item">
+        <div class="action-dot" style="background:${color};"></div>
+        <div>
+          <div class="action-text"><strong>${item.name}</strong></div>
+          <div class="action-meta">${label} · ${item.place}${sub ? ' · ' + sub : ''}</div>
+        </div>
+      </li>`;
+    }).join('');
+  }
+  loadActions();
+</script>
 </body>
 </html>
