@@ -14,6 +14,7 @@
       margin: 0 auto;
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 1.5rem;
     }
     .telescope-logo {
@@ -294,30 +295,23 @@
 
 <!-- Page header -->
 <div class="telescope-header">
-  <!-- Brass telescope SVG -->
-  <div class="telescope-logo">
-    <svg width="72" height="72" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- barrel: clean tapered trapezoid, wide right (objective), narrow left (eyepiece) -->
-      <path d="M18 35 L66 27 L66 53 L18 45 Z" fill="#111"/>
-      <!-- eyepiece cap -->
-      <rect x="8" y="37.5" width="12" height="9" rx="1.5" fill="#111"/>
-      <!-- objective rim -->
-      <rect x="66" y="27" width="5" height="26" rx="1.5" fill="#333"/>
-      <!-- band ring -->
-      <rect x="36" y="28" width="3.5" height="24" rx="1" fill="#444"/>
-      <!-- mount pivot -->
-      <circle cx="38" cy="47" r="3" fill="#111"/>
-      <!-- tripod legs: three clean straight lines -->
-      <line x1="38" y1="50" x2="22" y2="71" stroke="#111" stroke-width="2.5" stroke-linecap="square"/>
-      <line x1="38" y1="50" x2="38" y2="72" stroke="#111" stroke-width="2.5" stroke-linecap="square"/>
-      <line x1="38" y1="50" x2="54" y2="71" stroke="#111" stroke-width="2.5" stroke-linecap="square"/>
-      <!-- crossbar -->
-      <line x1="25" y1="64" x2="51" y2="64" stroke="#111" stroke-width="2" stroke-linecap="square"/>
-    </svg>
-  </div>
   <div class="telescope-header-text">
     <h1>The Telescope</h1>
     <p>Dispatches from the YES Movement</p>
+  </div>
+  <!-- Telescope SVG — now on the right -->
+  <div class="telescope-logo">
+    <svg width="72" height="72" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M18 35 L66 27 L66 53 L18 45 Z" fill="#111"/>
+      <rect x="8" y="37.5" width="12" height="9" rx="1.5" fill="#111"/>
+      <rect x="66" y="27" width="5" height="26" rx="1.5" fill="#333"/>
+      <rect x="36" y="28" width="3.5" height="24" rx="1" fill="#444"/>
+      <circle cx="38" cy="47" r="3" fill="#111"/>
+      <line x1="38" y1="50" x2="22" y2="71" stroke="#111" stroke-width="2.5" stroke-linecap="square"/>
+      <line x1="38" y1="50" x2="38" y2="72" stroke="#111" stroke-width="2.5" stroke-linecap="square"/>
+      <line x1="38" y1="50" x2="54" y2="71" stroke="#111" stroke-width="2.5" stroke-linecap="square"/>
+      <line x1="25" y1="64" x2="51" y2="64" stroke="#111" stroke-width="2" stroke-linecap="square"/>
+    </svg>
   </div>
 </div>
 
