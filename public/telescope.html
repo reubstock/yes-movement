@@ -465,29 +465,37 @@
   plotFieldMap();
 
   // ── Latest Actions feed ──
+  // Pinned actions — curated missions always shown at the top
+  const PINNED_ACTIONS = [
+    { name: 'Watershed Monitoring NJ',                      place: 'New Jersey, United States',   type: 'action' },
+    { name: 'Documenting Air Safety Levels',                place: 'Princeton, United States',    type: 'action' },
+    { name: "Explaining Jevon's Paradox to 100 Strangers",  place: 'Princeton, United States',    type: 'action' },
+  ];
+
   async function loadActions() {
     const [sr, gr] = await Promise.all([fetch('/api/summits'), fetch('/api/groups')]);
     const summits = await sr.json();
     const groups  = await gr.json();
 
-    const items = [
-      ...summits.map(s => ({ type: 'summit', name: s.title,    place: `${s.location}, ${s.country}`, extra: s.date })),
-      ...groups.map(g =>  ({ type: 'group',  name: g.name,     place: `${g.location}, ${g.country}`, extra: g.contact })),
+    const dbItems = [
+      ...summits.map(s => ({ type: 'summit', name: s.title, place: `${s.location}, ${s.country}`, extra: s.date })),
+      ...groups.map(g =>  ({ type: 'group',  name: g.name,  place: `${g.location}, ${g.country}`, extra: g.contact })),
     ];
 
-    const list = document.getElementById('actions-list');
+    const list  = document.getElementById('actions-list');
     const count = document.getElementById('actions-count');
+    const all   = [...PINNED_ACTIONS, ...dbItems];
 
-    if (items.length === 0) {
-      list.innerHTML = '<li class="actions-empty">No activity yet.</li>';
-      return;
-    }
+    count.textContent = all.length;
 
-    count.textContent = items.length;
-    list.innerHTML = items.map(item => {
-      const color = item.type === 'summit' ? '#dc2626' : '#16a34a';
-      const label = item.type === 'summit' ? 'Summit' : 'Group';
-      const sub   = item.type === 'summit'
+    list.innerHTML = all.map(item => {
+      const color = item.type === 'summit' ? '#dc2626'
+                  : item.type === 'action' ? '#b8860b'
+                  : '#16a34a';
+      const label = item.type === 'summit' ? 'Summit'
+                  : item.type === 'action' ? 'Action'
+                  : 'Group';
+      const sub   = item.type === 'summit' && item.extra
         ? `📅 ${new Date(item.extra + 'T00:00:00').toLocaleDateString('en', { month: 'short', day: 'numeric', year: 'numeric' })}`
         : (item.extra ? `👤 ${item.extra}` : '');
       return `<li class="action-item">
