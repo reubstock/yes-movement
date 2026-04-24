@@ -474,10 +474,8 @@
       const popup = L.popup({ className: 'dark-popup', maxWidth: 240, autoPan: false }).setContent(popupHtml);
       const m = L.marker([coords.lat, coords.lng], { icon, interactive: true })
         .bindPopup(popup).addTo(fieldMap);
-      m.on('click',     function() { this._clicked = true;  this.openPopup(); });
+      m.on('click',     function() { this.openPopup(); });
       m.on('mouseover', function() { this.openPopup(); });
-      m.on('mouseout',  function() { if (!this._clicked) this.closePopup(); });
-      m.getPopup().on('remove', function() { m._clicked = false; });
     }
   }
   plotFieldMap();

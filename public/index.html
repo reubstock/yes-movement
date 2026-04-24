@@ -239,14 +239,6 @@
 
         m.on('click',     function() { this.openPopup(); });
         m.on('mouseover', function() { this.openPopup(); });
-        m.on('mouseout',  function() {
-          // keep popup open if it was clicked; close on pure hover-away
-          if (!this._popupClicked) this.closePopup();
-        });
-        m.on('click', function() { this._popupClicked = true; });
-        m.getPopup().on('remove', function() {
-          if (m._popupClicked) m._popupClicked = false;
-        });
       }
     } catch (e) { console.error(e); }
   }
