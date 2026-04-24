@@ -42,6 +42,9 @@
       padding: 0 2rem 4rem;
       align-items: start;
     }
+    .right-panel {
+      padding-top: 3rem;
+    }
     @media (max-width: 860px) {
       .telescope-layout { grid-template-columns: 1fr; }
     }
@@ -289,32 +292,30 @@
   <button class="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
 </nav>
 
-<!-- Page header -->
-<div class="telescope-header">
-  <div class="telescope-header-text">
-    <div style="display:flex;align-items:center;gap:0.75rem;">
-      <h1>The Telescope</h1>
-      <svg width="48" height="48" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;position:relative;top:4px;">
-        <path d="M18 35 L66 27 L66 53 L18 45 Z" fill="#111"/>
-        <rect x="8" y="37.5" width="12" height="9" rx="1.5" fill="#111"/>
-        <rect x="66" y="27" width="5" height="26" rx="1.5" fill="#333"/>
-        <rect x="36" y="28" width="3.5" height="24" rx="1" fill="#444"/>
-        <circle cx="38" cy="47" r="3" fill="#111"/>
-        <line x1="38" y1="50" x2="22" y2="71" stroke="#111" stroke-width="2.5" stroke-linecap="square"/>
-        <line x1="38" y1="50" x2="38" y2="72" stroke="#111" stroke-width="2.5" stroke-linecap="square"/>
-        <line x1="38" y1="50" x2="54" y2="71" stroke="#111" stroke-width="2.5" stroke-linecap="square"/>
-        <line x1="25" y1="64" x2="51" y2="64" stroke="#111" stroke-width="2" stroke-linecap="square"/>
-      </svg>
-    </div>
-    <p>Dispatches from the Field</p>
-  </div>
-</div>
-
 <!-- Main layout -->
 <div class="telescope-layout">
 
   <!-- ── LEFT PANEL ── -->
   <div class="left-panel">
+
+    <!-- Header lives here so right panel can align with it -->
+    <div style="padding:3rem 0 2rem;">
+      <div style="display:flex;align-items:center;gap:0.75rem;">
+        <h1 class="telescope-header-text" style="font-size:clamp(1.8rem,4vw,2.8rem);font-weight:400;letter-spacing:0.04em;color:#111;line-height:1.1;margin:0;">The Telescope</h1>
+        <svg width="44" height="44" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;position:relative;top:4px;">
+          <path d="M18 35 L66 27 L66 53 L18 45 Z" fill="#111"/>
+          <rect x="8" y="37.5" width="12" height="9" rx="1.5" fill="#111"/>
+          <rect x="66" y="27" width="5" height="26" rx="1.5" fill="#333"/>
+          <rect x="36" y="28" width="3.5" height="24" rx="1" fill="#444"/>
+          <circle cx="38" cy="47" r="3" fill="#111"/>
+          <line x1="38" y1="50" x2="22" y2="71" stroke="#111" stroke-width="2.5" stroke-linecap="square"/>
+          <line x1="38" y1="50" x2="38" y2="72" stroke="#111" stroke-width="2.5" stroke-linecap="square"/>
+          <line x1="38" y1="50" x2="54" y2="71" stroke="#111" stroke-width="2.5" stroke-linecap="square"/>
+          <line x1="25" y1="64" x2="51" y2="64" stroke="#111" stroke-width="2" stroke-linecap="square"/>
+        </svg>
+      </div>
+      <p style="font-family:Arial,sans-serif;font-size:0.82rem;letter-spacing:0.12em;text-transform:uppercase;color:#888;margin-top:0.5rem;">Dispatches from the Field</p>
+    </div>
 
     <!-- In the Field map -->
     <div class="panel-block">
