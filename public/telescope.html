@@ -234,6 +234,18 @@
       border: 1px solid rgba(255,255,255,0.12);
       color: #fff;
       box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+      padding: 0;
+      overflow: hidden;
+      border-radius: 4px;
+    }
+    .dark-popup .leaflet-popup-content {
+      margin: 0;
+      padding: 0.75rem;
+    }
+    .dark-popup .leaflet-popup-content img {
+      margin: -0.75rem -0.75rem 0.6rem;
+      width: calc(100% + 1.5rem);
+      max-width: none;
     }
     .dark-popup .leaflet-popup-tip { background: rgba(10,10,10,0.92); }
 
@@ -441,13 +453,25 @@
         const d = new Date(data.date + 'T00:00:00');
         const ds = d.toLocaleDateString('en', { day: 'numeric', month: 'short', year: 'numeric' });
         icon = summitIcon;
-        popupHtml = `<div style="min-width:150px;"><div style="font-family:Arial,sans-serif;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:#dc2626;margin-bottom:0.25rem;">Summit</div><strong style="color:#fff;font-size:0.9rem;">${data.title}</strong><br><span style="font-size:0.78rem;color:rgba(255,255,255,0.7);font-family:Arial,sans-serif;">📍 ${data.location}<br>📅 ${ds}</span></div>`;
+        popupHtml = `
+          <div style="min-width:180px;max-width:220px;">
+            ${data.image ? `<img src="${data.image}" alt="${data.title}" style="width:100%;height:110px;object-fit:cover;display:block;border-radius:2px;margin-bottom:0.6rem;" />` : ''}
+            <div style="font-family:Arial,sans-serif;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:#dc2626;margin-bottom:0.25rem;">Summit</div>
+            <strong style="color:#fff;font-size:0.9rem;">${data.title}</strong>
+            <div style="margin-top:0.3rem;font-size:0.78rem;color:rgba(255,255,255,0.7);font-family:Arial,sans-serif;">📍 ${data.location}<br>📅 ${ds}</div>
+          </div>`;
       } else {
         icon = groupIcon;
-        popupHtml = `<div style="min-width:150px;"><div style="font-family:Arial,sans-serif;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:#16a34a;margin-bottom:0.25rem;">Group</div><strong style="color:#fff;font-size:0.9rem;">${data.name}</strong><br><span style="font-size:0.78rem;color:rgba(255,255,255,0.7);font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}${data.contact ? '<br>👤 ' + data.contact : ''}</span></div>`;
+        popupHtml = `
+          <div style="min-width:180px;max-width:220px;">
+            ${data.image ? `<img src="${data.image}" alt="${data.name}" style="width:100%;height:110px;object-fit:cover;display:block;border-radius:2px;margin-bottom:0.6rem;" />` : ''}
+            <div style="font-family:Arial,sans-serif;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:#16a34a;margin-bottom:0.25rem;">Group</div>
+            <strong style="color:#fff;font-size:0.9rem;">${data.name}</strong>
+            <div style="margin-top:0.3rem;font-size:0.78rem;color:rgba(255,255,255,0.7);font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}${data.contact ? '<br>👤 ' + data.contact : ''}</div>
+          </div>`;
       }
 
-      const popup = L.popup({ className: 'dark-popup', maxWidth: 220, autoPan: false }).setContent(popupHtml);
+      const popup = L.popup({ className: 'dark-popup', maxWidth: 240, autoPan: false }).setContent(popupHtml);
       const m = L.marker([coords.lat, coords.lng], { icon, interactive: true })
         .bindPopup(popup).addTo(fieldMap);
       m.on('click',     function() { this._clicked = true;  this.openPopup(); });

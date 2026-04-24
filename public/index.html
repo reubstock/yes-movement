@@ -40,6 +40,18 @@
       border: 1px solid rgba(255,255,255,0.12);
       color: #fff;
       box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+      padding: 0;
+      overflow: hidden;
+      border-radius: 4px;
+    }
+    .dark-popup .leaflet-popup-content {
+      margin: 0;
+      padding: 0.75rem;
+    }
+    .dark-popup .leaflet-popup-content img {
+      margin: -0.75rem -0.75rem 0.6rem;
+      width: calc(100% + 1.5rem);
+      max-width: none;
     }
     .dark-popup .leaflet-popup-tip { background: rgba(10,10,10,0.92); }
     /* Lift Leaflet layers above the hero overlay (z-index 1) and content (z-index 2) */
@@ -194,7 +206,8 @@
           const dateStr = d.toLocaleDateString('en', { day: 'numeric', month: 'long', year: 'numeric' });
           icon = summitIcon;
           popupHtml = `
-            <div style="min-width:180px;">
+            <div style="min-width:220px;max-width:260px;">
+              ${data.image ? `<img src="${data.image}" alt="${data.title}" style="width:100%;height:120px;object-fit:cover;display:block;border-radius:2px;margin-bottom:0.75rem;" />` : ''}
               <div style="font-family:Arial,sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#dc2626;margin-bottom:0.35rem;">Summit</div>
               <h4 style="margin:0 0 0.4rem;font-size:1rem;color:#fff;font-family:Georgia,serif;">${data.title}</h4>
               <p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}</p>
@@ -206,7 +219,8 @@
         } else {
           icon = groupIcon;
           popupHtml = `
-            <div style="min-width:180px;">
+            <div style="min-width:220px;max-width:260px;">
+              ${data.image ? `<img src="${data.image}" alt="${data.name}" style="width:100%;height:120px;object-fit:cover;display:block;border-radius:2px;margin-bottom:0.75rem;" />` : ''}
               <div style="font-family:Arial,sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#16a34a;margin-bottom:0.35rem;">Group</div>
               <h4 style="margin:0 0 0.4rem;font-size:1rem;color:#fff;font-family:Georgia,serif;">${data.name}</h4>
               <p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}</p>
