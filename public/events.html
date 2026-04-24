@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Events — YES Movement</title>
+  <title>Summits — YES Movement</title>
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body>
@@ -20,24 +20,24 @@
 </nav>
 
 <div class="page-header">
-  <h1>Events</h1>
+  <h1>Summits</h1>
   <p>Where and when we gather.</p>
 </div>
 
 <section class="section">
   <div style="display:flex;justify-content:flex-end;margin-bottom:2rem;">
-    <button class="btn btn-outline" onclick="openModal()">+ Add Event</button>
+    <button class="btn btn-outline" onclick="openModal()">+ Add Summit</button>
   </div>
   <div class="events-grid" id="events-list">
-    <div class="loading">Loading events…</div>
+    <div class="loading">Loading summits…</div>
   </div>
 </section>
 
-<!-- Add Event Modal -->
-<div id="event-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;display:none;align-items:center;justify-content:center;">
-  <div style="background:#111;border:1px solid #222;border-radius:4px;padding:2rem;max-width:480px;width:90%;position:relative;">
+<!-- Add Summit Modal -->
+<div id="event-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;align-items:center;justify-content:center;">
+  <div style="background:#fff;border:1px solid #ddd;border-radius:4px;padding:2rem;max-width:480px;width:90%;position:relative;">
     <button onclick="closeModal()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:#888;font-size:1.5rem;cursor:pointer;">&times;</button>
-    <h3 style="margin-bottom:1.5rem;font-weight:400;">Add Event</h3>
+    <h3 style="margin-bottom:1.5rem;font-weight:400;">Add Summit</h3>
     <form id="event-form">
       <div class="form-group"><label>Title *</label><input type="text" name="title" required /></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
@@ -49,7 +49,7 @@
         <div class="form-group"><label>Time</label><input type="time" name="time" /></div>
       </div>
       <div class="form-group"><label>Description</label><textarea name="description" style="min-height:80px;"></textarea></div>
-      <button type="submit" class="btn btn-primary" style="width:100%;">Add Event</button>
+      <button type="submit" class="btn btn-primary" style="width:100%;">Add Summit</button>
     </form>
   </div>
 </div>
@@ -62,11 +62,11 @@
 <script src="/js/nav.js"></script>
 <script>
   async function loadEvents() {
-    const res = await fetch('/api/events');
+    const res = await fetch('/api/summits');
     const events = await res.json();
     const el = document.getElementById('events-list');
     if (events.length === 0) {
-      el.innerHTML = '<div class="empty-state"><div class="empty-icon">🗓</div><p>No events yet.</p></div>';
+      el.innerHTML = '<div class="empty-state"><div class="empty-icon">🗓</div><p>No summits yet.</p></div>';
       return;
     }
     el.innerHTML = events.map(ev => {
@@ -87,7 +87,7 @@
   document.getElementById('event-form').addEventListener('submit', async e => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(e.target));
-    await fetch('/api/events', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+    await fetch('/api/summits', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
     closeModal();
     e.target.reset();
     loadEvents();
