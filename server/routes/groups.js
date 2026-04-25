@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const store = require('../store');
+const { sendJoinRequest } = require('../mailer');
 
 router.get('/', async (req, res) => {
   try {
@@ -28,11 +29,11 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     await store.ready();
-    const { name, description, location, country, contact, image } = req.body;
+    const { name, description, location, country, contact, organizer_email, image } = req.body;
     if (!name || !location || !country) {
       return res.status(400).json({ error: 'name, location, and country are required' });
     }
-    const group = await store.groups.insert({ name, description, location, country, contact, image: image || null });
+    const group = await store.groups.insert({ name, description, location, country, contact, organizer_email, image: image || null });
     res.status(201).json({ id: group.id });
   } catch (err) {
     console.error(err);
@@ -43,16 +44,45 @@ router.post('/', async (req, res) => {
 router.patch('/:id', async (req, res) => {
   try {
     await store.ready();
-    const { name, description, location, country, contact, image } = req.body;
+    const { name, description, location, country, contact, organizer_email, image } = req.body;
     if (!name || !location || !country) {
       return res.status(400).json({ error: 'name, location, and country are required' });
     }
-    const group = await store.groups.update(req.params.id, { name, description, location, country, contact, image });
+    const group = await store.groups.update(req.params.id, { name, description, location, country, contact, organizer_email, image });
     if (!group) return res.status(404).json({ error: 'Group not found' });
     res.json(group);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to update group' });
+  }
+});
+
+// Join request — emails the organizer
+router.post('/:id/join', async (req, res) => {
+  try {
+    await store.ready();
+    const group = await store.groups.get(req.params.id);
+    if (!group) return res.status(404).json({ error: 'Group not found' });
+
+    const { name, email } = req.body;
+    if (!name || !email) return res.status(400).json({ error: 'name and email are required' });
+
+    if (!group.organizer_email) {
+      return res.status(422).json({ error: 'This group has no organizer email on file.' });
+    }
+
+    await sendJoinRequest({
+      groupName: group.name,
+      groupLocation: `${group.location}, ${group.country}`,
+      organizerEmail: group.organizer_email,
+      requesterName: name,
+      requesterEmail: email,
+    });
+
+    res.json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to send join request' });
   }
 });
 

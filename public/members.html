@@ -73,6 +73,7 @@
         <div class="form-group"><label>Country *</label><input type="text" name="country" required /></div>
       </div>
       <div class="form-group"><label>Your Name</label><input type="text" name="contact" /></div>
+      <div class="form-group"><label>Organizer Email <span style="color:#aaa;font-size:0.8rem;">(for join requests)</span></label><input type="email" name="organizer_email" placeholder="your@email.com" /></div>
       <div class="form-group"><label>Description</label><textarea name="description" style="min-height:80px;" placeholder="What does your group do?"></textarea></div>
       <div class="form-group">
         <label>Group Photo</label>
@@ -99,6 +100,7 @@
         <div class="form-group"><label>Country *</label><input type="text" name="country" required /></div>
       </div>
       <div class="form-group"><label>Your Name</label><input type="text" name="contact" /></div>
+      <div class="form-group"><label>Organizer Email <span style="color:#aaa;font-size:0.8rem;">(for join requests)</span></label><input type="email" name="organizer_email" placeholder="your@email.com" /></div>
       <div class="form-group"><label>Description</label><textarea name="description" style="min-height:80px;" placeholder="What does your group do?"></textarea></div>
       <div class="form-group">
         <label>Group Photo <span style="color:#aaa;font-size:0.8rem;">(leave blank to keep existing)</span></label>
@@ -180,7 +182,9 @@
   function showMore() { renderGroups(); }
 
   // Join modal
+  let joinGroupId = null;
   function openJoinModal(id, name, location) {
+    joinGroupId = id;
     document.getElementById('join-group-name').textContent = name;
     document.getElementById('join-group-location').textContent = location;
     document.getElementById('join-form').style.display = '';
@@ -190,11 +194,31 @@
   function closeJoinModal() {
     document.getElementById('join-modal').style.display = 'none';
     document.getElementById('join-form').reset();
+    joinGroupId = null;
   }
-  document.getElementById('join-form').addEventListener('submit', e => {
+  document.getElementById('join-form').addEventListener('submit', async e => {
     e.preventDefault();
-    document.getElementById('join-form').style.display = 'none';
-    document.getElementById('join-success-msg').style.display = 'block';
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.textContent = 'Sending…';
+    btn.disabled = true;
+    const data = Object.fromEntries(new FormData(e.target));
+    try {
+      const res = await fetch(`/api/groups/${joinGroupId}/join`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: data.name, email: data.email }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Failed to send');
+      }
+      document.getElementById('join-form').style.display = 'none';
+      document.getElementById('join-success-msg').style.display = 'block';
+    } catch (err) {
+      alert(err.message || 'Something went wrong. Please try again.');
+      btn.textContent = 'Request to Join';
+      btn.disabled = false;
+    }
   });
 
   // ── Image compression ──
@@ -282,6 +306,7 @@
     form.elements['location'].value = g.location || '';
     form.elements['country'].value = g.country || '';
     form.elements['contact'].value = g.contact || '';
+    form.elements['organizer_email'].value = g.organizer_email || '';
     form.elements['description'].value = g.description || '';
     document.getElementById('edit-group-image-input').value = '';
     document.getElementById('edit-image-preview-wrap').style.display = 'none';

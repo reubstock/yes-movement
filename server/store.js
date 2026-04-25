@@ -68,6 +68,8 @@ async function init() {
   await pool.query(`ALTER TABLE summits ADD COLUMN IF NOT EXISTS lat FLOAT`);
   await pool.query(`ALTER TABLE summits ADD COLUMN IF NOT EXISTS lng FLOAT`);
   await pool.query(`ALTER TABLE summits ADD COLUMN IF NOT EXISTS image TEXT`);
+  await pool.query(`ALTER TABLE summits ADD COLUMN IF NOT EXISTS organizer_email TEXT`);
+  await pool.query(`ALTER TABLE groups  ADD COLUMN IF NOT EXISTS organizer_email TEXT`);
 
   // Seed members
   const { rows: m } = await sql`SELECT COUNT(*) FROM members`;
@@ -151,17 +153,17 @@ module.exports = {
       const { rows } = await pool.query('SELECT * FROM summits WHERE id = $1', [id]);
       return rows[0] || null;
     },
-    insert: async ({ title, description, location, country, date, time, host_name, image }) => {
+    insert: async ({ title, description, location, country, date, time, host_name, organizer_email, image }) => {
       const { rows } = await pool.query(
-        'INSERT INTO summits (title, description, location, country, date, time, host_name, image) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *',
-        [title, description || null, location, country, date, time || null, host_name || null, image || null]
+        'INSERT INTO summits (title, description, location, country, date, time, host_name, organizer_email, image) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *',
+        [title, description || null, location, country, date, time || null, host_name || null, organizer_email || null, image || null]
       );
       return rows[0];
     },
-    update: async (id, { title, description, location, country, date, time, host_name, image }) => {
+    update: async (id, { title, description, location, country, date, time, host_name, organizer_email, image }) => {
       const { rows } = await pool.query(
-        'UPDATE summits SET title=$1, description=$2, location=$3, country=$4, date=$5, time=$6, host_name=$7, image=COALESCE($8, image) WHERE id=$9 RETURNING *',
-        [title, description || null, location, country, date, time || null, host_name || null, image || null, id]
+        'UPDATE summits SET title=$1, description=$2, location=$3, country=$4, date=$5, time=$6, host_name=$7, organizer_email=$8, image=COALESCE($9, image) WHERE id=$10 RETURNING *',
+        [title, description || null, location, country, date, time || null, host_name || null, organizer_email || null, image || null, id]
       );
       return rows[0];
     },
@@ -176,17 +178,17 @@ module.exports = {
       const { rows } = await pool.query('SELECT * FROM groups WHERE id = $1', [id]);
       return rows[0] || null;
     },
-    insert: async ({ name, description, location, country, contact, image }) => {
+    insert: async ({ name, description, location, country, contact, organizer_email, image }) => {
       const { rows } = await pool.query(
-        'INSERT INTO groups (name, description, location, country, contact, image) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *',
-        [name, description || null, location, country, contact || null, image || null]
+        'INSERT INTO groups (name, description, location, country, contact, organizer_email, image) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *',
+        [name, description || null, location, country, contact || null, organizer_email || null, image || null]
       );
       return rows[0];
     },
-    update: async (id, { name, description, location, country, contact, image }) => {
+    update: async (id, { name, description, location, country, contact, organizer_email, image }) => {
       const { rows } = await pool.query(
-        'UPDATE groups SET name=$1, description=$2, location=$3, country=$4, contact=$5, image=COALESCE($6, image) WHERE id=$7 RETURNING *',
-        [name, description || null, location, country, contact || null, image || null, id]
+        'UPDATE groups SET name=$1, description=$2, location=$3, country=$4, contact=$5, organizer_email=$6, image=COALESCE($7, image) WHERE id=$8 RETURNING *',
+        [name, description || null, location, country, contact || null, organizer_email || null, image || null, id]
       );
       return rows[0];
     },
