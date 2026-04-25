@@ -128,6 +128,13 @@
       font-size: 0.65rem;
       font-weight: 700;
     }
+    #mobile-map-stats a.stat-item {
+      opacity: 1;
+      transition: opacity 0.15s;
+    }
+    #mobile-map-stats a.stat-item:active {
+      opacity: 0.65;
+    }
   </style>
 </head>
 <body>
@@ -209,15 +216,15 @@
 
 <!-- Mobile stats bar (visible only on small screens) -->
 <div id="mobile-map-stats">
-  <div class="stat-item" style="color:#16a34a;">
+  <a href="/members.html" class="stat-item" style="color:#16a34a;text-decoration:none;">
     Groups <span id="mobile-count-groups" class="stat-badge">0</span>
-  </div>
-  <div class="stat-item" style="color:#dc2626;">
+  </a>
+  <a href="/?logaction" class="stat-item" style="color:#dc2626;text-decoration:none;">
     Actions <span id="mobile-count-actions" class="stat-badge">0</span>
-  </div>
-  <div class="stat-item" style="color:#f5c518;">
+  </a>
+  <a href="/events.html" class="stat-item" style="color:#f5c518;text-decoration:none;">
     Summits <span id="mobile-count-summits" class="stat-badge">0</span>
-  </div>
+  </a>
 </div>
 
 <section class="section">
