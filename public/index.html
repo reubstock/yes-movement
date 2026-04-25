@@ -66,18 +66,21 @@
       position: absolute;
       left: 0; top: 0; bottom: 0;
       width: 260px;
-      background: rgba(120,120,120,0.35);
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
+      background: transparent;
       z-index: 10;
       pointer-events: auto;
       display: flex;
       flex-direction: column;
-      border-right: 1px solid rgba(255,255,255,0.08);
+      gap: 0.6rem;
+      padding: 0.85rem 0.75rem;
     }
-    #map-sidebar .sidebar-section {
-      padding: 1.1rem 1.25rem;
-      border-bottom: 1px solid rgba(255,255,255,0.07);
+    #map-sidebar .sidebar-card {
+      background: rgba(120,120,120,0.38);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 8px;
+      padding: 0.9rem 1rem;
+      border: 1px solid rgba(255,255,255,0.08);
     }
     #map-sidebar .sidebar-label {
       font-family: Arial, sans-serif;
@@ -115,7 +118,7 @@
   <div id="map-sidebar">
 
     <!-- Latest Broadcast -->
-    <div class="sidebar-section">
+    <div class="sidebar-card">
       <div class="sidebar-label">Latest Broadcast</div>
       <div style="position:relative;background:#000;border-radius:3px;aspect-ratio:16/9;overflow:hidden;border:1px solid rgba(255,255,255,0.08);">
         <!-- Thumbnail + play button -->
@@ -133,7 +136,7 @@
     </div>
 
     <!-- Movement in Progress -->
-    <div style="margin:0.6rem 0.75rem;background:rgba(180,180,180,0.13);border-radius:3px;padding:0.8rem 0.85rem;overflow-y:auto;flex:1;">
+    <div class="sidebar-card" style="overflow-y:auto;flex:1;">
       <div style="font-family:Arial,sans-serif;font-size:0.58rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.38);margin-bottom:0.65rem;">Movement in Progress</div>
 
       <!-- Compact legend row -->
