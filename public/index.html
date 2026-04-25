@@ -117,7 +117,17 @@
     <div class="sidebar-section">
       <div class="sidebar-label">Latest Broadcast</div>
       <div style="position:relative;background:#000;border-radius:3px;aspect-ratio:16/9;overflow:hidden;border:1px solid rgba(255,255,255,0.08);">
-        <iframe src="https://www.youtube.com/embed/Ayd5tHQiyJE" style="position:absolute;inset:0;width:100%;height:100%;border:none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <!-- Thumbnail + play button -->
+        <div id="broadcast-thumb" style="position:absolute;inset:0;cursor:pointer;" onclick="playBroadcast()">
+          <img src="/images/broadcast-thumb.jpg" style="width:100%;height:100%;object-fit:cover;display:block;" />
+          <div style="position:absolute;inset:0;background:rgba(0,0,0,0.28);display:flex;align-items:center;justify-content:center;">
+            <div style="width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 12px rgba(0,0,0,0.5);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="#111"><polygon points="6,3 20,12 6,21"/></svg>
+            </div>
+          </div>
+        </div>
+        <!-- YouTube iframe (loads on click) -->
+        <iframe id="broadcast-iframe" src="" style="display:none;position:absolute;inset:0;width:100%;height:100%;border:none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       </div>
     </div>
 
@@ -125,19 +135,19 @@
     <div style="margin:0.75rem 0.85rem;background:rgba(180,180,180,0.13);border-radius:3px;padding:0.85rem 0.9rem;">
       <div style="font-family:Arial,sans-serif;font-size:0.58rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.38);margin-bottom:0.6rem;">Movement in Progress</div>
 
-      <!-- Compact legend -->
-      <div style="display:flex;gap:0.85rem;margin-bottom:0.85rem;flex-wrap:wrap;">
-        <div style="display:flex;align-items:center;gap:0.35rem;">
+      <!-- Compact legend — vertical -->
+      <div style="display:flex;flex-direction:column;gap:0.42rem;margin-bottom:0.85rem;">
+        <div style="display:flex;align-items:center;gap:0.45rem;">
           <div style="width:7px;height:7px;border-radius:50%;background:#16a34a;box-shadow:0 0 4px rgba(22,163,74,0.9);flex-shrink:0;"></div>
-          <span style="font-family:Arial,sans-serif;font-size:0.67rem;color:rgba(255,255,255,0.5);">Groups</span>
+          <span style="font-family:Arial,sans-serif;font-size:0.67rem;color:rgba(255,255,255,0.55);">Groups</span>
         </div>
-        <div style="display:flex;align-items:center;gap:0.35rem;">
+        <div style="display:flex;align-items:center;gap:0.45rem;">
           <div style="width:7px;height:7px;border-radius:50%;background:#f5c518;box-shadow:0 0 4px rgba(245,197,24,0.9);flex-shrink:0;"></div>
-          <span style="font-family:Arial,sans-serif;font-size:0.67rem;color:rgba(255,255,255,0.5);">Summits</span>
+          <span style="font-family:Arial,sans-serif;font-size:0.67rem;color:rgba(255,255,255,0.55);">Summits</span>
         </div>
-        <div style="display:flex;align-items:center;gap:0.35rem;">
+        <div style="display:flex;align-items:center;gap:0.45rem;">
           <div style="width:7px;height:7px;border-radius:50%;background:#dc2626;box-shadow:0 0 4px rgba(220,38,38,0.9);flex-shrink:0;"></div>
-          <span style="font-family:Arial,sans-serif;font-size:0.67rem;color:rgba(255,255,255,0.5);">Actions</span>
+          <span style="font-family:Arial,sans-serif;font-size:0.67rem;color:rgba(255,255,255,0.55);">Actions</span>
         </div>
       </div>
 
@@ -266,9 +276,9 @@
       const [summitsRes, groupsRes, actionsRes] = await Promise.all([
         fetch('/api/summits'), fetch('/api/groups'), fetch('/api/actions')
       ]);
-      const summits = await summitsRes.json();
-      const groups  = await groupsRes.json();
-      const actions = await actionsRes.json();
+      const summits = summitsRes.ok  ? await summitsRes.json()  : [];
+      const groups  = groupsRes.ok   ? await groupsRes.json()   : [];
+      const actions = actionsRes.ok  ? await actionsRes.json()  : [];
 
       const items = [
         ...summits.map(s => ({ type: 'summit', data: s })),
@@ -339,6 +349,14 @@
   }
 
   plotMarkersOnHero();
+
+  // ── Broadcast player ──
+  function playBroadcast() {
+    document.getElementById('broadcast-thumb').style.display = 'none';
+    const iframe = document.getElementById('broadcast-iframe');
+    iframe.src = 'https://www.youtube.com/embed/Ayd5tHQiyJE?autoplay=1';
+    iframe.style.display = 'block';
+  }
 
   // ── Latest Action in sidebar ──
   async function loadLatestAction() {
