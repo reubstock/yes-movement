@@ -119,22 +119,30 @@
       </div>
     </div>
 
-    <!-- Legend -->
-    <div class="sidebar-section">
-      <div class="sidebar-label">Map Legend</div>
-      <div style="display:flex;flex-direction:column;gap:0.6rem;">
-        <div style="display:flex;align-items:center;gap:0.7rem;">
-          <div style="width:10px;height:10px;border-radius:50%;background:#16a34a;box-shadow:0 0 6px rgba(22,163,74,0.8);flex-shrink:0;"></div>
-          <span style="font-family:Arial,sans-serif;font-size:0.78rem;color:rgba(255,255,255,0.6);">Groups</span>
+    <!-- Movement in Progress -->
+    <div style="margin:0.75rem 0.85rem;background:rgba(180,180,180,0.13);border-radius:3px;padding:0.85rem 0.9rem;">
+      <div style="font-family:Arial,sans-serif;font-size:0.58rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.38);margin-bottom:0.6rem;">Movement in Progress</div>
+
+      <!-- Compact legend -->
+      <div style="display:flex;gap:0.85rem;margin-bottom:0.85rem;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:0.35rem;">
+          <div style="width:7px;height:7px;border-radius:50%;background:#16a34a;box-shadow:0 0 4px rgba(22,163,74,0.9);flex-shrink:0;"></div>
+          <span style="font-family:Arial,sans-serif;font-size:0.67rem;color:rgba(255,255,255,0.5);">Groups</span>
         </div>
-        <div style="display:flex;align-items:center;gap:0.7rem;">
-          <div style="width:10px;height:10px;border-radius:50%;background:#f5c518;box-shadow:0 0 6px rgba(245,197,24,0.8);flex-shrink:0;"></div>
-          <span style="font-family:Arial,sans-serif;font-size:0.78rem;color:rgba(255,255,255,0.6);">Summits</span>
+        <div style="display:flex;align-items:center;gap:0.35rem;">
+          <div style="width:7px;height:7px;border-radius:50%;background:#f5c518;box-shadow:0 0 4px rgba(245,197,24,0.9);flex-shrink:0;"></div>
+          <span style="font-family:Arial,sans-serif;font-size:0.67rem;color:rgba(255,255,255,0.5);">Summits</span>
         </div>
-        <div style="display:flex;align-items:center;gap:0.7rem;">
-          <div style="width:10px;height:10px;border-radius:50%;background:#dc2626;box-shadow:0 0 6px rgba(220,38,38,0.8);flex-shrink:0;"></div>
-          <span style="font-family:Arial,sans-serif;font-size:0.78rem;color:rgba(255,255,255,0.6);">Actions</span>
+        <div style="display:flex;align-items:center;gap:0.35rem;">
+          <div style="width:7px;height:7px;border-radius:50%;background:#dc2626;box-shadow:0 0 4px rgba(220,38,38,0.9);flex-shrink:0;"></div>
+          <span style="font-family:Arial,sans-serif;font-size:0.67rem;color:rgba(255,255,255,0.5);">Actions</span>
         </div>
+      </div>
+
+      <!-- Latest Action -->
+      <div style="border-top:1px solid rgba(255,255,255,0.08);padding-top:0.65rem;">
+        <div style="font-family:Arial,sans-serif;font-size:0.57rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:0.4rem;">Latest Action</div>
+        <div id="sidebar-latest-action" style="font-family:Arial,sans-serif;font-size:0.72rem;color:rgba(255,255,255,0.55);">—</div>
       </div>
     </div>
 
@@ -329,6 +337,25 @@
   }
 
   plotMarkersOnHero();
+
+  // ── Latest Action in sidebar ──
+  async function loadLatestAction() {
+    try {
+      const res = await fetch('/api/actions');
+      const actions = await res.json();
+      const el = document.getElementById('sidebar-latest-action');
+      if (!actions.length) { el.textContent = 'No actions yet.'; return; }
+      const a = actions[0];
+      el.innerHTML = `<div style="display:flex;align-items:flex-start;gap:0.4rem;">
+        <div style="width:6px;height:6px;border-radius:50%;background:#dc2626;flex-shrink:0;margin-top:0.28rem;box-shadow:0 0 4px rgba(220,38,38,0.9);"></div>
+        <div>
+          <div style="color:rgba(255,255,255,0.75);line-height:1.3;">${a.title}</div>
+          <div style="font-size:0.62rem;color:rgba(255,255,255,0.35);margin-top:0.1rem;">📍 ${a.location}, ${a.country}</div>
+        </div>
+      </div>`;
+    } catch(e) {}
+  }
+  loadLatestAction();
 
   // ── Add Action modal ──
   function openAddActionModal() {
