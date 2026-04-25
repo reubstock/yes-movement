@@ -287,8 +287,8 @@
       } catch(e) { console.warn('Actions fetch failed:', e); }
 
       const items = [
-        ...summits.map(s => ({ type: 'summit', data: s })),
         ...groups.map(g =>  ({ type: 'group',  data: g })),
+        ...summits.map(s => ({ type: 'summit', data: s })),
         ...actions.map(a => ({ type: 'action', data: a })),
       ];
 
