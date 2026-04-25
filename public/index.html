@@ -381,11 +381,16 @@
           </div>`;
         }
 
-        const popup = L.popup({ className: 'dark-popup', maxWidth: 280, autoPan: false }).setContent(popupHtml);
+        const popup = L.popup({ className: 'dark-popup', maxWidth: 280, autoPan: false, autoClose: false, closeOnClick: false }).setContent(popupHtml);
+        const key = `${type}-${data.id}`;
         const m = L.marker([coords.lat, coords.lng], { icon, interactive: true }).bindPopup(popup).addTo(heroMap);
-        markerRefs[`${type}-${data.id}`] = m;
-        m.on('click',     function() { this.openPopup(); });
-        m.on('mouseover', function() { this.openPopup(); pushRecentHovered(type, data); });
+        markerRefs[key] = m;
+        m.on('click',     function() { openManagedPopup(key); });
+        m.on('mouseover', function() { openManagedPopup(key); pushRecentHovered(type, data); });
+        m.on('popupclose', function() {
+          const idx = openPopupKeys.indexOf(key);
+          if (idx !== -1) openPopupKeys.splice(idx, 1);
+        });
 
         // Lazy-load image for action popups (allSlim omits image column)
         if (type === 'action') {
@@ -415,7 +420,7 @@
 
         // Auto-open popup for the Zelda event
         const itemTitle = (data.title || data.name || '').toLowerCase();
-        if (itemTitle.includes('zelda')) m.openPopup();
+        if (itemTitle.includes('zelda')) openManagedPopup(key);
       }
 
     } catch (e) { console.error(e); }
@@ -499,13 +504,29 @@
     }).join('');
   }
 
+  // ── Multi-popup manager (max 2 open at once) ──
+  const openPopupKeys = [];
+  function openManagedPopup(key) {
+    const m = markerRefs[key];
+    if (!m) return;
+    if (m.isPopupOpen()) return; // already open — leave it
+    if (openPopupKeys.length >= 2) {
+      const oldKey = openPopupKeys.shift();
+      const oldM = markerRefs[oldKey];
+      if (oldM) oldM.closePopup();
+    }
+    openPopupKeys.push(key);
+    m.openPopup();
+  }
+
   // ── Fly to marker ──
   const markerRefs = {};
   function flyToMarker(type, id) {
-    const m = markerRefs[`${type}-${id}`];
+    const key = `${type}-${id}`;
+    const m = markerRefs[key];
     if (m) {
       heroMap.flyTo(m.getLatLng(), 8, { duration: 1.2 });
-      setTimeout(() => m.openPopup(), 1300);
+      setTimeout(() => openManagedPopup(key), 1300);
     }
   }
 
