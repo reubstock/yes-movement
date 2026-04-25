@@ -82,6 +82,9 @@ async function init() {
       VALUES ('6 to 1', 'A group of environmental ninjas rebooting the planet.', 'Princeton', 'United States', 'Reuben Steiger', '/images/groups/6-to-1.webp')`;
   }
 
+  // Fix any misspelled/malformed action locations
+  await pool.query(`UPDATE actions SET location = 'New Orleans', country = 'United States' WHERE location ILIKE '%Orlaean%' OR location ILIKE '%New Orleans LA%'`);
+
   // Seed actions
   const { rows: a } = await sql`SELECT COUNT(*) FROM actions`;
   if (parseInt(a[0].count) === 0) {
