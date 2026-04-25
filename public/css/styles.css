@@ -199,15 +199,15 @@ nav {
 
 /* ─── CARDS ─── */
 .card {
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: #111111;
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: 4px;
   padding: 1.5rem;
   transition: border-color 0.2s;
 }
-.card:hover { border-color: #444; }
-.card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--accent-light); }
-.card p { font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+.card:hover { border-color: rgba(255,255,255,0.3); }
+.card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; color: #ffffff; }
+.card p { font-size: 0.9rem; color: #ffffff; line-height: 1.6; }
 
 /* ─── GRIDS ─── */
 .events-grid, .members-grid {
