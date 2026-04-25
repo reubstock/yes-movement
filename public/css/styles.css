@@ -285,8 +285,15 @@ footer {
 .empty-icon { font-size: 2.5rem; margin-bottom: 1rem; }
 
 /* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+  .events-grid, .members-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 640px) {
-  nav { padding: 1rem; }
+  /* ── Nav ── */
+  nav { padding: 0.85rem 1rem; }
   .nav-links {
     display: none;
     position: absolute;
@@ -296,10 +303,50 @@ footer {
     background: rgba(10,10,10,0.98);
     flex-direction: column;
     gap: 0;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    z-index: 200;
   }
   .nav-links.open { display: flex; }
-  .nav-links li a { display: block; padding: 1rem 2rem; }
+  .nav-links li { width: 100%; }
+  .nav-links li a {
+    display: block;
+    padding: 0.9rem 1.5rem;
+    font-size: 0.85rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  /* Log Action button inside dropdown */
+  .nav-links li button {
+    display: block !important;
+    width: calc(100% - 3rem);
+    margin: 0.75rem 1.5rem !important;
+    text-align: center;
+  }
+  /* White hamburger bars (nav bg is dark) */
   .nav-toggle { display: flex; }
-  .hero { min-height: 75vh; }
+  .nav-toggle span { background: #ffffff; }
+
+  /* ── Hero / Map ── */
+  .hero { min-height: 70vh; }
+
+  /* ── Mobile map stats bar ── */
+  #mobile-map-stats {
+    display: flex !important;
+  }
+
+  /* ── Sections ── */
+  .section { padding: 3rem 1rem; }
+  .page-header { padding: 3rem 1rem 2rem; }
+  .cta-section { padding: 3rem 1rem; }
+
+  /* ── Grids ── */
+  .events-grid, .members-grid { grid-template-columns: 1fr; gap: 1rem; }
+
+  /* ── Forms: stack city/country on mobile ── */
+  form [style*="grid-template-columns:1fr 1fr"],
+  form [style*="grid-template-columns: 1fr 1fr"] {
+    display: block !important;
+  }
+
+  /* ── Cards ── */
+  .card { padding: 1.1rem; }
 }

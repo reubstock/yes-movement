@@ -99,6 +99,35 @@
     @media (max-width: 640px) {
       #map-sidebar { display: none; }
     }
+
+    /* ── Mobile stats bar (shown below map on small screens) ── */
+    #mobile-map-stats {
+      display: none;
+      background: rgba(10,10,10,0.92);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 0.55rem 1.25rem;
+      gap: 1.5rem;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      z-index: 10;
+    }
+    #mobile-map-stats .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: Arial, sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+    #mobile-map-stats .stat-badge {
+      background: #fff;
+      color: #111;
+      border-radius: 10px;
+      padding: 0.05rem 0.4rem;
+      font-size: 0.65rem;
+      font-weight: 700;
+    }
   </style>
 </head>
 <body>
@@ -177,6 +206,19 @@
   </div>
 
 </section>
+
+<!-- Mobile stats bar (visible only on small screens) -->
+<div id="mobile-map-stats">
+  <div class="stat-item" style="color:#16a34a;">
+    Groups <span id="mobile-count-groups" class="stat-badge">0</span>
+  </div>
+  <div class="stat-item" style="color:#dc2626;">
+    Actions <span id="mobile-count-actions" class="stat-badge">0</span>
+  </div>
+  <div class="stat-item" style="color:#f5c518;">
+    Summits <span id="mobile-count-summits" class="stat-badge">0</span>
+  </div>
+</div>
 
 <section class="section">
   <div class="section-header">
@@ -259,9 +301,15 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+  const isMobile = window.innerWidth < 640;
+  // Desktop: offset west to keep markers visible past the 260px sidebar
+  // Mobile: no sidebar, so centre directly on the continental US
+  const initView  = isMobile ? [38, -96] : [42, -106];
+  const initZoom  = isMobile ? 3 : 4.5;
+
   const heroMap = L.map('hero-map', {
     zoomControl: false,
-    scrollWheelZoom: true,
+    scrollWheelZoom: !isMobile,
     dragging: true,
     touchZoom: true,
     doubleClickZoom: true,
@@ -269,7 +317,7 @@
     attributionControl: false,
     zoomSnap: 0.5,
     zoomDelta: 0.5,
-  }).setView([42, -106], 4.5);
+  }).setView(initView, initZoom);
   L.control.zoom({ position: 'topright' }).addTo(heroMap);
 
   L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
@@ -382,12 +430,12 @@
           </div>`;
         }
 
-        const popup = L.popup({ className: 'dark-popup', maxWidth: 210, autoPan: false, autoClose: false, closeOnClick: false }).setContent(popupHtml);
+        const popup = L.popup({ className: 'dark-popup', maxWidth: 210, autoPan: isMobile, autoClose: false, closeOnClick: false }).setContent(popupHtml);
         const key = `${type}-${data.id}`;
         const m = L.marker([coords.lat, coords.lng], { icon, interactive: true }).bindPopup(popup).addTo(heroMap);
         markerRefs[key] = m;
         m.on('click',     function() { openManagedPopup(key); });
-        m.on('mouseover', function() { openManagedPopup(key); });
+        if (!isMobile) m.on('mouseover', function() { openManagedPopup(key); });
         m.on('popupclose', function() {
           const idx = openPopupKeys.indexOf(key);
           if (idx !== -1) openPopupKeys.splice(idx, 1);
@@ -444,10 +492,13 @@
     const el = id => document.getElementById(id);
     const none = '<div style="font-family:Arial,sans-serif;font-size:0.68rem;color:rgba(255,255,255,0.25);padding:0.2rem 0;">None yet</div>';
 
-    // Legend counts
+    // Legend counts (desktop sidebar + mobile bar)
     el('legend-count-groups').textContent = groups.length;
     el('legend-count-actions').textContent = actions.length;
     el('legend-count-summits').textContent = summits.length;
+    el('mobile-count-groups').textContent = groups.length;
+    el('mobile-count-actions').textContent = actions.length;
+    el('mobile-count-summits').textContent = summits.length;
 
     el('sidebar-actions').innerHTML = actions.length
       ? actions.slice(0,2).map(a => sidebarItem(
