@@ -81,6 +81,15 @@ async function init() {
     await sql`INSERT INTO groups (name, description, location, country, contact, image)
       VALUES ('6 to 1', 'A group of environmental ninjas rebooting the planet.', 'Princeton', 'United States', 'Reuben Steiger', '/images/groups/6-to-1.webp')`;
   }
+
+  // Seed actions
+  const { rows: a } = await sql`SELECT COUNT(*) FROM actions`;
+  if (parseInt(a[0].count) === 0) {
+    await sql`INSERT INTO actions (title, description, location, country, date)
+      VALUES ('Watershed Monitoring', 'Testing water quality levels across local tributaries.', 'Princeton', 'United States', '2026-04-01')`;
+    await sql`INSERT INTO actions (title, description, location, country, date)
+      VALUES ('Urban Soil Restoration', 'Rebuilding topsoil in community garden beds.', 'Petaluma', 'United States', '2026-03-15')`;
+  }
 }
 
 // run init once on startup (non-blocking — routes wait for it via initPromise)
