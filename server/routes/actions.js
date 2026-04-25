@@ -5,7 +5,8 @@ const store = require('../store');
 router.get('/', async (req, res) => {
   try {
     await store.ready();
-    const actions = await store.actions.all();
+    // Exclude image column from list — base64 payloads are too large for the map fetch
+    const actions = await store.actions.allSlim();
     res.json(actions);
   } catch (err) {
     console.error(err);

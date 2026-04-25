@@ -163,6 +163,13 @@ module.exports = {
       const { rows } = await pool.query('SELECT * FROM actions ORDER BY created_at DESC');
       return rows;
     },
+    // Lean version for map — omits base64 image so the payload stays small
+    allSlim: async () => {
+      const { rows } = await pool.query(
+        'SELECT id, title, description, location, country, date, created_at FROM actions ORDER BY created_at DESC'
+      );
+      return rows;
+    },
     get: async (id) => {
       const { rows } = await pool.query('SELECT * FROM actions WHERE id = $1', [id]);
       return rows[0] || null;
