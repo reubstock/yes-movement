@@ -353,10 +353,10 @@
             ${data.image ? `<img src="${data.image}" alt="${data.title}" style="width:100%;height:120px;object-fit:cover;display:block;" />` : ''}
             <div style="font-family:Arial,sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#f5c518;margin-bottom:0.35rem;">Summit</div>
             <h4 style="margin:0 0 0.4rem;font-size:1rem;color:#fff;font-family:Georgia,serif;">${data.title}</h4>
-            <p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}</p>
-            <p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">📅 ${dateStr}${data.time ? ' at ' + data.time : ''}</p>
-            ${data.host_name ? `<p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">👤 ${data.host_name}</p>` : ''}
-            ${data.description ? `<p style="margin:0.5rem 0 0;font-size:0.82rem;color:rgba(255,255,255,0.65);font-family:Arial,sans-serif;">${data.description}</p>` : ''}
+            <p style="margin:0 0 0.2rem;font-size:0.82rem;color:#fff;font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}</p>
+            <p style="margin:0 0 0.2rem;font-size:0.82rem;color:#fff;font-family:Arial,sans-serif;">📅 ${dateStr}${data.time ? ' at ' + data.time : ''}</p>
+            ${data.host_name ? `<p style="margin:0 0 0.2rem;font-size:0.82rem;color:#fff;font-family:Arial,sans-serif;">👤 ${data.host_name}</p>` : ''}
+            ${data.description ? `<p style="margin:0.5rem 0 0;font-size:0.82rem;color:#fff;font-family:Arial,sans-serif;">${data.description}</p>` : ''}
             <a href="/events.html" style="display:inline-block;margin-top:0.75rem;font-size:0.75rem;font-family:Arial,sans-serif;color:#f5c518;text-decoration:none;letter-spacing:0.05em;">View all summits →</a>
           </div>`;
         } else if (type === 'group') {
@@ -364,9 +364,9 @@
             ${data.image ? `<img src="${data.image}" alt="${data.name}" style="width:100%;height:120px;object-fit:cover;display:block;" />` : ''}
             <div style="font-family:Arial,sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#16a34a;margin-bottom:0.35rem;">Group</div>
             <h4 style="margin:0 0 0.4rem;font-size:1rem;color:#fff;font-family:Georgia,serif;">${data.name}</h4>
-            <p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}</p>
-            ${data.contact ? `<p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">👤 ${data.contact}</p>` : ''}
-            ${data.description ? `<p style="margin:0.5rem 0 0;font-size:0.82rem;color:rgba(255,255,255,0.65);font-family:Arial,sans-serif;">${data.description}</p>` : ''}
+            <p style="margin:0 0 0.2rem;font-size:0.82rem;color:#fff;font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}</p>
+            ${data.contact ? `<p style="margin:0 0 0.2rem;font-size:0.82rem;color:#fff;font-family:Arial,sans-serif;">👤 ${data.contact}</p>` : ''}
+            ${data.description ? `<p style="margin:0.5rem 0 0;font-size:0.82rem;color:#fff;font-family:Arial,sans-serif;">${data.description}</p>` : ''}
             <a href="/members.html" style="display:inline-block;margin-top:0.75rem;font-size:0.75rem;font-family:Arial,sans-serif;color:#16a34a;text-decoration:none;letter-spacing:0.05em;">View all groups →</a>
           </div>`;
         } else {
@@ -374,10 +374,10 @@
           popupHtml = `<div style="min-width:220px;max-width:260px;">
             <div style="font-family:Arial,sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#dc2626;margin-bottom:0.35rem;">Action</div>
             <h4 style="margin:0 0 0.4rem;font-size:1rem;color:#fff;font-family:Georgia,serif;">${data.title}</h4>
-            <p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}</p>
-            ${dateStr ? `<p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">📅 ${dateStr}</p>` : ''}
-            ${data.description ? `<p style="margin:0.5rem 0 0;font-size:0.82rem;color:rgba(255,255,255,0.65);font-family:Arial,sans-serif;">${data.description}</p>` : ''}
-            <a href="#" onclick="openEditActionById(${data.id});return false;" style="display:inline-block;margin-top:0.6rem;font-size:0.72rem;font-family:Arial,sans-serif;color:#888;text-decoration:underline;">Edit →</a>
+            <p style="margin:0 0 0.2rem;font-size:0.82rem;color:#fff;font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}</p>
+            ${dateStr ? `<p style="margin:0 0 0.2rem;font-size:0.82rem;color:#fff;font-family:Arial,sans-serif;">📅 ${dateStr}</p>` : ''}
+            ${data.description ? `<p style="margin:0.5rem 0 0;font-size:0.82rem;color:#fff;font-family:Arial,sans-serif;">${data.description}</p>` : ''}
+            <a href="#" onclick="openEditActionById(${data.id});return false;" style="display:inline-block;margin-top:0.6rem;font-size:0.72rem;font-family:Arial,sans-serif;color:rgba(255,255,255,0.55);text-decoration:underline;">Edit →</a>
           </div>`;
         }
 
@@ -409,10 +409,10 @@
                 <img src="${full.image}" alt="${full.title}" style="width:100%;height:120px;object-fit:cover;display:block;" />
                 <div style="font-family:Arial,sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#dc2626;margin-bottom:0.35rem;">Action</div>
                 <h4 style="margin:0 0 0.4rem;font-size:1rem;color:#fff;font-family:Georgia,serif;">${full.title}</h4>
-                <p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">📍 ${full.location}, ${full.country}</p>
-                ${ds ? `<p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">📅 ${ds}</p>` : ''}
-                ${full.description ? `<p style="margin:0.5rem 0 0;font-size:0.82rem;color:rgba(255,255,255,0.65);font-family:Arial,sans-serif;">${full.description}</p>` : ''}
-                <a href="#" onclick="openEditActionById(${full.id});return false;" style="display:inline-block;margin-top:0.6rem;font-size:0.72rem;font-family:Arial,sans-serif;color:#888;text-decoration:underline;">Edit →</a>
+                <p style="margin:0 0 0.2rem;font-size:0.82rem;color:#fff;font-family:Arial,sans-serif;">📍 ${full.location}, ${full.country}</p>
+                ${ds ? `<p style="margin:0 0 0.2rem;font-size:0.82rem;color:#fff;font-family:Arial,sans-serif;">📅 ${ds}</p>` : ''}
+                ${full.description ? `<p style="margin:0.5rem 0 0;font-size:0.82rem;color:#fff;font-family:Arial,sans-serif;">${full.description}</p>` : ''}
+                <a href="#" onclick="openEditActionById(${full.id});return false;" style="display:inline-block;margin-top:0.6rem;font-size:0.72rem;font-family:Arial,sans-serif;color:rgba(255,255,255,0.55);text-decoration:underline;">Edit →</a>
               </div>`);
             } catch(e) {}
           });
