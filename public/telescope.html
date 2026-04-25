@@ -35,7 +35,7 @@
     /* ── Main two-column layout ── */
     .telescope-layout {
       display: grid;
-      grid-template-columns: 380px 1fr;
+      grid-template-columns: 1fr 280px;
       gap: 2rem;
       max-width: 1100px;
       margin: 0 auto;
@@ -324,7 +324,7 @@
         <p style="font-family:Arial,sans-serif;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:#111;line-height:1.4;margin:0;text-align:left;">Changing how we think changes how we think.</p>
       </div>
       <div style="position:relative;background:#000;cursor:pointer;" onclick="window.open('https://www.youtube.com/watch?v=0fKBhvDjuy0','_blank')">
-        <img src="/images/eames powers of ten.jpg" alt="Powers of Ten — Eames Office" style="width:100%;display:block;opacity:0.92;" />
+        <img src="/images/eames powers of ten.jpg" alt="Powers of Ten — Eames Office" style="width:100%;display:block;opacity:0.92;min-height:340px;object-fit:cover;" />
         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
           <div style="width:60px;height:60px;border-radius:50%;background:rgba(0,0,0,0.65);border:2px solid rgba(255,255,255,0.85);display:flex;align-items:center;justify-content:center;">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="white" style="margin-left:3px;"><polygon points="5,3 19,12 5,21"/></svg>
@@ -353,7 +353,25 @@
   <!-- ── RIGHT PANEL ── -->
   <div class="right-panel">
 
-    <!-- Latest Progress feed — top of right panel -->
+    <!-- Substack subscribe — compact, above Latest Progress -->
+    <div class="substack-block">
+      <div class="substack-hero" style="padding:1rem 1.25rem 0.9rem;">
+        <span class="brass-star" style="font-size:1rem;margin-bottom:0.35rem;">✦</span>
+        <h2 style="font-size:1rem;margin-bottom:0.25rem;">The Telescope Newsletter</h2>
+        <p style="font-size:0.74rem;line-height:1.45;">Field reports and dispatches from the YES Movement.</p>
+      </div>
+      <div class="substack-embed" style="padding:0.75rem 1rem;">
+        <iframe
+          src="https://yesmovement.substack.com/embed"
+          height="100"
+          frameborder="0"
+          scrolling="no"
+          style="width:100%;border:none;background:transparent;"
+        ></iframe>
+      </div>
+    </div>
+
+    <!-- Latest Progress feed -->
     <div class="panel-block">
       <div class="panel-label" style="justify-content:space-between;">
         <span>Latest Progress</span>
@@ -362,27 +380,6 @@
       <ul class="actions-list" id="actions-list">
         <li class="actions-empty">Loading…</li>
       </ul>
-    </div>
-
-    <!-- Substack subscribe -->
-    <div class="substack-block">
-      <div class="substack-hero">
-        <span class="brass-star">✦</span>
-        <h2>The Telescope Newsletter</h2>
-        <p>Field reports, group news, and dispatches from the YES Movement — delivered to your inbox.</p>
-      </div>
-      <div class="substack-embed">
-        <iframe
-          src="https://yesmovement.substack.com/embed"
-          height="150"
-          frameborder="0"
-          scrolling="no"
-          style="width:100%;border:none;background:transparent;"
-        ></iframe>
-        <p style="font-family:Arial,sans-serif;font-size:0.72rem;color:#bbb;text-align:center;margin-top:0.75rem;">
-          Powered by <a href="https://substack.com" target="_blank" style="color:#bbb;">Substack</a>
-        </p>
-      </div>
     </div>
 
     <!-- Recent posts (populated from Substack RSS or static) -->
