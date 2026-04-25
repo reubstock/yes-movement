@@ -263,7 +263,7 @@
     doubleClickZoom: true,
     keyboard: true,
     attributionControl: false,
-  }).setView([38, -96], 4);
+  }).setView([39.5, -98.5], 4);
   L.control.zoom({ position: 'topright' }).addTo(heroMap);
 
   L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
@@ -381,9 +381,9 @@
         m.on('click',     function() { this.openPopup(); });
         m.on('mouseover', function() { this.openPopup(); });
 
-        // Auto-open popups for Red Barn Posse and New Orleans action
-        if (type === 'group'  && data.name     === 'Red Barn Posse') m.openPopup();
-        if (type === 'action' && data.location === 'New Orleans')    m.openPopup();
+        // Auto-open popup for the Zelda event
+        const itemTitle = (data.title || data.name || '').toLowerCase();
+        if (itemTitle.includes('zelda')) m.openPopup();
       }
 
     } catch (e) { console.error(e); }
