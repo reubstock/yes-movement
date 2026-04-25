@@ -156,6 +156,12 @@
         </div>
       </div>
 
+      <!-- Last Viewed (persists last 2 hovered markers) -->
+      <div id="last-viewed-section" style="display:none;margin-bottom:0.85rem;">
+        <div style="font-family:Arial,sans-serif;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,0.9);text-decoration:underline;margin-bottom:0.4rem;">LAST VIEWED</div>
+        <div id="last-viewed-list"></div>
+      </div>
+
       <!-- Actions -->
       <div style="font-family:Arial,sans-serif;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,0.9);text-decoration:underline;margin-bottom:0.4rem;">ACTIONS</div>
       <div id="sidebar-actions" style="margin-bottom:0.85rem;"></div>
@@ -379,7 +385,7 @@
         const m = L.marker([coords.lat, coords.lng], { icon, interactive: true }).bindPopup(popup).addTo(heroMap);
         markerRefs[`${type}-${data.id}`] = m;
         m.on('click',     function() { this.openPopup(); });
-        m.on('mouseover', function() { this.openPopup(); });
+        m.on('mouseover', function() { this.openPopup(); pushRecentHovered(type, data); });
 
         // Lazy-load image for action popups (allSlim omits image column)
         if (type === 'action') {
@@ -452,6 +458,45 @@
           s.title, `📍 ${s.location}, ${s.country}`,
           `flyToMarker('summit',${s.id})`
         )).join('') : none;
+  }
+
+  // ── Last Viewed tracker ──
+  const recentHovered = [];
+  const dotStyle = {
+    group:  'background:#16a34a;box-shadow:0 0 4px rgba(22,163,74,0.9)',
+    summit: 'background:#f5c518;box-shadow:0 0 4px rgba(245,197,24,0.9)',
+    action: 'background:#dc2626;box-shadow:0 0 4px rgba(220,38,38,0.9)',
+  };
+  const typeLabel = { group: 'Group', summit: 'Summit', action: 'Action' };
+
+  function pushRecentHovered(type, data) {
+    const key = `${type}-${data.id}`;
+    const idx = recentHovered.findIndex(x => x.key === key);
+    if (idx !== -1) recentHovered.splice(idx, 1);
+    recentHovered.unshift({ key, type, data });
+    if (recentHovered.length > 2) recentHovered.pop();
+    renderLastViewed();
+  }
+
+  function renderLastViewed() {
+    const section = document.getElementById('last-viewed-section');
+    const list = document.getElementById('last-viewed-list');
+    if (!recentHovered.length) { section.style.display = 'none'; return; }
+    section.style.display = 'block';
+    list.innerHTML = recentHovered.map(({ type, data }) => {
+      const name = data.title || data.name || '—';
+      const loc  = `📍 ${data.location}, ${data.country}`;
+      const fly  = type === 'group' ? `flyToMarker('group',${data.id})`
+                 : type === 'summit' ? `flyToMarker('summit',${data.id})`
+                 : `flyToMarker('action',${data.id})`;
+      return `<div onclick="${fly}" style="display:flex;align-items:flex-start;gap:0.45rem;padding:0.35rem 0;border-bottom:1px solid rgba(255,255,255,0.06);cursor:pointer;" onmouseover="this.style.background='rgba(255,255,255,0.04)'" onmouseout="this.style.background='none'">
+        <div style="width:11px;height:11px;border-radius:50%;${dotStyle[type]};flex-shrink:0;margin-top:0.28rem;"></div>
+        <div>
+          <div style="font-family:Arial,sans-serif;font-size:0.72rem;color:rgba(255,255,255,0.78);line-height:1.3;">${name}</div>
+          <div style="font-family:Arial,sans-serif;font-size:0.6rem;color:rgba(255,255,255,0.35);margin-top:0.05rem;">${loc}</div>
+        </div>
+      </div>`;
+    }).join('');
   }
 
   // ── Fly to marker ──
