@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+
+  <!-- Crisp white background -->
+  <rect width="500" height="500" fill="white"/>
+
+  <g transform="translate(250,250)">
+
+    <!-- 16 petals with organic/uneven spacing, leaf-shaped paths -->
+    <!-- Petal: pointed tip top, narrows at base near centre -->
+    <path d="M 0,-95 C 40,-125 50,-180 28,-228 C 16,-250 -16,-250 -28,-228 C -50,-180 -40,-125 0,-95" fill="#D97320" transform="rotate(0)"/>
+    <path d="M 0,-95 C 40,-125 50,-180 28,-228 C 16,-250 -16,-250 -28,-228 C -50,-180 -40,-125 0,-95" fill="#D97320" transform="rotate(24)"/>
+    <path d="M 0,-95 C 40,-125 50,-180 28,-228 C 16,-250 -16,-250 -28,-228 C -50,-180 -40,-125 0,-95" fill="#D97320" transform="rotate(45)"/>
+    <path d="M 0,-95 C 40,-125 50,-180 28,-228 C 16,-250 -16,-250 -28,-228 C -50,-180 -40,-125 0,-95" fill="#D97320" transform="rotate(69)"/>
+    <path d="M 0,-95 C 40,-125 50,-180 28,-228 C 16,-250 -16,-250 -28,-228 C -50,-180 -40,-125 0,-95" fill="#D97320" transform="rotate(91)"/>
+    <path d="M 0,-95 C 40,-125 50,-180 28,-228 C 16,-250 -16,-250 -28,-228 C -50,-180 -40,-125 0,-95" fill="#D97320" transform="rotate(112)"/>
+    <path d="M 0,-95 C 40,-125 50,-180 28,-228 C 16,-250 -16,-250 -28,-228 C -50,-180 -40,-125 0,-95" fill="#D97320" transform="rotate(136)"/>
+    <path d="M 0,-95 C 40,-125 50,-180 28,-228 C 16,-250 -16,-250 -28,-228 C -50,-180 -40,-125 0,-95" fill="#D97320" transform="rotate(155)"/>
+    <path d="M 0,-95 C 40,-125 50,-180 28,-228 C 16,-250 -16,-250 -28,-228 C -50,-180 -40,-125 0,-95" fill="#D97320" transform="rotate(179)"/>
+    <path d="M 0,-95 C 40,-125 50,-180 28,-228 C 16,-250 -16,-250 -28,-228 C -50,-180 -40,-125 0,-95" fill="#D97320" transform="rotate(201)"/>
+    <path d="M 0,-95 C 40,-125 50,-180 28,-228 C 16,-250 -16,-250 -28,-228 C -50,-180 -40,-125 0,-95" fill="#D97320" transform="rotate(220)"/>
+    <path d="M 0,-95 C 40,-125 50,-180 28,-228 C 16,-250 -16,-250 -28,-228 C -50,-180 -40,-125 0,-95" fill="#D97320" transform="rotate(245)"/>
+    <path d="M 0,-95 C 40,-125 50,-180 28,-228 C 16,-250 -16,-250 -28,-228 C -50,-180 -40,-125 0,-95" fill="#D97320" transform="rotate(267)"/>
+    <path d="M 0,-95 C 40,-125 50,-180 28,-228 C 16,-250 -16,-250 -28,-228 C -50,-180 -40,-125 0,-95" fill="#D97320" transform="rotate(290)"/>
+    <path d="M 0,-95 C 40,-125 50,-180 28,-228 C 16,-250 -16,-250 -28,-228 C -50,-180 -40,-125 0,-95" fill="#D97320" transform="rotate(313)"/>
+    <path d="M 0,-95 C 40,-125 50,-180 28,-228 C 16,-250 -16,-250 -28,-228 C -50,-180 -40,-125 0,-95" fill="#D97320" transform="rotate(334)"/>
+
+    <!-- White centre disc -->
+    <circle r="90" fill="white"/>
+
+    <!-- Small radial dashes (14, irregular spacing) -->
+    <rect x="-2.5" y="-107" width="5" height="13" rx="2.5" fill="#2D4580" transform="rotate(0)"/>
+    <rect x="-2.5" y="-107" width="5" height="13" rx="2.5" fill="#2D4580" transform="rotate(27)"/>
+    <rect x="-2.5" y="-107" width="5" height="13" rx="2.5" fill="#2D4580" transform="rotate(52)"/>
+    <rect x="-2.5" y="-107" width="5" height="13" rx="2.5" fill="#2D4580" transform="rotate(80)"/>
+    <rect x="-2.5" y="-107" width="5" height="13" rx="2.5" fill="#2D4580" transform="rotate(104)"/>
+    <rect x="-2.5" y="-107" width="5" height="13" rx="2.5" fill="#2D4580" transform="rotate(131)"/>
+    <rect x="-2.5" y="-107" width="5" height="13" rx="2.5" fill="#2D4580" transform="rotate(158)"/>
+    <rect x="-2.5" y="-107" width="5" height="13" rx="2.5" fill="#2D4580" transform="rotate(180)"/>
+    <rect x="-2.5" y="-107" width="5" height="13" rx="2.5" fill="#2D4580" transform="rotate(207)"/>
+    <rect x="-2.5" y="-107" width="5" height="13" rx="2.5" fill="#2D4580" transform="rotate(234)"/>
+    <rect x="-2.5" y="-107" width="5" height="13" rx="2.5" fill="#2D4580" transform="rotate(258)"/>
+    <rect x="-2.5" y="-107" width="5" height="13" rx="2.5" fill="#2D4580" transform="rotate(285)"/>
+    <rect x="-2.5" y="-107" width="5" height="13" rx="2.5" fill="#2D4580" transform="rotate(310)"/>
+    <rect x="-2.5" y="-107" width="5" height="13" rx="2.5" fill="#2D4580" transform="rotate(338)"/>
+
+    <!-- YES text -->
+    <text
+      x="0" y="22"
+      text-anchor="middle"
+      font-family="Arial Black, Arial, Helvetica, sans-serif"
+      font-weight="900"
+      font-size="58"
+      fill="#2D4580"
+      letter-spacing="5">YES</text>
+
+  </g>
+
+</svg>
