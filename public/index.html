@@ -301,11 +301,18 @@
       console.log('Total map items:', items.length);
 
       for (let i = 0; i < items.length; i++) {
-        if (i > 0) await new Promise(r => setTimeout(r, 1100));
         const { type, data } = items[i];
-        console.log('Geocoding', type, data.location, data.country);
-        const coords = await geocode(data.location, data.country);
-        console.log('Coords for', data.location, ':', coords);
+
+        let coords;
+        if (type === 'action' && data.lat && data.lng) {
+          // Use server-stored coords — no geocoding needed
+          coords = { lat: data.lat, lng: data.lng };
+        } else {
+          if (i > 0) await new Promise(r => setTimeout(r, 1100));
+          coords = await geocode(data.location, data.country);
+        }
+
+        console.log(type, data.location, '->', coords);
         if (!coords) continue;
 
         let popupHtml, icon;

@@ -55,9 +55,14 @@ async function init() {
       country TEXT NOT NULL,
       date TEXT,
       image TEXT,
+      lat FLOAT,
+      lng FLOAT,
       created_at TIMESTAMPTZ DEFAULT NOW()
     )
   `;
+  // Add lat/lng columns if they don't exist yet (for existing deployments)
+  await pool.query(`ALTER TABLE actions ADD COLUMN IF NOT EXISTS lat FLOAT`);
+  await pool.query(`ALTER TABLE actions ADD COLUMN IF NOT EXISTS lng FLOAT`);
 
   // Seed members
   const { rows: m } = await sql`SELECT COUNT(*) FROM members`;
@@ -82,8 +87,11 @@ async function init() {
       VALUES ('6 to 1', 'A group of environmental ninjas rebooting the planet.', 'Princeton', 'United States', 'Reuben Steiger', '/images/groups/6-to-1.webp')`;
   }
 
-  // Fix any misspelled/malformed action locations
+  // Fix any misspelled/malformed action locations and backfill known coords
   await pool.query(`UPDATE actions SET location = 'New Orleans', country = 'United States' WHERE location ILIKE '%Orlaean%' OR location ILIKE '%New Orleans LA%'`);
+  await pool.query(`UPDATE actions SET lat = 29.9484, lng = -90.0771 WHERE location = 'New Orleans' AND (lat IS NULL OR lat = 0)`);
+  await pool.query(`UPDATE actions SET lat = 40.3573, lng = -74.6672 WHERE location = 'Princeton' AND (lat IS NULL OR lat = 0)`);
+  await pool.query(`UPDATE actions SET lat = 38.2324, lng = -122.6367 WHERE location = 'Petaluma' AND (lat IS NULL OR lat = 0)`);
 
   // Seed actions
   const { rows: a } = await sql`SELECT COUNT(*) FROM actions`;
@@ -166,10 +174,10 @@ module.exports = {
       const { rows } = await pool.query('SELECT * FROM actions ORDER BY created_at DESC');
       return rows;
     },
-    // Lean version for map — omits base64 image so the payload stays small
+    // Lean version for map — omits base64 image, includes lat/lng
     allSlim: async () => {
       const { rows } = await pool.query(
-        'SELECT id, title, description, location, country, date, created_at FROM actions ORDER BY created_at DESC'
+        'SELECT id, title, description, location, country, date, lat, lng, created_at FROM actions ORDER BY created_at DESC'
       );
       return rows;
     },
@@ -177,10 +185,10 @@ module.exports = {
       const { rows } = await pool.query('SELECT * FROM actions WHERE id = $1', [id]);
       return rows[0] || null;
     },
-    insert: async ({ title, description, location, country, date, image }) => {
+    insert: async ({ title, description, location, country, date, image, lat, lng }) => {
       const { rows } = await pool.query(
-        'INSERT INTO actions (title, description, location, country, date, image) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *',
-        [title, description || null, location, country, date || null, image || null]
+        'INSERT INTO actions (title, description, location, country, date, image, lat, lng) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *',
+        [title, description || null, location, country, date || null, image || null, lat || null, lng || null]
       );
       return rows[0];
     },

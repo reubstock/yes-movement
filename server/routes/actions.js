@@ -25,6 +25,17 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+async function geocode(location, country) {
+  try {
+    const q = encodeURIComponent(`${location}, ${country}`);
+    const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=1`, {
+      headers: { 'User-Agent': 'YES-Movement/1.0', 'Accept-Language': 'en' }
+    });
+    const data = await res.json();
+    return data.length ? { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) } : null;
+  } catch { return null; }
+}
+
 router.post('/', async (req, res) => {
   try {
     await store.ready();
@@ -32,7 +43,12 @@ router.post('/', async (req, res) => {
     if (!title || !location || !country) {
       return res.status(400).json({ error: 'title, location and country are required' });
     }
-    const action = await store.actions.insert({ title, description, location, country, date, image });
+    const coords = await geocode(location, country);
+    const action = await store.actions.insert({
+      title, description, location, country, date, image,
+      lat: coords ? coords.lat : null,
+      lng: coords ? coords.lng : null,
+    });
     res.status(201).json(action);
   } catch (err) {
     console.error(err);
