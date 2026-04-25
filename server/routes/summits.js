@@ -30,11 +30,11 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     await store.ready();
-    const { title, description, location, country, date, time, host_name } = req.body;
+    const { title, description, location, country, date, time, host_name, image } = req.body;
     if (!title || !location || !country || !date) {
       return res.status(400).json({ error: 'title, location, country, and date are required' });
     }
-    const summit = await store.summits.insert({ title, description, location, country, date, time, host_name });
+    const summit = await store.summits.insert({ title, description, location, country, date, time, host_name, image });
     res.status(201).json({ id: summit.id });
   } catch (err) {
     console.error(err);
@@ -45,11 +45,11 @@ router.post('/', async (req, res) => {
 router.patch('/:id', async (req, res) => {
   try {
     await store.ready();
-    const { title, description, location, country, date, time, host_name } = req.body;
+    const { title, description, location, country, date, time, host_name, image } = req.body;
     if (!title || !location || !country || !date) {
       return res.status(400).json({ error: 'title, location, country, and date are required' });
     }
-    const summit = await store.summits.update(req.params.id, { title, description, location, country, date, time, host_name });
+    const summit = await store.summits.update(req.params.id, { title, description, location, country, date, time, host_name, image });
     if (!summit) return res.status(404).json({ error: 'Summit not found' });
     res.json(summit);
   } catch (err) {

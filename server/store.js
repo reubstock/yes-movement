@@ -67,6 +67,7 @@ async function init() {
   await pool.query(`ALTER TABLE groups  ADD COLUMN IF NOT EXISTS lng FLOAT`);
   await pool.query(`ALTER TABLE summits ADD COLUMN IF NOT EXISTS lat FLOAT`);
   await pool.query(`ALTER TABLE summits ADD COLUMN IF NOT EXISTS lng FLOAT`);
+  await pool.query(`ALTER TABLE summits ADD COLUMN IF NOT EXISTS image TEXT`);
 
   // Seed members
   const { rows: m } = await sql`SELECT COUNT(*) FROM members`;
@@ -150,17 +151,17 @@ module.exports = {
       const { rows } = await pool.query('SELECT * FROM summits WHERE id = $1', [id]);
       return rows[0] || null;
     },
-    insert: async ({ title, description, location, country, date, time, host_name }) => {
+    insert: async ({ title, description, location, country, date, time, host_name, image }) => {
       const { rows } = await pool.query(
-        'INSERT INTO summits (title, description, location, country, date, time, host_name) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *',
-        [title, description || null, location, country, date, time || null, host_name || null]
+        'INSERT INTO summits (title, description, location, country, date, time, host_name, image) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *',
+        [title, description || null, location, country, date, time || null, host_name || null, image || null]
       );
       return rows[0];
     },
-    update: async (id, { title, description, location, country, date, time, host_name }) => {
+    update: async (id, { title, description, location, country, date, time, host_name, image }) => {
       const { rows } = await pool.query(
-        'UPDATE summits SET title=$1, description=$2, location=$3, country=$4, date=$5, time=$6, host_name=$7 WHERE id=$8 RETURNING *',
-        [title, description || null, location, country, date, time || null, host_name || null, id]
+        'UPDATE summits SET title=$1, description=$2, location=$3, country=$4, date=$5, time=$6, host_name=$7, image=COALESCE($8, image) WHERE id=$9 RETURNING *',
+        [title, description || null, location, country, date, time || null, host_name || null, image || null, id]
       );
       return rows[0];
     },

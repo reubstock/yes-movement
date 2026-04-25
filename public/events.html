@@ -50,6 +50,10 @@
         <div class="form-group"><label>Time</label><input type="time" name="time" /></div>
       </div>
       <div class="form-group"><label>Description</label><textarea name="description" style="min-height:80px;"></textarea></div>
+      <div class="form-group">
+        <label>Photo</label>
+        <input type="file" id="summit-image-input" accept="image/*" style="width:100%;padding:0.5rem 0;font-family:Arial,sans-serif;font-size:0.85rem;color:#555;" />
+      </div>
       <button type="submit" class="btn btn-primary" style="width:100%;">Add Summit</button>
     </form>
   </div>
@@ -73,6 +77,10 @@
       </div>
       <div class="form-group"><label>Host Name</label><input type="text" name="host_name" /></div>
       <div class="form-group"><label>Description</label><textarea name="description" style="min-height:80px;"></textarea></div>
+      <div class="form-group">
+        <label>Photo <span style="color:#aaa;font-size:0.8rem;">(leave blank to keep existing)</span></label>
+        <input type="file" id="edit-summit-image-input" accept="image/*" style="width:100%;padding:0.5rem 0;font-family:Arial,sans-serif;font-size:0.85rem;color:#555;" />
+      </div>
       <button type="submit" class="btn btn-primary" style="width:100%;">Save Changes</button>
     </form>
   </div>
@@ -85,6 +93,32 @@
 
 <script src="/js/nav.js"></script>
 <script>
+  function compressImage(file) {
+    return new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = new Image();
+        img.onload = () => {
+          const MAX = 1200;
+          let w = img.width, h = img.height;
+          if (w > MAX || h > MAX) {
+            if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+            else        { w = Math.round(w * MAX / h); h = MAX; }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          let q = 0.82, dataUrl;
+          do { dataUrl = canvas.toDataURL('image/jpeg', q); q -= 0.08; }
+          while (dataUrl.length > 1024 * 1024 * 2.5 && q > 0.25);
+          resolve(dataUrl);
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
   let allSummits = [];
 
   async function loadEvents() {
@@ -116,6 +150,10 @@
   document.getElementById('event-form').addEventListener('submit', async e => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(e.target));
+    const fileInput = document.getElementById('summit-image-input');
+    if (fileInput.files && fileInput.files[0]) {
+      data.image = await compressImage(fileInput.files[0]);
+    }
     await fetch('/api/summits', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
     closeModal();
     e.target.reset();
@@ -151,6 +189,10 @@
     const data = Object.fromEntries(new FormData(e.target));
     const id = data.id;
     delete data.id;
+    const fileInput = document.getElementById('edit-summit-image-input');
+    if (fileInput.files && fileInput.files[0]) {
+      data.image = await compressImage(fileInput.files[0]);
+    }
     try {
       const res = await fetch(`/api/summits/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
       if (!res.ok) throw new Error(`Server error ${res.status}`);
