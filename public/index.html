@@ -425,9 +425,9 @@
           });
         }
 
-        // Auto-open popup for the Zelda event
+        // Auto-open popups on load
         const itemTitle = (data.title || data.name || '').toLowerCase();
-        if (itemTitle.includes('zelda')) openManagedPopup(key);
+        if (itemTitle.includes('zelda') || itemTitle.includes('local')) openManagedPopup(key);
       }
 
     } catch (e) { console.error(e); }
