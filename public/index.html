@@ -271,14 +271,26 @@
     } catch { return null; }
   }
 
+  async function safeJson(res) {
+    try { return res.ok ? await res.json() : []; }
+    catch(e) { console.warn('JSON parse failed:', e); return []; }
+  }
+
   async function plotMarkersOnHero() {
     try {
-      const [summitsRes, groupsRes, actionsRes] = await Promise.all([
-        fetch('/api/summits'), fetch('/api/groups'), fetch('/api/actions')
+      const [summitsRes, groupsRes] = await Promise.all([
+        fetch('/api/summits'), fetch('/api/groups')
       ]);
-      const summits = summitsRes.ok  ? await summitsRes.json()  : [];
-      const groups  = groupsRes.ok   ? await groupsRes.json()   : [];
-      const actions = actionsRes.ok  ? await actionsRes.json()  : [];
+      const summits = await safeJson(summitsRes);
+      const groups  = await safeJson(groupsRes);
+
+      // Fetch actions separately so any failure is isolated
+      let actions = [];
+      try {
+        const actionsRes = await fetch('/api/actions');
+        actions = await safeJson(actionsRes);
+        console.log('Actions fetched:', actions.length, actions.map(a => a.title));
+      } catch(e) { console.warn('Actions fetch failed:', e); }
 
       const items = [
         ...summits.map(s => ({ type: 'summit', data: s })),
@@ -286,10 +298,14 @@
         ...actions.map(a => ({ type: 'action', data: a })),
       ];
 
+      console.log('Total map items:', items.length);
+
       for (let i = 0; i < items.length; i++) {
         if (i > 0) await new Promise(r => setTimeout(r, 1100));
         const { type, data } = items[i];
+        console.log('Geocoding', type, data.location, data.country);
         const coords = await geocode(data.location, data.country);
+        console.log('Coords for', data.location, ':', coords);
         if (!coords) continue;
 
         let popupHtml, icon;
