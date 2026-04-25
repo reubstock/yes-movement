@@ -63,6 +63,10 @@ async function init() {
   // Add lat/lng columns if they don't exist yet (for existing deployments)
   await pool.query(`ALTER TABLE actions ADD COLUMN IF NOT EXISTS lat FLOAT`);
   await pool.query(`ALTER TABLE actions ADD COLUMN IF NOT EXISTS lng FLOAT`);
+  await pool.query(`ALTER TABLE groups  ADD COLUMN IF NOT EXISTS lat FLOAT`);
+  await pool.query(`ALTER TABLE groups  ADD COLUMN IF NOT EXISTS lng FLOAT`);
+  await pool.query(`ALTER TABLE summits ADD COLUMN IF NOT EXISTS lat FLOAT`);
+  await pool.query(`ALTER TABLE summits ADD COLUMN IF NOT EXISTS lng FLOAT`);
 
   // Seed members
   const { rows: m } = await sql`SELECT COUNT(*) FROM members`;
@@ -92,6 +96,10 @@ async function init() {
   await pool.query(`UPDATE actions SET lat = 29.9484, lng = -90.0771 WHERE location = 'New Orleans' AND (lat IS NULL OR lat = 0)`);
   await pool.query(`UPDATE actions SET lat = 40.3573, lng = -74.6672 WHERE location = 'Princeton' AND (lat IS NULL OR lat = 0)`);
   await pool.query(`UPDATE actions SET lat = 38.2324, lng = -122.6367 WHERE location = 'Petaluma' AND (lat IS NULL OR lat = 0)`);
+  // Preload known coords for seeded groups and summits
+  await pool.query(`UPDATE groups SET lat = 38.2324, lng = -122.6367 WHERE name = 'Red Barn Posse' AND (lat IS NULL OR lat = 0)`);
+  await pool.query(`UPDATE groups SET lat = 40.3573, lng = -74.6672 WHERE name = '6 to 1'         AND (lat IS NULL OR lat = 0)`);
+  await pool.query(`UPDATE summits SET lat = 40.3573, lng = -74.6672 WHERE location = 'Princeton'  AND (lat IS NULL OR lat = 0)`);
 
   // Seed actions
   const { rows: a } = await sql`SELECT COUNT(*) FROM actions`;
