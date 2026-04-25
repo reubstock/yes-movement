@@ -477,7 +477,7 @@
     const m = markerRefs[key];
     if (!m) return;
     if (m.isPopupOpen()) return; // already open — leave it
-    if (openPopupKeys.length >= 2) {
+    if (openPopupKeys.length >= 3) {
       const oldKey = openPopupKeys.shift();
       const oldM = markerRefs[oldKey];
       if (oldM) oldM.closePopup();
