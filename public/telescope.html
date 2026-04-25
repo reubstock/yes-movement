@@ -265,10 +265,12 @@
     .map-marker .dot {
       position: absolute; inset: 0; border-radius: 50%; border: 2px solid #fff;
     }
-    .summit-marker .ring { background: rgba(220,38,38,0.4); }
-    .summit-marker .dot  { background: #dc2626; box-shadow: 0 0 6px rgba(220,38,38,0.8); }
+    .summit-marker .ring { background: rgba(245,197,24,0.4); }
+    .summit-marker .dot  { background: #f5c518; box-shadow: 0 0 6px rgba(245,197,24,0.8); }
     .group-marker  .ring { background: rgba(22,163,74,0.4); }
     .group-marker  .dot  { background: #16a34a; box-shadow: 0 0 6px rgba(22,163,74,0.8); }
+    .action-marker .ring { background: rgba(220,38,38,0.4); }
+    .action-marker .dot  { background: #dc2626; box-shadow: 0 0 6px rgba(220,38,38,0.8); }
     .leaflet-pane        { z-index: 400 !important; }
     .leaflet-top,
     .leaflet-bottom      { z-index: 500 !important; }
@@ -325,8 +327,9 @@
       </div>
       <div id="field-map"></div>
       <div class="map-legend">
-        <div class="legend-item"><div class="legend-dot" style="background:#dc2626;"></div> Summits</div>
         <div class="legend-item"><div class="legend-dot" style="background:#16a34a;"></div> Groups</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#f5c518;"></div> Summits</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#dc2626;"></div> Actions</div>
       </div>
     </div>
 
@@ -416,6 +419,7 @@
   });
   const summitIcon = mkIcon('summit-marker');
   const groupIcon  = mkIcon('group-marker');
+  const actionIcon = mkIcon('action-marker');
 
   async function geocode(location, country) {
     const q = encodeURIComponent(`${location}, ${country}`);
@@ -429,40 +433,53 @@
   }
 
   async function plotFieldMap() {
-    const [sr, gr] = await Promise.all([fetch('/api/summits'), fetch('/api/groups')]);
+    const delay = ms => new Promise(r => setTimeout(r, ms));
+    const [sr, gr, ar] = await Promise.all([fetch('/api/summits'), fetch('/api/groups'), fetch('/api/actions')]);
     const summits = await sr.json();
     const groups  = await gr.json();
+    const actions = await ar.json();
+
     const items = [
-      ...summits.map(s => ({ type: 'summit', data: s })),
-      ...groups.map(g =>  ({ type: 'group',  data: g })),
+      ...groups.map(g =>  ({ type: 'group',  data: g, icon: groupIcon })),
+      ...summits.map(s => ({ type: 'summit', data: s, icon: summitIcon })),
+      ...actions.map(a => ({ type: 'action', data: a, icon: actionIcon })),
     ];
+
     for (let i = 0; i < items.length; i++) {
-      if (i > 0) await new Promise(r => setTimeout(r, 1100));
-      const { type, data } = items[i];
-      const coords = await geocode(data.location, data.country);
+      const { type, data, icon } = items[i];
+
+      let coords;
+      if (data.lat && data.lng) {
+        coords = { lat: data.lat, lng: data.lng };
+      } else {
+        if (i > 0) await delay(1100);
+        coords = await geocode(data.location, data.country);
+      }
       if (!coords) continue;
 
-      let popupHtml, icon;
+      let popupHtml;
       if (type === 'summit') {
-        const d = new Date(data.date + 'T00:00:00');
-        const ds = d.toLocaleDateString('en', { day: 'numeric', month: 'short', year: 'numeric' });
-        icon = summitIcon;
-        popupHtml = `
-          <div style="min-width:180px;max-width:220px;">
-            ${data.image ? `<img src="${data.image}" alt="${data.title}" style="width:100%;height:110px;object-fit:cover;display:block;border-radius:2px;margin-bottom:0.6rem;" />` : ''}
-            <div style="font-family:Arial,sans-serif;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:#dc2626;margin-bottom:0.25rem;">Summit</div>
-            <strong style="color:#fff;font-size:0.9rem;">${data.title}</strong>
-            <div style="margin-top:0.3rem;font-size:0.78rem;color:rgba(255,255,255,0.7);font-family:Arial,sans-serif;">📍 ${data.location}<br>📅 ${ds}</div>
-          </div>`;
+        const ds = new Date(data.date + 'T00:00:00').toLocaleDateString('en', { day: 'numeric', month: 'short', year: 'numeric' });
+        popupHtml = `<div style="min-width:180px;max-width:220px;">
+          ${data.image ? `<img src="${data.image}" alt="${data.title}" style="width:100%;height:110px;object-fit:cover;display:block;" />` : ''}
+          <div style="font-family:Arial,sans-serif;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:#f5c518;margin-bottom:0.25rem;padding-top:0.5rem;">Summit</div>
+          <strong style="color:#fff;font-size:0.9rem;">${data.title}</strong>
+          <div style="margin-top:0.3rem;font-size:0.78rem;color:rgba(255,255,255,0.7);font-family:Arial,sans-serif;">📍 ${data.location}<br>📅 ${ds}</div>
+        </div>`;
+      } else if (type === 'group') {
+        popupHtml = `<div style="min-width:180px;max-width:220px;">
+          ${data.image ? `<img src="${data.image}" alt="${data.name}" style="width:100%;height:110px;object-fit:cover;display:block;" />` : ''}
+          <div style="font-family:Arial,sans-serif;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:#16a34a;margin-bottom:0.25rem;padding-top:0.5rem;">Group</div>
+          <strong style="color:#fff;font-size:0.9rem;">${data.name}</strong>
+          <div style="margin-top:0.3rem;font-size:0.78rem;color:rgba(255,255,255,0.7);font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}${data.contact ? '<br>👤 ' + data.contact : ''}</div>
+        </div>`;
       } else {
-        icon = groupIcon;
-        popupHtml = `
-          <div style="min-width:180px;max-width:220px;">
-            ${data.image ? `<img src="${data.image}" alt="${data.name}" style="width:100%;height:110px;object-fit:cover;display:block;border-radius:2px;margin-bottom:0.6rem;" />` : ''}
-            <div style="font-family:Arial,sans-serif;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:#16a34a;margin-bottom:0.25rem;">Group</div>
-            <strong style="color:#fff;font-size:0.9rem;">${data.name}</strong>
-            <div style="margin-top:0.3rem;font-size:0.78rem;color:rgba(255,255,255,0.7);font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}${data.contact ? '<br>👤 ' + data.contact : ''}</div>
-          </div>`;
+        const ds = data.date ? new Date(data.date + 'T00:00:00').toLocaleDateString('en', { day: 'numeric', month: 'short', year: 'numeric' }) : null;
+        popupHtml = `<div style="min-width:180px;max-width:220px;">
+          <div style="font-family:Arial,sans-serif;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:#dc2626;margin-bottom:0.25rem;padding-top:0.5rem;">Action</div>
+          <strong style="color:#fff;font-size:0.9rem;">${data.title}</strong>
+          <div style="margin-top:0.3rem;font-size:0.78rem;color:rgba(255,255,255,0.7);font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}${ds ? '<br>📅 ' + ds : ''}</div>
+        </div>`;
       }
 
       const popup = L.popup({ className: 'dark-popup', maxWidth: 240, autoPan: false }).setContent(popupHtml);
@@ -470,6 +487,29 @@
         .bindPopup(popup).addTo(fieldMap);
       m.on('click',     function() { this.openPopup(); });
       m.on('mouseover', function() { this.openPopup(); });
+
+      // Lazy-load image for action popups
+      if (type === 'action') {
+        const actionId = data.id;
+        let imgLoaded = false;
+        m.on('popupopen', async function() {
+          if (imgLoaded) return;
+          try {
+            const res = await fetch(`/api/actions/${actionId}`);
+            if (!res.ok) return;
+            const full = await res.json();
+            if (!full.image) return;
+            imgLoaded = true;
+            const ds2 = full.date ? new Date(full.date + 'T00:00:00').toLocaleDateString('en', { day: 'numeric', month: 'short', year: 'numeric' }) : null;
+            this.getPopup().setContent(`<div style="min-width:180px;max-width:220px;">
+              <img src="${full.image}" style="width:100%;height:110px;object-fit:cover;display:block;" />
+              <div style="font-family:Arial,sans-serif;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:#dc2626;margin-bottom:0.25rem;padding-top:0.5rem;">Action</div>
+              <strong style="color:#fff;font-size:0.9rem;">${full.title}</strong>
+              <div style="margin-top:0.3rem;font-size:0.78rem;color:rgba(255,255,255,0.7);font-family:Arial,sans-serif;">📍 ${full.location}, ${full.country}${ds2 ? '<br>📅 ' + ds2 : ''}</div>
+            </div>`);
+          } catch(e) {}
+        });
+      }
     }
   }
   plotFieldMap();
