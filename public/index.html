@@ -273,11 +273,12 @@
     doubleClickZoom: true,
     keyboard: true,
     attributionControl: false,
-  }).setView([36, -97], 3.5);
+  }).setView([44, -90], 3.5);
   L.control.zoom({ position: 'topright' }).addTo(heroMap);
 
-  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
-    maxZoom: 18,
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    maxZoom: 19,
+    subdomains: 'abcd',
   }).addTo(heroMap);
 
   const summitIcon = L.divIcon({
