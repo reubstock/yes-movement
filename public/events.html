@@ -55,6 +55,29 @@
   </div>
 </div>
 
+<!-- Edit Summit Modal -->
+<div id="edit-summit-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;align-items:center;justify-content:center;">
+  <div style="background:#fff;border:1px solid #ddd;border-radius:4px;padding:2rem;max-width:480px;width:90%;position:relative;">
+    <button onclick="closeEditSummit()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:#888;font-size:1.5rem;cursor:pointer;">&times;</button>
+    <h3 style="margin-bottom:1.5rem;font-weight:400;">Edit Summit</h3>
+    <form id="edit-summit-form">
+      <input type="hidden" name="id" />
+      <div class="form-group"><label>Title *</label><input type="text" name="title" required /></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div class="form-group"><label>City *</label><input type="text" name="location" required /></div>
+        <div class="form-group"><label>Country *</label><input type="text" name="country" required /></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div class="form-group"><label>Date *</label><input type="date" name="date" required /></div>
+        <div class="form-group"><label>Time</label><input type="time" name="time" /></div>
+      </div>
+      <div class="form-group"><label>Host Name</label><input type="text" name="host_name" /></div>
+      <div class="form-group"><label>Description</label><textarea name="description" style="min-height:80px;"></textarea></div>
+      <button type="submit" class="btn btn-primary" style="width:100%;">Save Changes</button>
+    </form>
+  </div>
+</div>
+
 <footer>
   <div class="footer-brand">✦ YES Movement</div>
   <p>Say yes to what matters.</p>
@@ -78,6 +101,9 @@
         <p>📍 ${ev.location}, ${ev.country}</p>
         <p>📅 ${dateStr}${ev.time ? ' at ' + ev.time : ''}${ev.host_name ? ' &middot; 👤 ' + ev.host_name : ''}</p>
         ${ev.description ? '<p style="margin-top:0.5rem;">' + ev.description + '</p>' : ''}
+        <div style="margin-top:0.75rem;text-align:right;">
+          <button onclick='openEditSummit(${JSON.stringify(ev)})' style="font-size:0.75rem;color:#888;background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;">Edit</button>
+        </div>
       </div>`;
     }).join('');
   }
@@ -92,6 +118,44 @@
     closeModal();
     e.target.reset();
     loadEvents();
+  });
+
+  // Edit summit
+  function openEditSummit(ev) {
+    const form = document.getElementById('edit-summit-form');
+    form.elements['id'].value = ev.id;
+    form.elements['title'].value = ev.title || '';
+    form.elements['location'].value = ev.location || '';
+    form.elements['country'].value = ev.country || '';
+    form.elements['date'].value = ev.date || '';
+    form.elements['time'].value = ev.time || '';
+    form.elements['host_name'].value = ev.host_name || '';
+    form.elements['description'].value = ev.description || '';
+    document.getElementById('edit-summit-modal').style.display = 'flex';
+  }
+  function closeEditSummit() {
+    document.getElementById('edit-summit-modal').style.display = 'none';
+    document.getElementById('edit-summit-form').reset();
+  }
+  document.getElementById('edit-summit-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.textContent = 'Saving…';
+    btn.disabled = true;
+    const data = Object.fromEntries(new FormData(e.target));
+    const id = data.id;
+    delete data.id;
+    try {
+      const res = await fetch(`/api/summits/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+      if (!res.ok) throw new Error(`Server error ${res.status}`);
+      closeEditSummit();
+      loadEvents();
+    } catch (err) {
+      console.error(err);
+      alert('Something went wrong saving the summit. Please try again.');
+      btn.textContent = 'Save Changes';
+      btn.disabled = false;
+    }
   });
 
   loadEvents();

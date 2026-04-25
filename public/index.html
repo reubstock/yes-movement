@@ -226,6 +226,32 @@
   </div>
 </div>
 
+<!-- Edit Action Modal -->
+<div id="edit-action-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:300;align-items:center;justify-content:center;">
+  <div style="background:#fff;border:1px solid #ddd;border-radius:4px;padding:2rem;max-width:460px;width:90%;position:relative;">
+    <button onclick="closeEditAction()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:#888;font-size:1.5rem;cursor:pointer;">&times;</button>
+    <h3 style="margin-bottom:1.5rem;font-weight:400;">Edit Action</h3>
+    <form id="edit-action-form">
+      <input type="hidden" name="id" />
+      <div class="form-group"><label>Action Title *</label><input type="text" name="title" required /></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div class="form-group"><label>City *</label><input type="text" name="location" required /></div>
+        <div class="form-group"><label>Country *</label><input type="text" name="country" required /></div>
+      </div>
+      <div class="form-group"><label>Date</label><input type="date" name="date" /></div>
+      <div class="form-group"><label>Description</label><textarea name="description" style="min-height:72px;" placeholder="What happened?"></textarea></div>
+      <div class="form-group">
+        <label>Photo <span style="color:#aaa;font-size:0.8rem;">(leave blank to keep existing)</span></label>
+        <input type="file" id="edit-action-image-input" accept="image/*" style="width:100%;padding:0.5rem 0;font-family:Arial,sans-serif;font-size:0.85rem;color:#555;" />
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;background:#dc2626;">Save Changes</button>
+    </form>
+    <div id="edit-action-success" style="display:none;padding:1.5rem 0;text-align:center;color:#333;">
+      <p style="font-size:1.1rem;">✓ Action updated.</p>
+    </div>
+  </div>
+</div>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
   const heroMap = L.map('hero-map', {
@@ -346,6 +372,8 @@
         } else {
           icon = actionIcon; label = data.title;
           const dateStr = data.date ? new Date(data.date + 'T00:00:00').toLocaleDateString('en', { day: 'numeric', month: 'long', year: 'numeric' }) : null;
+          const escapedTitle = (data.title || '').replace(/'/g, "\\'");
+          const escapedDesc = (data.description || '').replace(/'/g, "\\'");
           popupHtml = `
             <div style="min-width:220px;max-width:260px;">
               <div style="font-family:Arial,sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#dc2626;margin-bottom:0.35rem;">Action</div>
@@ -353,6 +381,7 @@
               <p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}</p>
               ${dateStr ? `<p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">📅 ${dateStr}</p>` : ''}
               ${data.description ? `<p style="margin:0.5rem 0 0;font-size:0.82rem;color:rgba(255,255,255,0.65);font-family:Arial,sans-serif;">${data.description}</p>` : ''}
+              <a href="#" onclick="openEditAction(${data.id},'${escapedTitle}','${data.location}','${data.country}','${data.date||''}','${escapedDesc}');return false;" style="display:inline-block;margin-top:0.6rem;font-size:0.72rem;font-family:Arial,sans-serif;color:#888;text-decoration:underline;">Edit →</a>
             </div>`;
         }
 
@@ -461,6 +490,55 @@
       wrap.style.display = 'none';
     }
   }
+
+  // ── Edit Action modal ──
+  function openEditAction(id, title, location, country, date, description) {
+    const form = document.getElementById('edit-action-form');
+    form.elements['id'].value = id;
+    form.elements['title'].value = title || '';
+    form.elements['location'].value = location || '';
+    form.elements['country'].value = country || '';
+    form.elements['date'].value = date || '';
+    form.elements['description'].value = description || '';
+    document.getElementById('edit-action-image-input').value = '';
+    document.getElementById('edit-action-success').style.display = 'none';
+    document.getElementById('edit-action-form').style.display = '';
+    document.getElementById('edit-action-modal').style.display = 'flex';
+  }
+  function closeEditAction() {
+    document.getElementById('edit-action-modal').style.display = 'none';
+    document.getElementById('edit-action-form').reset();
+    document.getElementById('edit-action-success').style.display = 'none';
+    document.getElementById('edit-action-form').style.display = '';
+  }
+  document.getElementById('edit-action-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.textContent = 'Saving…';
+    btn.disabled = true;
+    const data = Object.fromEntries(new FormData(e.target));
+    const id = data.id;
+    delete data.id;
+    const fileInput = document.getElementById('edit-action-image-input');
+    if (fileInput.files && fileInput.files[0]) {
+      data.image = await new Promise(resolve => {
+        const reader = new FileReader();
+        reader.onload = ev => resolve(ev.target.result);
+        reader.readAsDataURL(fileInput.files[0]);
+      });
+    }
+    try {
+      const res = await fetch(`/api/actions/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+      if (!res.ok) throw new Error(`Server error ${res.status}`);
+      document.getElementById('edit-action-form').style.display = 'none';
+      document.getElementById('edit-action-success').style.display = 'block';
+    } catch (err) {
+      console.error(err);
+      alert('Something went wrong. Please try again.');
+      btn.textContent = 'Save Changes';
+      btn.disabled = false;
+    }
+  });
 
   document.getElementById('action-form').addEventListener('submit', async e => {
     e.preventDefault();

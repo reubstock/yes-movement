@@ -56,4 +56,25 @@ router.post('/', async (req, res) => {
   }
 });
 
+router.patch('/:id', async (req, res) => {
+  try {
+    await store.ready();
+    const { title, description, location, country, date, image } = req.body;
+    if (!title || !location || !country) {
+      return res.status(400).json({ error: 'title, location and country are required' });
+    }
+    const coords = await geocode(location, country);
+    const action = await store.actions.update(req.params.id, {
+      title, description, location, country, date, image,
+      lat: coords ? coords.lat : null,
+      lng: coords ? coords.lng : null,
+    });
+    if (!action) return res.status(404).json({ error: 'Action not found' });
+    res.json(action);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to update action' });
+  }
+});
+
 module.exports = router;

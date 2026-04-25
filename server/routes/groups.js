@@ -40,4 +40,20 @@ router.post('/', async (req, res) => {
   }
 });
 
+router.patch('/:id', async (req, res) => {
+  try {
+    await store.ready();
+    const { name, description, location, country, contact, image } = req.body;
+    if (!name || !location || !country) {
+      return res.status(400).json({ error: 'name, location, and country are required' });
+    }
+    const group = await store.groups.update(req.params.id, { name, description, location, country, contact, image });
+    if (!group) return res.status(404).json({ error: 'Group not found' });
+    res.json(group);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to update group' });
+  }
+});
+
 module.exports = router;

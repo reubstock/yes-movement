@@ -42,4 +42,20 @@ router.post('/', async (req, res) => {
   }
 });
 
+router.patch('/:id', async (req, res) => {
+  try {
+    await store.ready();
+    const { title, description, location, country, date, time, host_name } = req.body;
+    if (!title || !location || !country || !date) {
+      return res.status(400).json({ error: 'title, location, country, and date are required' });
+    }
+    const summit = await store.summits.update(req.params.id, { title, description, location, country, date, time, host_name });
+    if (!summit) return res.status(404).json({ error: 'Summit not found' });
+    res.json(summit);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to update summit' });
+  }
+});
+
 module.exports = router;

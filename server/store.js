@@ -157,6 +157,13 @@ module.exports = {
       );
       return rows[0];
     },
+    update: async (id, { title, description, location, country, date, time, host_name }) => {
+      const { rows } = await pool.query(
+        'UPDATE summits SET title=$1, description=$2, location=$3, country=$4, date=$5, time=$6, host_name=$7 WHERE id=$8 RETURNING *',
+        [title, description || null, location, country, date, time || null, host_name || null, id]
+      );
+      return rows[0];
+    },
   },
 
   groups: {
@@ -172,6 +179,13 @@ module.exports = {
       const { rows } = await pool.query(
         'INSERT INTO groups (name, description, location, country, contact, image) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *',
         [name, description || null, location, country, contact || null, image || null]
+      );
+      return rows[0];
+    },
+    update: async (id, { name, description, location, country, contact, image }) => {
+      const { rows } = await pool.query(
+        'UPDATE groups SET name=$1, description=$2, location=$3, country=$4, contact=$5, image=COALESCE($6, image) WHERE id=$7 RETURNING *',
+        [name, description || null, location, country, contact || null, image || null, id]
       );
       return rows[0];
     },
@@ -197,6 +211,13 @@ module.exports = {
       const { rows } = await pool.query(
         'INSERT INTO actions (title, description, location, country, date, image, lat, lng) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *',
         [title, description || null, location, country, date || null, image || null, lat || null, lng || null]
+      );
+      return rows[0];
+    },
+    update: async (id, { title, description, location, country, date, image, lat, lng }) => {
+      const { rows } = await pool.query(
+        'UPDATE actions SET title=$1, description=$2, location=$3, country=$4, date=$5, image=COALESCE($6, image), lat=$7, lng=$8 WHERE id=$9 RETURNING *',
+        [title, description || null, location, country, date || null, image || null, lat || null, lng || null, id]
       );
       return rows[0];
     },

@@ -91,6 +91,32 @@
   </div>
 </div>
 
+<!-- Edit Group Modal -->
+<div id="edit-group-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;align-items:center;justify-content:center;">
+  <div style="background:#fff;border:1px solid #ddd;border-radius:4px;padding:2rem;max-width:480px;width:90%;position:relative;">
+    <button onclick="closeEditGroup()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:#888;font-size:1.5rem;cursor:pointer;">&times;</button>
+    <h3 style="margin-bottom:1.5rem;font-weight:400;">Edit Group</h3>
+    <form id="edit-group-form">
+      <input type="hidden" name="id" />
+      <div class="form-group"><label>Group Name *</label><input type="text" name="name" required /></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div class="form-group"><label>City *</label><input type="text" name="location" required /></div>
+        <div class="form-group"><label>Country *</label><input type="text" name="country" required /></div>
+      </div>
+      <div class="form-group"><label>Your Name</label><input type="text" name="contact" /></div>
+      <div class="form-group"><label>Description</label><textarea name="description" style="min-height:80px;" placeholder="What does your group do?"></textarea></div>
+      <div class="form-group">
+        <label>Group Photo <span style="color:#aaa;font-size:0.8rem;">(leave blank to keep existing)</span></label>
+        <input type="file" id="edit-group-image-input" accept="image/*" style="width:100%;padding:0.5rem 0;font-family:Arial,sans-serif;font-size:0.85rem;color:#555;" onchange="previewEditGroupImage(this)" />
+        <div id="edit-image-preview-wrap" style="display:none;margin-top:0.75rem;">
+          <img id="edit-image-preview" src="" alt="Preview" style="width:100%;height:140px;object-fit:cover;border-radius:2px;border:1px solid #ddd;" />
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;">Save Changes</button>
+    </form>
+  </div>
+</div>
+
 <footer>
   <div class="footer-brand">✦ YES Movement</div>
   <p>Say yes to what matters.</p>
@@ -145,7 +171,10 @@
           <p style="margin-bottom:0.25rem;">📍 ${g.location}, ${g.country}</p>
           ${g.contact ? `<p style="margin-bottom:0.75rem;">👤 ${g.contact}</p>` : '<p style="margin-bottom:0.75rem;"></p>'}
           ${g.description ? `<p style="margin-bottom:1rem;">${g.description}</p>` : ''}
-          <button class="btn btn-primary" style="width:100%;margin-top:auto;" onclick="openJoinModal(${g.id}, '${g.name.replace(/'/g,"\\'")}', '${g.location}, ${g.country}')">Join</button>
+          <div style="display:flex;gap:0.75rem;align-items:center;margin-top:auto;">
+            <button class="btn btn-primary" style="flex:1;" onclick="openJoinModal(${g.id}, '${g.name.replace(/'/g,"\\'")}', '${g.location}, ${g.country}')">Join</button>
+            <button onclick="openEditGroup(${JSON.stringify(g).replace(/"/g,'&quot;')})" style="font-size:0.75rem;color:#888;background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;white-space:nowrap;">Edit</button>
+          </div>
         </div>
       </div>
     `).join('');
@@ -219,6 +248,64 @@
       console.error(err);
       alert('Something went wrong creating the group. Please try again.');
       btn.textContent = 'Create Group';
+      btn.disabled = false;
+    }
+  });
+
+  // Edit group modal
+  function openEditGroup(g) {
+    const form = document.getElementById('edit-group-form');
+    form.elements['id'].value = g.id;
+    form.elements['name'].value = g.name || '';
+    form.elements['location'].value = g.location || '';
+    form.elements['country'].value = g.country || '';
+    form.elements['contact'].value = g.contact || '';
+    form.elements['description'].value = g.description || '';
+    document.getElementById('edit-group-image-input').value = '';
+    document.getElementById('edit-image-preview-wrap').style.display = 'none';
+    document.getElementById('edit-group-modal').style.display = 'flex';
+  }
+  function closeEditGroup() {
+    document.getElementById('edit-group-modal').style.display = 'none';
+    document.getElementById('edit-group-form').reset();
+    document.getElementById('edit-image-preview-wrap').style.display = 'none';
+  }
+  function previewEditGroupImage(input) {
+    const wrap = document.getElementById('edit-image-preview-wrap');
+    const preview = document.getElementById('edit-image-preview');
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = e => { preview.src = e.target.result; wrap.style.display = 'block'; };
+      reader.readAsDataURL(input.files[0]);
+    } else {
+      wrap.style.display = 'none';
+    }
+  }
+  document.getElementById('edit-group-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.textContent = 'Saving…';
+    btn.disabled = true;
+    const data = Object.fromEntries(new FormData(e.target));
+    const id = data.id;
+    delete data.id;
+    const fileInput = document.getElementById('edit-group-image-input');
+    if (fileInput.files && fileInput.files[0]) {
+      data.image = await new Promise(resolve => {
+        const reader = new FileReader();
+        reader.onload = ev => resolve(ev.target.result);
+        reader.readAsDataURL(fileInput.files[0]);
+      });
+    }
+    try {
+      const res = await fetch(`/api/groups/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+      if (!res.ok) throw new Error(`Server error ${res.status}`);
+      closeEditGroup();
+      loadGroups();
+    } catch (err) {
+      console.error(err);
+      alert('Something went wrong saving the group. Please try again.');
+      btn.textContent = 'Save Changes';
       btn.disabled = false;
     }
   });
