@@ -303,6 +303,7 @@
   let allActionsData = [];
 
   async function plotMarkersOnHero() {
+    const delay = ms => new Promise(r => setTimeout(r, ms));
     try {
       const [summitsRes, groupsRes] = await Promise.all([
         fetch('/api/summits'), fetch('/api/groups')
@@ -310,7 +311,6 @@
       const summits = await safeJson(summitsRes);
       const groups  = await safeJson(groupsRes);
 
-      // Fetch actions separately so any failure is isolated
       let actions = [];
       try {
         const actionsRes = await fetch('/api/actions');
@@ -318,21 +318,17 @@
         allActionsData = actions;
       } catch(e) { console.warn('Actions fetch failed:', e); }
 
-      const items = [
-        ...groups.map(g =>  ({ type: 'group',  data: g })),
-        ...summits.map(s => ({ type: 'summit', data: s })),
-        ...actions.map(a => ({ type: 'action', data: a })),
-      ];
-
-      // Populate sidebar immediately from fetched data
       populateSidebar(summits, groups, actions);
 
-      const delay = ms => new Promise(r => setTimeout(r, ms));
-      const plotted = []; // collect for animation pass
+      const items = [
+        ...groups.map(g =>  ({ type: 'group',  data: g, icon: groupIcon })),
+        ...summits.map(s => ({ type: 'summit', data: s, icon: summitIcon })),
+        ...actions.map(a => ({ type: 'action', data: a, icon: actionIcon })),
+      ];
 
-      // ── Phase 1: geocode + add all markers silently ──
+      // Add all markers silently — no flyTo, no tour
       for (let i = 0; i < items.length; i++) {
-        const { type, data } = items[i];
+        const { type, data, icon } = items[i];
 
         let coords;
         if (data.lat && data.lng) {
@@ -343,47 +339,40 @@
         }
         if (!coords) continue;
 
-        let popupHtml, icon, label;
-
+        let popupHtml;
         if (type === 'summit') {
           const d = new Date(data.date + 'T00:00:00');
           const dateStr = d.toLocaleDateString('en', { day: 'numeric', month: 'long', year: 'numeric' });
-          icon = summitIcon; label = data.title;
-          popupHtml = `
-            <div style="min-width:220px;max-width:260px;">
-              ${data.image ? `<img src="${data.image}" alt="${data.title}" style="width:100%;height:120px;object-fit:cover;display:block;" />` : ''}
-              <div style="font-family:Arial,sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#f5c518;margin-bottom:0.35rem;">Summit</div>
-              <h4 style="margin:0 0 0.4rem;font-size:1rem;color:#fff;font-family:Georgia,serif;">${data.title}</h4>
-              <p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}</p>
-              <p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">📅 ${dateStr}${data.time ? ' at ' + data.time : ''}</p>
-              ${data.host_name ? `<p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">👤 ${data.host_name}</p>` : ''}
-              ${data.description ? `<p style="margin:0.5rem 0 0;font-size:0.82rem;color:rgba(255,255,255,0.65);font-family:Arial,sans-serif;">${data.description}</p>` : ''}
-              <a href="/events.html" style="display:inline-block;margin-top:0.75rem;font-size:0.75rem;font-family:Arial,sans-serif;color:#f5c518;text-decoration:none;letter-spacing:0.05em;">View all summits →</a>
-            </div>`;
+          popupHtml = `<div style="min-width:220px;max-width:260px;">
+            ${data.image ? `<img src="${data.image}" alt="${data.title}" style="width:100%;height:120px;object-fit:cover;display:block;" />` : ''}
+            <div style="font-family:Arial,sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#f5c518;margin-bottom:0.35rem;">Summit</div>
+            <h4 style="margin:0 0 0.4rem;font-size:1rem;color:#fff;font-family:Georgia,serif;">${data.title}</h4>
+            <p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}</p>
+            <p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">📅 ${dateStr}${data.time ? ' at ' + data.time : ''}</p>
+            ${data.host_name ? `<p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">👤 ${data.host_name}</p>` : ''}
+            ${data.description ? `<p style="margin:0.5rem 0 0;font-size:0.82rem;color:rgba(255,255,255,0.65);font-family:Arial,sans-serif;">${data.description}</p>` : ''}
+            <a href="/events.html" style="display:inline-block;margin-top:0.75rem;font-size:0.75rem;font-family:Arial,sans-serif;color:#f5c518;text-decoration:none;letter-spacing:0.05em;">View all summits →</a>
+          </div>`;
         } else if (type === 'group') {
-          icon = groupIcon; label = data.name;
-          popupHtml = `
-            <div style="min-width:220px;max-width:260px;">
-              ${data.image ? `<img src="${data.image}" alt="${data.name}" style="width:100%;height:120px;object-fit:cover;display:block;" />` : ''}
-              <div style="font-family:Arial,sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#16a34a;margin-bottom:0.35rem;">Group</div>
-              <h4 style="margin:0 0 0.4rem;font-size:1rem;color:#fff;font-family:Georgia,serif;">${data.name}</h4>
-              <p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}</p>
-              ${data.contact ? `<p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">👤 ${data.contact}</p>` : ''}
-              ${data.description ? `<p style="margin:0.5rem 0 0;font-size:0.82rem;color:rgba(255,255,255,0.65);font-family:Arial,sans-serif;">${data.description}</p>` : ''}
-              <a href="/members.html" style="display:inline-block;margin-top:0.75rem;font-size:0.75rem;font-family:Arial,sans-serif;color:#16a34a;text-decoration:none;letter-spacing:0.05em;">View all groups →</a>
-            </div>`;
+          popupHtml = `<div style="min-width:220px;max-width:260px;">
+            ${data.image ? `<img src="${data.image}" alt="${data.name}" style="width:100%;height:120px;object-fit:cover;display:block;" />` : ''}
+            <div style="font-family:Arial,sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#16a34a;margin-bottom:0.35rem;">Group</div>
+            <h4 style="margin:0 0 0.4rem;font-size:1rem;color:#fff;font-family:Georgia,serif;">${data.name}</h4>
+            <p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}</p>
+            ${data.contact ? `<p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">👤 ${data.contact}</p>` : ''}
+            ${data.description ? `<p style="margin:0.5rem 0 0;font-size:0.82rem;color:rgba(255,255,255,0.65);font-family:Arial,sans-serif;">${data.description}</p>` : ''}
+            <a href="/members.html" style="display:inline-block;margin-top:0.75rem;font-size:0.75rem;font-family:Arial,sans-serif;color:#16a34a;text-decoration:none;letter-spacing:0.05em;">View all groups →</a>
+          </div>`;
         } else {
-          icon = actionIcon; label = data.title;
           const dateStr = data.date ? new Date(data.date + 'T00:00:00').toLocaleDateString('en', { day: 'numeric', month: 'long', year: 'numeric' }) : null;
-          popupHtml = `
-            <div style="min-width:220px;max-width:260px;">
-              <div style="font-family:Arial,sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#dc2626;margin-bottom:0.35rem;">Action</div>
-              <h4 style="margin:0 0 0.4rem;font-size:1rem;color:#fff;font-family:Georgia,serif;">${data.title}</h4>
-              <p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}</p>
-              ${dateStr ? `<p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">📅 ${dateStr}</p>` : ''}
-              ${data.description ? `<p style="margin:0.5rem 0 0;font-size:0.82rem;color:rgba(255,255,255,0.65);font-family:Arial,sans-serif;">${data.description}</p>` : ''}
-              <a href="#" onclick="openEditActionById(${data.id});return false;" style="display:inline-block;margin-top:0.6rem;font-size:0.72rem;font-family:Arial,sans-serif;color:#888;text-decoration:underline;">Edit →</a>
-            </div>`;
+          popupHtml = `<div style="min-width:220px;max-width:260px;">
+            <div style="font-family:Arial,sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#dc2626;margin-bottom:0.35rem;">Action</div>
+            <h4 style="margin:0 0 0.4rem;font-size:1rem;color:#fff;font-family:Georgia,serif;">${data.title}</h4>
+            <p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}</p>
+            ${dateStr ? `<p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">📅 ${dateStr}</p>` : ''}
+            ${data.description ? `<p style="margin:0.5rem 0 0;font-size:0.82rem;color:rgba(255,255,255,0.65);font-family:Arial,sans-serif;">${data.description}</p>` : ''}
+            <a href="#" onclick="openEditActionById(${data.id});return false;" style="display:inline-block;margin-top:0.6rem;font-size:0.72rem;font-family:Arial,sans-serif;color:#888;text-decoration:underline;">Edit →</a>
+          </div>`;
         }
 
         const popup = L.popup({ className: 'dark-popup', maxWidth: 280, autoPan: false }).setContent(popupHtml);
@@ -391,21 +380,11 @@
         markerRefs[`${type}-${data.id}`] = m;
         m.on('click',     function() { this.openPopup(); });
         m.on('mouseover', function() { this.openPopup(); });
-        plotted.push({ m, coords });
-      }
 
-      // ── Phase 2: cinematic tour — fly to each marker ──
-      for (const { m, coords } of plotted) {
-        heroMap.flyTo([coords.lat, coords.lng], 7, { duration: 2.2 });
-        await delay(1800);
-        m.openPopup();
-        await delay(2200);
-        m.closePopup();
-        await delay(400);
+        // Auto-open popups for Red Barn Posse and New Orleans action
+        if (type === 'group'  && data.name     === 'Red Barn Posse') m.openPopup();
+        if (type === 'action' && data.location === 'New Orleans')    m.openPopup();
       }
-
-      // ── Phase 3: pull back to world overview ──
-      heroMap.flyTo([30, -20], 3, { duration: 3 });
 
     } catch (e) { console.error(e); }
   }
