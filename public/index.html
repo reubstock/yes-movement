@@ -12,7 +12,6 @@
       70%  { transform: scale(2.4); opacity: 0;   }
       100% { transform: scale(2.4); opacity: 0;   }
     }
-    /* shared marker layout — dot on left, icon to the right */
     .map-marker {
       display: flex; align-items: center; gap: 5px;
       pointer-events: auto;
@@ -26,14 +25,15 @@
       position: absolute; inset: 0; border-radius: 50%;
       border: 2.5px solid #fff;
     }
-    /* Summit — red */
-    .summit-marker .ring { background: rgba(220,38,38,0.4); }
-    .summit-marker .dot  { background: #dc2626; box-shadow: 0 0 8px rgba(220,38,38,0.9); }
+    /* Summit — yellow */
+    .summit-marker .ring { background: rgba(245,197,24,0.4); }
+    .summit-marker .dot  { background: #f5c518; box-shadow: 0 0 8px rgba(245,197,24,0.9); }
     /* Group — green */
     .group-marker .ring { background: rgba(22,163,74,0.4); }
     .group-marker .dot  { background: #16a34a; box-shadow: 0 0 8px rgba(22,163,74,0.9); }
-    /* icon beside dot */
-    .map-marker .icon { display: flex; align-items: center; }
+    /* Action — red */
+    .action-marker .ring { background: rgba(220,38,38,0.4); }
+    .action-marker .dot  { background: #dc2626; box-shadow: 0 0 8px rgba(220,38,38,0.9); }
     /* dark popup */
     .dark-popup .leaflet-popup-content-wrapper {
       background: rgba(10,10,10,0.92);
@@ -54,13 +54,40 @@
       max-width: none;
     }
     .dark-popup .leaflet-popup-tip { background: rgba(10,10,10,0.92); }
-    /* Lift Leaflet layers above the hero overlay (z-index 1) and content (z-index 2) */
     .leaflet-pane         { z-index: 400 !important; }
     .leaflet-top,
     .leaflet-bottom       { z-index: 500 !important; }
     .leaflet-marker-pane  { pointer-events: auto !important; }
     .leaflet-marker-icon,
     .leaflet-marker-shadow { pointer-events: auto !important; }
+
+    /* Map sidebar */
+    #map-sidebar {
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 260px;
+      background: rgba(10,10,10,0.88);
+      z-index: 10;
+      pointer-events: auto;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid rgba(255,255,255,0.07);
+    }
+    #map-sidebar .sidebar-section {
+      padding: 1.1rem 1.25rem;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    #map-sidebar .sidebar-label {
+      font-family: Arial, sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.38);
+      margin-bottom: 0.65rem;
+    }
+    @media (max-width: 640px) {
+      #map-sidebar { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -80,6 +107,49 @@
 
 <section class="hero">
   <div id="hero-map"></div>
+
+  <!-- Left sidebar -->
+  <div id="map-sidebar">
+
+    <!-- Latest Broadcast -->
+    <div class="sidebar-section">
+      <div class="sidebar-label">Latest Broadcast</div>
+      <div style="position:relative;background:#0d0d0d;border-radius:3px;aspect-ratio:16/9;overflow:hidden;border:1px solid rgba(255,255,255,0.08);cursor:pointer;" onclick="this.querySelector('iframe') || (this.innerHTML='<iframe src=\'https://www.youtube.com/embed?listType=user_uploads&list=yesmovement&autoplay=1\' style=\'width:100%;height:100%;border:none;\' allow=\'autoplay\'></iframe>')">
+        <div id="broadcast-placeholder" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;">
+          <div style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+          <div style="font-family:Arial,sans-serif;font-size:0.62rem;color:rgba(255,255,255,0.28);letter-spacing:0.05em;">Coming soon</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="sidebar-section">
+      <div class="sidebar-label">Map Legend</div>
+      <div style="display:flex;flex-direction:column;gap:0.6rem;">
+        <div style="display:flex;align-items:center;gap:0.7rem;">
+          <div style="width:10px;height:10px;border-radius:50%;background:#16a34a;box-shadow:0 0 6px rgba(22,163,74,0.8);flex-shrink:0;"></div>
+          <span style="font-family:Arial,sans-serif;font-size:0.78rem;color:rgba(255,255,255,0.6);">Groups</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.7rem;">
+          <div style="width:10px;height:10px;border-radius:50%;background:#f5c518;box-shadow:0 0 6px rgba(245,197,24,0.8);flex-shrink:0;"></div>
+          <span style="font-family:Arial,sans-serif;font-size:0.78rem;color:rgba(255,255,255,0.6);">Summits</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.7rem;">
+          <div style="width:10px;height:10px;border-radius:50%;background:#dc2626;box-shadow:0 0 6px rgba(220,38,38,0.8);flex-shrink:0;"></div>
+          <span style="font-family:Arial,sans-serif;font-size:0.78rem;color:rgba(255,255,255,0.6);">Actions</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Log Action -->
+    <div class="sidebar-section" style="margin-top:auto;border-bottom:none;">
+      <button onclick="openAddActionModal()" style="width:100%;padding:0.65rem;background:#dc2626;color:#fff;border:none;border-radius:2px;font-family:Arial,sans-serif;font-size:0.7rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;">+ Log Action</button>
+    </div>
+
+  </div>
+
   <div class="hero-overlay" style="pointer-events:none;"></div>
   <div class="hero-content" style="pointer-events:none;">
     <div class="hero-emblem">✦</div>
@@ -116,6 +186,34 @@
   <p>Say yes to what matters.</p>
 </footer>
 
+<!-- Add Action Modal -->
+<div id="action-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:300;align-items:center;justify-content:center;">
+  <div style="background:#fff;border:1px solid #ddd;border-radius:4px;padding:2rem;max-width:460px;width:90%;position:relative;">
+    <button onclick="closeAddActionModal()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:#888;font-size:1.5rem;cursor:pointer;">&times;</button>
+    <h3 style="margin-bottom:1.5rem;font-weight:400;">Log an Action</h3>
+    <form id="action-form">
+      <div class="form-group"><label>Action Title *</label><input type="text" name="title" required /></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div class="form-group"><label>City *</label><input type="text" name="location" required /></div>
+        <div class="form-group"><label>Country *</label><input type="text" name="country" required /></div>
+      </div>
+      <div class="form-group"><label>Date</label><input type="date" name="date" /></div>
+      <div class="form-group"><label>Description</label><textarea name="description" style="min-height:72px;" placeholder="What happened?"></textarea></div>
+      <div class="form-group">
+        <label>Photo</label>
+        <input type="file" id="action-image-input" accept="image/*" style="width:100%;padding:0.5rem 0;font-family:Arial,sans-serif;font-size:0.85rem;color:#555;" onchange="previewActionImage(this)" />
+        <div id="action-preview-wrap" style="display:none;margin-top:0.75rem;">
+          <img id="action-preview" src="" alt="Preview" style="width:100%;height:130px;object-fit:cover;border-radius:2px;border:1px solid #ddd;" />
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;background:#dc2626;">Log Action</button>
+    </form>
+    <div id="action-success" style="display:none;padding:1.5rem 0;text-align:center;color:#333;">
+      <p style="font-size:1.1rem;">✓ Action logged. It will appear on the map shortly.</p>
+    </div>
+  </div>
+</div>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
   const heroMap = L.map('hero-map', {
@@ -138,10 +236,14 @@
     html: `<div class="map-marker summit-marker"><div class="dot-wrap"><div class="ring"></div><div class="dot"></div></div></div>`,
     iconSize: [22, 22], iconAnchor: [11, 11], popupAnchor: [0, -13],
   });
-
   const groupIcon = L.divIcon({
     className: '',
     html: `<div class="map-marker group-marker"><div class="dot-wrap"><div class="ring"></div><div class="dot"></div></div></div>`,
+    iconSize: [22, 22], iconAnchor: [11, 11], popupAnchor: [0, -13],
+  });
+  const actionIcon = L.divIcon({
+    className: '',
+    html: `<div class="map-marker action-marker"><div class="dot-wrap"><div class="ring"></div><div class="dot"></div></div></div>`,
     iconSize: [22, 22], iconAnchor: [11, 11], popupAnchor: [0, -13],
   });
 
@@ -154,21 +256,19 @@
     } catch { return null; }
   }
 
-  function makePopup(html) {
-    return L.popup({ className: 'dark-popup', maxWidth: 280, autoPan: false });
-  }
-
   async function plotMarkersOnHero() {
     try {
-      const [summitsRes, groupsRes] = await Promise.all([
-        fetch('/api/summits'), fetch('/api/groups')
+      const [summitsRes, groupsRes, actionsRes] = await Promise.all([
+        fetch('/api/summits'), fetch('/api/groups'), fetch('/api/actions')
       ]);
       const summits = await summitsRes.json();
       const groups  = await groupsRes.json();
+      const actions = await actionsRes.json();
 
       const items = [
         ...summits.map(s => ({ type: 'summit', data: s })),
         ...groups.map(g =>  ({ type: 'group',  data: g })),
+        ...actions.map(a => ({ type: 'action', data: a })),
       ];
 
       for (let i = 0; i < items.length; i++) {
@@ -185,26 +285,38 @@
           icon = summitIcon;
           popupHtml = `
             <div style="min-width:220px;max-width:260px;">
-              ${data.image ? `<img src="${data.image}" alt="${data.title}" style="width:100%;height:120px;object-fit:cover;display:block;border-radius:2px;margin-bottom:0.75rem;" />` : ''}
-              <div style="font-family:Arial,sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#dc2626;margin-bottom:0.35rem;">Summit</div>
+              ${data.image ? `<img src="${data.image}" alt="${data.title}" style="width:100%;height:120px;object-fit:cover;display:block;" />` : ''}
+              <div style="font-family:Arial,sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#f5c518;margin-bottom:0.35rem;">Summit</div>
               <h4 style="margin:0 0 0.4rem;font-size:1rem;color:#fff;font-family:Georgia,serif;">${data.title}</h4>
               <p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}</p>
               <p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">📅 ${dateStr}${data.time ? ' at ' + data.time : ''}</p>
               ${data.host_name ? `<p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">👤 ${data.host_name}</p>` : ''}
               ${data.description ? `<p style="margin:0.5rem 0 0;font-size:0.82rem;color:rgba(255,255,255,0.65);font-family:Arial,sans-serif;">${data.description}</p>` : ''}
-              <a href="/events.html" style="display:inline-block;margin-top:0.75rem;font-size:0.75rem;font-family:Arial,sans-serif;color:#dc2626;text-decoration:none;letter-spacing:0.05em;">View all summits →</a>
+              <a href="/events.html" style="display:inline-block;margin-top:0.75rem;font-size:0.75rem;font-family:Arial,sans-serif;color:#f5c518;text-decoration:none;letter-spacing:0.05em;">View all summits →</a>
             </div>`;
-        } else {
+        } else if (type === 'group') {
           icon = groupIcon;
           popupHtml = `
             <div style="min-width:220px;max-width:260px;">
-              ${data.image ? `<img src="${data.image}" alt="${data.name}" style="width:100%;height:120px;object-fit:cover;display:block;border-radius:2px;margin-bottom:0.75rem;" />` : ''}
+              ${data.image ? `<img src="${data.image}" alt="${data.name}" style="width:100%;height:120px;object-fit:cover;display:block;" />` : ''}
               <div style="font-family:Arial,sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#16a34a;margin-bottom:0.35rem;">Group</div>
               <h4 style="margin:0 0 0.4rem;font-size:1rem;color:#fff;font-family:Georgia,serif;">${data.name}</h4>
               <p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}</p>
               ${data.contact ? `<p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">👤 ${data.contact}</p>` : ''}
               ${data.description ? `<p style="margin:0.5rem 0 0;font-size:0.82rem;color:rgba(255,255,255,0.65);font-family:Arial,sans-serif;">${data.description}</p>` : ''}
               <a href="/members.html" style="display:inline-block;margin-top:0.75rem;font-size:0.75rem;font-family:Arial,sans-serif;color:#16a34a;text-decoration:none;letter-spacing:0.05em;">View all groups →</a>
+            </div>`;
+        } else {
+          icon = actionIcon;
+          const dateStr = data.date ? new Date(data.date + 'T00:00:00').toLocaleDateString('en', { day: 'numeric', month: 'long', year: 'numeric' }) : null;
+          popupHtml = `
+            <div style="min-width:220px;max-width:260px;">
+              ${data.image ? `<img src="${data.image}" alt="${data.title}" style="width:100%;height:120px;object-fit:cover;display:block;" />` : ''}
+              <div style="font-family:Arial,sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#dc2626;margin-bottom:0.35rem;">Action</div>
+              <h4 style="margin:0 0 0.4rem;font-size:1rem;color:#fff;font-family:Georgia,serif;">${data.title}</h4>
+              <p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}</p>
+              ${dateStr ? `<p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">📅 ${dateStr}</p>` : ''}
+              ${data.description ? `<p style="margin:0.5rem 0 0;font-size:0.82rem;color:rgba(255,255,255,0.65);font-family:Arial,sans-serif;">${data.description}</p>` : ''}
             </div>`;
         }
 
@@ -222,6 +334,57 @@
   }
 
   plotMarkersOnHero();
+
+  // ── Add Action modal ──
+  function openAddActionModal() {
+    document.getElementById('action-modal').style.display = 'flex';
+  }
+  function closeAddActionModal() {
+    document.getElementById('action-modal').style.display = 'none';
+    document.getElementById('action-form').reset();
+    document.getElementById('action-form').style.display = '';
+    document.getElementById('action-success').style.display = 'none';
+    document.getElementById('action-preview-wrap').style.display = 'none';
+  }
+
+  function previewActionImage(input) {
+    const wrap = document.getElementById('action-preview-wrap');
+    const preview = document.getElementById('action-preview');
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = e => { preview.src = e.target.result; wrap.style.display = 'block'; };
+      reader.readAsDataURL(input.files[0]);
+    } else {
+      wrap.style.display = 'none';
+    }
+  }
+
+  document.getElementById('action-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.textContent = 'Logging…';
+    btn.disabled = true;
+    const data = Object.fromEntries(new FormData(e.target));
+    const fileInput = document.getElementById('action-image-input');
+    if (fileInput.files && fileInput.files[0]) {
+      data.image = await new Promise(resolve => {
+        const reader = new FileReader();
+        reader.onload = ev => resolve(ev.target.result);
+        reader.readAsDataURL(fileInput.files[0]);
+      });
+    }
+    try {
+      const res = await fetch('/api/actions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+      if (!res.ok) throw new Error(`Server error ${res.status}`);
+      document.getElementById('action-form').style.display = 'none';
+      document.getElementById('action-success').style.display = 'block';
+    } catch (err) {
+      console.error(err);
+      alert('Something went wrong. Please try again.');
+      btn.textContent = 'Log Action';
+      btn.disabled = false;
+    }
+  });
 </script>
 <script src="/js/nav.js"></script>
 <script>

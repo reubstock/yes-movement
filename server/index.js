@@ -16,6 +16,7 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 app.use('/api/members', require('./routes/members'));
 app.use('/api/summits', require('./routes/summits'));
 app.use('/api/groups', require('./routes/groups'));
+app.use('/api/actions', require('./routes/actions'));
 
 
 app.get('*', (req, res) => {

@@ -46,6 +46,18 @@ async function init() {
       image TEXT
     )
   `;
+  await sql`
+    CREATE TABLE IF NOT EXISTS actions (
+      id SERIAL PRIMARY KEY,
+      title TEXT NOT NULL,
+      description TEXT,
+      location TEXT NOT NULL,
+      country TEXT NOT NULL,
+      date TEXT,
+      image TEXT,
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    )
+  `;
 
   // Seed members
   const { rows: m } = await sql`SELECT COUNT(*) FROM members`;
@@ -132,6 +144,24 @@ module.exports = {
       const { rows } = await pool.query(
         'INSERT INTO groups (name, description, location, country, contact, image) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *',
         [name, description || null, location, country, contact || null, image || null]
+      );
+      return rows[0];
+    },
+  },
+
+  actions: {
+    all: async () => {
+      const { rows } = await pool.query('SELECT * FROM actions ORDER BY created_at DESC');
+      return rows;
+    },
+    get: async (id) => {
+      const { rows } = await pool.query('SELECT * FROM actions WHERE id = $1', [id]);
+      return rows[0] || null;
+    },
+    insert: async ({ title, description, location, country, date, image }) => {
+      const { rows } = await pool.query(
+        'INSERT INTO actions (title, description, location, country, date, image) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *',
+        [title, description || null, location, country, date || null, image || null]
       );
       return rows[0];
     },
