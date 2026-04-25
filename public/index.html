@@ -101,6 +101,7 @@
     <li><a href="/events.html">Summits</a></li>
     <li><a href="/members.html">Groups</a></li>
     <li><a href="/about.html">About</a></li>
+    <li><button onclick="openAddActionModal()" style="background:#dc2626;color:#fff;border:none;border-radius:2px;padding:0.45rem 1rem;font-family:Arial,sans-serif;font-size:0.75rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;">+ Log Action</button></li>
   </ul>
   <button class="nav-toggle" aria-label="Toggle menu">
     <span></span><span></span><span></span>
@@ -132,41 +133,42 @@
     </div>
 
     <!-- Movement in Progress -->
-    <div style="margin:0.75rem 0.85rem;background:rgba(180,180,180,0.13);border-radius:3px;padding:0.85rem 0.9rem;">
-      <div style="font-family:Arial,sans-serif;font-size:0.58rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.38);margin-bottom:0.6rem;">Movement in Progress</div>
+    <div style="margin:0.6rem 0.75rem;background:rgba(180,180,180,0.13);border-radius:3px;padding:0.8rem 0.85rem;overflow-y:auto;flex:1;">
+      <div style="font-family:Arial,sans-serif;font-size:0.58rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.38);margin-bottom:0.65rem;">Movement in Progress</div>
 
-      <!-- Compact legend — vertical -->
-      <div style="display:flex;flex-direction:column;gap:0.42rem;margin-bottom:0.85rem;">
-        <div style="display:flex;align-items:center;gap:0.45rem;">
+      <!-- Compact legend row -->
+      <div style="display:flex;gap:0.75rem;margin-bottom:0.9rem;padding-bottom:0.7rem;border-bottom:1px solid rgba(255,255,255,0.08);">
+        <div style="display:flex;align-items:center;gap:0.35rem;">
           <div style="width:7px;height:7px;border-radius:50%;background:#16a34a;box-shadow:0 0 4px rgba(22,163,74,0.9);flex-shrink:0;"></div>
-          <span style="font-family:Arial,sans-serif;font-size:0.67rem;color:rgba(255,255,255,0.55);">Groups</span>
+          <span style="font-family:Arial,sans-serif;font-size:0.62rem;color:rgba(255,255,255,0.5);">Groups</span>
         </div>
-        <div style="display:flex;align-items:center;gap:0.45rem;">
+        <div style="display:flex;align-items:center;gap:0.35rem;">
           <div style="width:7px;height:7px;border-radius:50%;background:#f5c518;box-shadow:0 0 4px rgba(245,197,24,0.9);flex-shrink:0;"></div>
-          <span style="font-family:Arial,sans-serif;font-size:0.67rem;color:rgba(255,255,255,0.55);">Summits</span>
+          <span style="font-family:Arial,sans-serif;font-size:0.62rem;color:rgba(255,255,255,0.5);">Summits</span>
         </div>
-        <div style="display:flex;align-items:center;gap:0.45rem;">
+        <div style="display:flex;align-items:center;gap:0.35rem;">
           <div style="width:7px;height:7px;border-radius:50%;background:#dc2626;box-shadow:0 0 4px rgba(220,38,38,0.9);flex-shrink:0;"></div>
-          <span style="font-family:Arial,sans-serif;font-size:0.67rem;color:rgba(255,255,255,0.55);">Actions</span>
+          <span style="font-family:Arial,sans-serif;font-size:0.62rem;color:rgba(255,255,255,0.5);">Actions</span>
         </div>
       </div>
 
-      <!-- Latest Action -->
-      <div style="border-top:1px solid rgba(255,255,255,0.08);padding-top:0.65rem;">
-        <div style="font-family:Arial,sans-serif;font-size:0.57rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:0.4rem;">Latest Action</div>
-        <div id="sidebar-latest-action" style="font-family:Arial,sans-serif;font-size:0.72rem;color:rgba(255,255,255,0.55);">—</div>
-      </div>
-    </div>
+      <!-- Actions -->
+      <div style="font-family:Arial,sans-serif;font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.28);margin-bottom:0.4rem;">Actions</div>
+      <div id="sidebar-actions" style="margin-bottom:0.85rem;"></div>
 
-    <!-- Log Action -->
-    <div class="sidebar-section" style="margin-top:auto;border-bottom:none;">
-      <button onclick="openAddActionModal()" style="width:100%;padding:0.65rem;background:#dc2626;color:#fff;border:none;border-radius:2px;font-family:Arial,sans-serif;font-size:0.7rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;">+ Log Action</button>
+      <!-- Groups -->
+      <div style="font-family:Arial,sans-serif;font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.28);margin-bottom:0.4rem;">Groups</div>
+      <div id="sidebar-groups" style="margin-bottom:0.85rem;"></div>
+
+      <!-- Summits -->
+      <div style="font-family:Arial,sans-serif;font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.28);margin-bottom:0.4rem;">Summits</div>
+      <div id="sidebar-summits"></div>
     </div>
 
   </div>
 
   <div class="hero-overlay" style="pointer-events:none;"></div>
-  <div class="hero-content" style="pointer-events:none;">
+  <div class="hero-content" style="pointer-events:none;margin-bottom:120px;">
     <div class="hero-emblem">✦</div>
     <h1>The <span style="color:#f5c518;">YES</span> Movement</h1>
     <p class="tagline">Join others. Restore our world.</p>
@@ -298,7 +300,8 @@
         ...actions.map(a => ({ type: 'action', data: a })),
       ];
 
-      console.log('Total map items:', items.length);
+      // Populate sidebar immediately from fetched data
+      populateSidebar(summits, groups, actions);
 
       for (let i = 0; i < items.length; i++) {
         const { type, data } = items[i];
@@ -365,6 +368,7 @@
           .bindPopup(popup)
           .addTo(heroMap);
 
+        markerRefs[`${type}-${data.id}`] = m;
         m.on('click',     function() { this.openPopup(); });
         m.on('mouseover', function() { this.openPopup(); });
       }
@@ -372,6 +376,53 @@
   }
 
   plotMarkersOnHero();
+
+  // ── Sidebar population ──
+  function sidebarItem(dot, title, sub, onclick) {
+    return `<div onclick="${onclick}" style="display:flex;align-items:flex-start;gap:0.45rem;padding:0.35rem 0;border-bottom:1px solid rgba(255,255,255,0.06);cursor:pointer;" onmouseover="this.style.background='rgba(255,255,255,0.04)'" onmouseout="this.style.background='none'">
+      <div style="width:7px;height:7px;border-radius:50%;${dot};flex-shrink:0;margin-top:0.28rem;"></div>
+      <div>
+        <div style="font-family:Arial,sans-serif;font-size:0.72rem;color:rgba(255,255,255,0.78);line-height:1.3;">${title}</div>
+        <div style="font-family:Arial,sans-serif;font-size:0.6rem;color:rgba(255,255,255,0.35);margin-top:0.05rem;">${sub}</div>
+      </div>
+    </div>`;
+  }
+
+  function populateSidebar(summits, groups, actions) {
+    const el = id => document.getElementById(id);
+    const none = '<div style="font-family:Arial,sans-serif;font-size:0.68rem;color:rgba(255,255,255,0.25);padding:0.2rem 0;">None yet</div>';
+
+    el('sidebar-actions').innerHTML = actions.length
+      ? actions.slice(0,2).map(a => sidebarItem(
+          'background:#dc2626;box-shadow:0 0 4px rgba(220,38,38,0.9)',
+          a.title, `📍 ${a.location}, ${a.country}`,
+          `flyToMarker('action',${a.id})`
+        )).join('') : none;
+
+    el('sidebar-groups').innerHTML = groups.length
+      ? groups.slice(0,2).map(g => sidebarItem(
+          'background:#16a34a;box-shadow:0 0 4px rgba(22,163,74,0.9)',
+          g.name, `📍 ${g.location}, ${g.country}`,
+          `flyToMarker('group',${g.id})`
+        )).join('') : none;
+
+    el('sidebar-summits').innerHTML = summits.length
+      ? summits.slice(0,2).map(s => sidebarItem(
+          'background:#f5c518;box-shadow:0 0 4px rgba(245,197,24,0.9)',
+          s.title, `📍 ${s.location}, ${s.country}`,
+          `flyToMarker('summit',${s.id})`
+        )).join('') : none;
+  }
+
+  // ── Fly to marker ──
+  const markerRefs = {};
+  function flyToMarker(type, id) {
+    const m = markerRefs[`${type}-${id}`];
+    if (m) {
+      heroMap.flyTo(m.getLatLng(), 8, { duration: 1.2 });
+      setTimeout(() => m.openPopup(), 1300);
+    }
+  }
 
   // ── Broadcast player ──
   function playBroadcast() {
@@ -381,24 +432,6 @@
     iframe.style.display = 'block';
   }
 
-  // ── Latest Action in sidebar ──
-  async function loadLatestAction() {
-    try {
-      const res = await fetch('/api/actions');
-      const actions = await res.json();
-      const el = document.getElementById('sidebar-latest-action');
-      if (!actions.length) { el.textContent = 'No actions yet.'; return; }
-      const a = actions[0];
-      el.innerHTML = `<div style="display:flex;align-items:flex-start;gap:0.4rem;">
-        <div style="width:6px;height:6px;border-radius:50%;background:#dc2626;flex-shrink:0;margin-top:0.28rem;box-shadow:0 0 4px rgba(220,38,38,0.9);"></div>
-        <div>
-          <div style="color:rgba(255,255,255,0.75);line-height:1.3;">${a.title}</div>
-          <div style="font-size:0.62rem;color:rgba(255,255,255,0.35);margin-top:0.1rem;">📍 ${a.location}, ${a.country}</div>
-        </div>
-      </div>`;
-    } catch(e) {}
-  }
-  loadLatestAction();
 
   // ── Add Action modal ──
   function openAddActionModal() {
@@ -475,6 +508,7 @@
     } catch (e) { console.error(e); }
   }
   loadHomeData();
+  if (new URLSearchParams(window.location.search).has('logaction')) openAddActionModal();
 </script>
 </body>
 </html>
