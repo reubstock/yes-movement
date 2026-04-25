@@ -85,15 +85,17 @@
 
 <script src="/js/nav.js"></script>
 <script>
+  let allSummits = [];
+
   async function loadEvents() {
     const res = await fetch('/api/summits');
-    const events = await res.json();
+    allSummits = await res.json();
     const el = document.getElementById('events-list');
-    if (events.length === 0) {
+    if (allSummits.length === 0) {
       el.innerHTML = '<div class="empty-state"><div class="empty-icon">🗓</div><p>No summits yet.</p></div>';
       return;
     }
-    el.innerHTML = events.map(ev => {
+    el.innerHTML = allSummits.map(ev => {
       const d = new Date(ev.date + 'T00:00:00');
       const dateStr = d.toLocaleDateString('en', { day: 'numeric', month: 'long', year: 'numeric' });
       return `<div class="card">
@@ -102,7 +104,7 @@
         <p>📅 ${dateStr}${ev.time ? ' at ' + ev.time : ''}${ev.host_name ? ' &middot; 👤 ' + ev.host_name : ''}</p>
         ${ev.description ? '<p style="margin-top:0.5rem;">' + ev.description + '</p>' : ''}
         <div style="margin-top:0.75rem;text-align:right;">
-          <button onclick='openEditSummit(${JSON.stringify(ev)})' style="font-size:0.75rem;color:#888;background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;">Edit</button>
+          <button onclick="openEditSummitById(${ev.id})" style="font-size:0.75rem;color:#888;background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;">Edit</button>
         </div>
       </div>`;
     }).join('');
@@ -121,6 +123,10 @@
   });
 
   // Edit summit
+  function openEditSummitById(id) {
+    const ev = allSummits.find(x => x.id === id);
+    if (ev) openEditSummit(ev);
+  }
   function openEditSummit(ev) {
     const form = document.getElementById('edit-summit-form');
     form.elements['id'].value = ev.id;

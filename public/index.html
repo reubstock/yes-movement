@@ -156,15 +156,15 @@
       </div>
 
       <!-- Actions -->
-      <div style="font-family:Arial,sans-serif;font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.28);margin-bottom:0.4rem;">Actions</div>
+      <div style="font-family:Arial,sans-serif;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,0.55);margin-bottom:0.4rem;">ACTIONS</div>
       <div id="sidebar-actions" style="margin-bottom:0.85rem;"></div>
 
       <!-- Groups -->
-      <div style="font-family:Arial,sans-serif;font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.28);margin-bottom:0.4rem;">Groups</div>
+      <div style="font-family:Arial,sans-serif;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,0.55);margin-bottom:0.4rem;">GROUPS</div>
       <div id="sidebar-groups" style="margin-bottom:0.85rem;"></div>
 
       <!-- Summits -->
-      <div style="font-family:Arial,sans-serif;font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.28);margin-bottom:0.4rem;">Summits</div>
+      <div style="font-family:Arial,sans-serif;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,0.55);margin-bottom:0.4rem;">SUMMITS</div>
       <div id="sidebar-summits"></div>
     </div>
 
@@ -299,6 +299,8 @@
     catch(e) { console.warn('JSON parse failed:', e); return []; }
   }
 
+  let allActionsData = [];
+
   async function plotMarkersOnHero() {
     try {
       const [summitsRes, groupsRes] = await Promise.all([
@@ -312,7 +314,7 @@
       try {
         const actionsRes = await fetch('/api/actions');
         actions = await safeJson(actionsRes);
-        console.log('Actions fetched:', actions.length, actions.map(a => a.title));
+        allActionsData = actions;
       } catch(e) { console.warn('Actions fetch failed:', e); }
 
       const items = [
@@ -372,8 +374,6 @@
         } else {
           icon = actionIcon; label = data.title;
           const dateStr = data.date ? new Date(data.date + 'T00:00:00').toLocaleDateString('en', { day: 'numeric', month: 'long', year: 'numeric' }) : null;
-          const escapedTitle = (data.title || '').replace(/'/g, "\\'");
-          const escapedDesc = (data.description || '').replace(/'/g, "\\'");
           popupHtml = `
             <div style="min-width:220px;max-width:260px;">
               <div style="font-family:Arial,sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#dc2626;margin-bottom:0.35rem;">Action</div>
@@ -381,7 +381,7 @@
               <p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}</p>
               ${dateStr ? `<p style="margin:0 0 0.2rem;font-size:0.82rem;color:rgba(255,255,255,0.75);font-family:Arial,sans-serif;">📅 ${dateStr}</p>` : ''}
               ${data.description ? `<p style="margin:0.5rem 0 0;font-size:0.82rem;color:rgba(255,255,255,0.65);font-family:Arial,sans-serif;">${data.description}</p>` : ''}
-              <a href="#" onclick="openEditAction(${data.id},'${escapedTitle}','${data.location}','${data.country}','${data.date||''}','${escapedDesc}');return false;" style="display:inline-block;margin-top:0.6rem;font-size:0.72rem;font-family:Arial,sans-serif;color:#888;text-decoration:underline;">Edit →</a>
+              <a href="#" onclick="openEditActionById(${data.id});return false;" style="display:inline-block;margin-top:0.6rem;font-size:0.72rem;font-family:Arial,sans-serif;color:#888;text-decoration:underline;">Edit →</a>
             </div>`;
         }
 
@@ -492,14 +492,18 @@
   }
 
   // ── Edit Action modal ──
-  function openEditAction(id, title, location, country, date, description) {
+  function openEditActionById(id) {
+    const a = allActionsData.find(x => x.id === id);
+    if (a) openEditAction(a);
+  }
+  function openEditAction(a) {
     const form = document.getElementById('edit-action-form');
-    form.elements['id'].value = id;
-    form.elements['title'].value = title || '';
-    form.elements['location'].value = location || '';
-    form.elements['country'].value = country || '';
-    form.elements['date'].value = date || '';
-    form.elements['description'].value = description || '';
+    form.elements['id'].value = a.id;
+    form.elements['title'].value = a.title || '';
+    form.elements['location'].value = a.location || '';
+    form.elements['country'].value = a.country || '';
+    form.elements['date'].value = a.date || '';
+    form.elements['description'].value = a.description || '';
     document.getElementById('edit-action-image-input').value = '';
     document.getElementById('edit-action-success').style.display = 'none';
     document.getElementById('edit-action-form').style.display = '';
