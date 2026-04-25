@@ -145,19 +145,28 @@
     <div class="sidebar-card" style="overflow-y:auto;flex:1;">
       <div style="font-family:Arial,sans-serif;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.38);margin-bottom:0.65rem;white-space:nowrap;">Movement in Progress</div>
 
-      <!-- Compact legend row -->
-      <div style="display:flex;gap:0.75rem;margin-bottom:0.9rem;padding-bottom:0.7rem;border-bottom:1px solid rgba(255,255,255,0.08);">
-        <div style="display:flex;align-items:center;gap:0.35rem;">
-          <div style="width:11px;height:11px;border-radius:50%;background:#16a34a;box-shadow:0 0 4px rgba(22,163,74,0.9);flex-shrink:0;"></div>
-          <span style="font-family:Arial,sans-serif;font-size:0.62rem;color:rgba(255,255,255,0.5);">Groups</span>
+      <!-- Legend with counts -->
+      <div style="margin-bottom:0.9rem;padding-bottom:0.7rem;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;flex-direction:column;gap:0.35rem;">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:0.45rem;">
+            <div style="width:11px;height:11px;border-radius:50%;background:#16a34a;box-shadow:0 0 4px rgba(22,163,74,0.9);flex-shrink:0;"></div>
+            <span style="font-family:Arial,sans-serif;font-size:0.62rem;color:rgba(255,255,255,0.7);">Groups</span>
+          </div>
+          <span id="legend-count-groups" style="font-family:Arial,sans-serif;font-size:0.68rem;font-weight:700;background:#fff;color:#111;border-radius:10px;padding:0.05rem 0.45rem;min-width:20px;text-align:center;">0</span>
         </div>
-        <div style="display:flex;align-items:center;gap:0.35rem;">
-          <div style="width:11px;height:11px;border-radius:50%;background:#f5c518;box-shadow:0 0 4px rgba(245,197,24,0.9);flex-shrink:0;"></div>
-          <span style="font-family:Arial,sans-serif;font-size:0.62rem;color:rgba(255,255,255,0.5);">Summits</span>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:0.45rem;">
+            <div style="width:11px;height:11px;border-radius:50%;background:#dc2626;box-shadow:0 0 4px rgba(220,38,38,0.9);flex-shrink:0;"></div>
+            <span style="font-family:Arial,sans-serif;font-size:0.62rem;color:rgba(255,255,255,0.7);">Actions</span>
+          </div>
+          <span id="legend-count-actions" style="font-family:Arial,sans-serif;font-size:0.68rem;font-weight:700;background:#fff;color:#111;border-radius:10px;padding:0.05rem 0.45rem;min-width:20px;text-align:center;">0</span>
         </div>
-        <div style="display:flex;align-items:center;gap:0.35rem;">
-          <div style="width:11px;height:11px;border-radius:50%;background:#dc2626;box-shadow:0 0 4px rgba(220,38,38,0.9);flex-shrink:0;"></div>
-          <span style="font-family:Arial,sans-serif;font-size:0.62rem;color:rgba(255,255,255,0.5);">Actions</span>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:0.45rem;">
+            <div style="width:11px;height:11px;border-radius:50%;background:#f5c518;box-shadow:0 0 4px rgba(245,197,24,0.9);flex-shrink:0;"></div>
+            <span style="font-family:Arial,sans-serif;font-size:0.62rem;color:rgba(255,255,255,0.7);">Summits</span>
+          </div>
+          <span id="legend-count-summits" style="font-family:Arial,sans-serif;font-size:0.68rem;font-weight:700;background:#fff;color:#111;border-radius:10px;padding:0.05rem 0.45rem;min-width:20px;text-align:center;">0</span>
         </div>
       </div>
 
@@ -444,6 +453,11 @@
   function populateSidebar(summits, groups, actions) {
     const el = id => document.getElementById(id);
     const none = '<div style="font-family:Arial,sans-serif;font-size:0.68rem;color:rgba(255,255,255,0.25);padding:0.2rem 0;">None yet</div>';
+
+    // Legend counts
+    el('legend-count-groups').textContent = groups.length;
+    el('legend-count-actions').textContent = actions.length;
+    el('legend-count-summits').textContent = summits.length;
 
     el('sidebar-actions').innerHTML = actions.length
       ? actions.slice(0,2).map(a => sidebarItem(
