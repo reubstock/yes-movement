@@ -72,7 +72,6 @@
         <div class="form-group"><label>City *</label><input type="text" name="location" required /></div>
         <div class="form-group"><label>Country *</label><input type="text" name="country" required /></div>
       </div>
-      <div class="form-group"><label>Your Name</label><input type="text" name="contact" /></div>
       <div class="form-group"><label>Organizer Email <span style="color:#aaa;font-size:0.8rem;">(for join requests)</span></label><input type="email" name="organizer_email" placeholder="your@email.com" /></div>
       <div class="form-group"><label>Description</label><textarea name="description" style="min-height:80px;" placeholder="What does your group do?"></textarea></div>
       <div class="form-group">
@@ -147,7 +146,6 @@
         <div class="form-group"><label>City *</label><input type="text" name="location" required /></div>
         <div class="form-group"><label>Country *</label><input type="text" name="country" required /></div>
       </div>
-      <div class="form-group"><label>Your Name</label><input type="text" name="contact" /></div>
       <div class="form-group"><label>Organizer Email <span style="color:#aaa;font-size:0.8rem;">(for join requests)</span></label><input type="email" name="organizer_email" placeholder="your@email.com" /></div>
       <div class="form-group"><label>Description</label><textarea name="description" style="min-height:80px;" placeholder="What does your group do?"></textarea></div>
       <div class="form-group">
@@ -241,8 +239,7 @@
           <div style="padding:1.25rem;flex:1;display:flex;flex-direction:column;">
             <h3 style="margin-bottom:0.4rem;">${g.name}</h3>
             <p style="margin-bottom:0.25rem;">📍 ${g.location}, ${g.country}</p>
-            ${g.contact ? `<p style="margin-bottom:0.75rem;">👤 ${g.contact}</p>` : '<p style="margin-bottom:0.75rem;"></p>'}
-            ${g.description ? `<p style="margin-bottom:1rem;">${g.description}</p>` : ''}
+            ${g.description ? `<p style="margin-bottom:1rem;margin-top:0.4rem;">${g.description}</p>` : ''}
             <div style="display:flex;gap:0.75rem;align-items:center;margin-top:auto;">
               <button class="btn btn-primary" style="flex:1;" onclick="openJoinModal(${g.id}, '${g.name.replace(/'/g,"\\'")}', '${g.location}, ${g.country}')">Join</button>
               <button onclick="openEditGroupById(${g.id})" style="font-size:0.75rem;color:rgba(255,255,255,0.45);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;white-space:nowrap;">Edit</button>
@@ -388,7 +385,6 @@
     form.elements['name'].value = g.name || '';
     form.elements['location'].value = g.location || '';
     form.elements['country'].value = g.country || '';
-    form.elements['contact'].value = g.contact || '';
     form.elements['organizer_email'].value = g.organizer_email || '';
     form.elements['description'].value = g.description || '';
     document.getElementById('edit-group-image-input').value = '';
