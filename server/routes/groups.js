@@ -57,6 +57,59 @@ router.patch('/:id', async (req, res) => {
   }
 });
 
+// ── Group Members ──
+
+router.get('/:id/members', async (req, res) => {
+  try {
+    await store.ready();
+    const members = await store.group_members.forGroup(req.params.id);
+    res.json(members);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch members' });
+  }
+});
+
+router.post('/:id/members', async (req, res) => {
+  try {
+    await store.ready();
+    const { name, specialty, description, photo } = req.body;
+    if (!name) return res.status(400).json({ error: 'name is required' });
+    const member = await store.group_members.insert({
+      group_id: req.params.id, name, specialty, description, photo: photo || null,
+    });
+    res.status(201).json(member);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to add member' });
+  }
+});
+
+router.patch('/:id/members/:memberId', async (req, res) => {
+  try {
+    await store.ready();
+    const { name, specialty, description, photo } = req.body;
+    if (!name) return res.status(400).json({ error: 'name is required' });
+    const member = await store.group_members.update(req.params.memberId, { name, specialty, description, photo: photo || null });
+    if (!member) return res.status(404).json({ error: 'Member not found' });
+    res.json(member);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to update member' });
+  }
+});
+
+router.delete('/:id/members/:memberId', async (req, res) => {
+  try {
+    await store.ready();
+    await store.group_members.delete(req.params.memberId);
+    res.json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to delete member' });
+  }
+});
+
 // Join request — emails the organizer
 router.post('/:id/join', async (req, res) => {
   try {

@@ -70,6 +70,17 @@ async function init() {
   await pool.query(`ALTER TABLE summits ADD COLUMN IF NOT EXISTS image TEXT`);
   await pool.query(`ALTER TABLE summits ADD COLUMN IF NOT EXISTS organizer_email TEXT`);
   await pool.query(`ALTER TABLE groups  ADD COLUMN IF NOT EXISTS organizer_email TEXT`);
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS group_members (
+      id SERIAL PRIMARY KEY,
+      group_id INT NOT NULL,
+      name TEXT NOT NULL,
+      specialty TEXT,
+      description TEXT,
+      photo TEXT,
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    )
+  `);
 
   // Seed members
   const { rows: m } = await sql`SELECT COUNT(*) FROM members`;
@@ -191,6 +202,37 @@ module.exports = {
         [name, description || null, location, country, contact || null, organizer_email || null, image || null, id]
       );
       return rows[0];
+    },
+  },
+
+  group_members: {
+    forGroup: async (groupId) => {
+      const { rows } = await pool.query(
+        'SELECT * FROM group_members WHERE group_id = $1 ORDER BY created_at ASC',
+        [groupId]
+      );
+      return rows;
+    },
+    get: async (id) => {
+      const { rows } = await pool.query('SELECT * FROM group_members WHERE id = $1', [id]);
+      return rows[0] || null;
+    },
+    insert: async ({ group_id, name, specialty, description, photo }) => {
+      const { rows } = await pool.query(
+        'INSERT INTO group_members (group_id, name, specialty, description, photo) VALUES ($1,$2,$3,$4,$5) RETURNING *',
+        [group_id, name, specialty || null, description || null, photo || null]
+      );
+      return rows[0];
+    },
+    update: async (id, { name, specialty, description, photo }) => {
+      const { rows } = await pool.query(
+        'UPDATE group_members SET name=$1, specialty=$2, description=$3, photo=COALESCE($4, photo) WHERE id=$5 RETURNING *',
+        [name, specialty || null, description || null, photo || null, id]
+      );
+      return rows[0];
+    },
+    delete: async (id) => {
+      await pool.query('DELETE FROM group_members WHERE id = $1', [id]);
     },
   },
 
