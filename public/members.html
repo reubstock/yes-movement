@@ -240,8 +240,8 @@
             <h3 style="margin-bottom:0.4rem;">${g.name}</h3>
             <p style="margin-bottom:0.25rem;">📍 ${g.location}, ${g.country}</p>
             ${g.description ? `<p style="margin-bottom:1rem;margin-top:0.4rem;">${g.description}</p>` : ''}
-            <div style="display:flex;gap:0.75rem;align-items:center;margin-top:auto;">
-              <button class="btn btn-primary" style="flex:1;background:#f97316;" onclick="openAddMemberModal(${g.id})">Join</button>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:auto;">
+              <button class="btn btn-primary" style="background:#f97316;padding:0.65rem 1.75rem;" onclick="openAddMemberModal(${g.id})">Join</button>
               <button onclick="openEditGroupById(${g.id})" style="font-size:0.75rem;color:rgba(255,255,255,0.45);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;white-space:nowrap;">Edit</button>
             </div>
 
