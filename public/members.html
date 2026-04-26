@@ -86,6 +86,18 @@
   </div>
 </div>
 
+<!-- See All Members Modal -->
+<div id="see-all-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;overflow-y:auto;padding:2rem 1rem;">
+  <div style="background:#1a1a1a;border:1px solid rgba(255,255,255,0.12);border-radius:6px;padding:2rem;max-width:480px;width:90%;position:relative;margin:0 auto;">
+    <button onclick="closeSeeAllModal()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:#888;font-size:1.5rem;cursor:pointer;">&times;</button>
+    <h3 id="see-all-group-name" style="margin-bottom:1.5rem;font-weight:400;color:#fff;"></h3>
+    <div id="see-all-list"></div>
+    <div style="margin-top:1.5rem;text-align:right;">
+      <button id="see-all-edit-member-btn" onclick="" style="font-size:0.72rem;color:rgba(255,255,255,0.4);background:none;border:none;cursor:pointer;text-decoration:underline;margin-right:1rem;">Edit Member</button>
+    </div>
+  </div>
+</div>
+
 <!-- Add Member Modal -->
 <div id="add-member-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:200;overflow-y:auto;padding:2rem 1rem;">
   <div style="background:#fff;border:1px solid #ddd;border-radius:4px;padding:2rem;max-width:460px;width:90%;position:relative;margin:0 auto;">
@@ -217,17 +229,15 @@
 
     el.innerHTML = slice.map(g => {
       const members = groupMembersMap[g.id] || [];
-      const memberRows = members.map(m => `
-        <div style="display:flex;gap:0.75rem;align-items:flex-start;padding:0.6rem 0;border-bottom:1px solid rgba(255,255,255,0.06);">
+      const firstMemberRow = members.slice(0, 1).map(m => `
+        <div style="display:flex;gap:0.75rem;align-items:center;padding:0.45rem 0;">
           ${m.photo
-            ? `<img src="${m.photo}" alt="${m.name}" style="width:44px;height:44px;border-radius:50%;object-fit:cover;flex-shrink:0;" />`
-            : `<div style="width:44px;height:44px;border-radius:50%;background:#2a2a2a;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.1rem;">👤</div>`}
+            ? `<img src="${m.photo}" alt="${m.name}" style="width:38px;height:38px;border-radius:50%;object-fit:cover;flex-shrink:0;" />`
+            : `<div style="width:38px;height:38px;border-radius:50%;background:#333;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1rem;">👤</div>`}
           <div style="flex:1;min-width:0;">
             <div style="font-family:Arial,sans-serif;font-size:0.82rem;font-weight:600;color:#fff;line-height:1.3;">${m.name}</div>
             ${m.specialty ? `<div style="font-family:Arial,sans-serif;font-size:0.7rem;color:#16a34a;margin-top:0.1rem;">${m.specialty}</div>` : ''}
-            ${m.description ? `<div style="font-size:0.78rem;color:#fff;margin-top:0.2rem;line-height:1.4;">${m.description}</div>` : ''}
           </div>
-          <button onclick="openEditMemberModal(${g.id},${m.id})" style="font-size:0.68rem;color:rgba(255,255,255,0.5);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;flex-shrink:0;">Edit</button>
         </div>
       `).join('');
 
@@ -249,10 +259,13 @@
               <button class="btn btn-primary" style="background:#f97316;padding:0.65rem 2.25rem;" onclick="openAddMemberModal(${g.id})">Join</button>
             </div>
 
-            <!-- Member list -->
-            <div style="flex:1;margin:0 -1.25rem;padding:0.85rem 1.25rem 0.5rem;background:rgba(255,255,255,0.05);border-top:1px solid rgba(255,255,255,0.1);">
+            <!-- Member panel -->
+            <div style="margin:0 -1.25rem;padding:0.85rem 1.25rem 0.75rem;background:rgba(255,255,255,0.1);border-top:1px solid rgba(255,255,255,0.12);">
               <div style="font-family:Arial,sans-serif;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.55);margin-bottom:0.35rem;">Members</div>
-              ${memberRows || '<div style="font-size:0.78rem;color:rgba(255,255,255,0.4);padding:0.3rem 0;">No members yet.</div>'}
+              ${firstMemberRow || '<div style="font-size:0.78rem;color:rgba(255,255,255,0.4);padding:0.3rem 0;">No members yet.</div>'}
+              ${members.length > 0 ? `
+                <button onclick="openSeeAllModal(${g.id})" style="margin-top:0.6rem;font-size:0.7rem;font-family:Arial,sans-serif;letter-spacing:0.08em;font-weight:700;color:rgba(255,255,255,0.6);background:none;border:none;cursor:pointer;padding:0;text-transform:uppercase;">See All (${members.length})</button>
+              ` : ''}
             </div>
 
             <!-- Edit link — bottom -->
@@ -439,6 +452,32 @@
       btn.disabled = false;
     }
   });
+
+  // ── See All Members Modal ──
+  function openSeeAllModal(groupId) {
+    const g = allGroups.find(x => x.id === groupId);
+    const members = groupMembersMap[groupId] || [];
+    document.getElementById('see-all-group-name').textContent = g ? g.name : 'Members';
+    document.getElementById('see-all-list').innerHTML = members.length
+      ? members.map(m => `
+          <div style="display:flex;gap:0.85rem;align-items:flex-start;padding:0.75rem 0;border-bottom:1px solid rgba(255,255,255,0.08);">
+            ${m.photo
+              ? `<img src="${m.photo}" alt="${m.name}" style="width:48px;height:48px;border-radius:50%;object-fit:cover;flex-shrink:0;" />`
+              : `<div style="width:48px;height:48px;border-radius:50%;background:#2a2a2a;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.2rem;">👤</div>`}
+            <div style="flex:1;min-width:0;">
+              <div style="font-family:Arial,sans-serif;font-size:0.88rem;font-weight:600;color:#fff;">${m.name}</div>
+              ${m.specialty ? `<div style="font-family:Arial,sans-serif;font-size:0.72rem;color:#16a34a;margin-top:0.1rem;">${m.specialty}</div>` : ''}
+              ${m.description ? `<div style="font-size:0.8rem;color:rgba(255,255,255,0.75);margin-top:0.3rem;line-height:1.5;">${m.description}</div>` : ''}
+            </div>
+            <button onclick="closeSeeAllModal();openEditMemberModal(${groupId},${m.id})" style="font-size:0.68rem;color:rgba(255,255,255,0.35);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;flex-shrink:0;">Edit</button>
+          </div>
+        `).join('')
+      : '<p style="color:rgba(255,255,255,0.4);font-size:0.85rem;">No members yet.</p>';
+    document.getElementById('see-all-modal').style.display = 'block';
+  }
+  function closeSeeAllModal() {
+    document.getElementById('see-all-modal').style.display = 'none';
+  }
 
   // ── Member photo preview ──
   function previewMemberPhoto(wrapId, previewId, input) {
