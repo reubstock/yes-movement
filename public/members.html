@@ -240,15 +240,17 @@
             <h3 style="margin-bottom:0.4rem;">${g.name}</h3>
             <p style="margin-bottom:0.25rem;">📍 ${g.location}, ${g.country}</p>
             ${g.description ? `<p style="margin-bottom:1rem;margin-top:0.4rem;">${g.description}</p>` : ''}
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:auto;">
-              <button class="btn btn-primary" style="background:#f97316;padding:0.65rem 1.75rem;" onclick="openAddMemberModal(${g.id})">Join</button>
-              <button onclick="openEditGroupById(${g.id})" style="font-size:0.75rem;color:rgba(255,255,255,0.45);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;white-space:nowrap;">Edit</button>
-            </div>
 
             <!-- Member list -->
-            <div style="margin-top:1.25rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.1);">
+            <div style="padding-top:1rem;border-top:1px solid rgba(255,255,255,0.1);flex:1;">
               <div style="font-family:Arial,sans-serif;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.55);margin-bottom:0.35rem;">Members</div>
               ${memberRows || '<div style="font-size:0.78rem;color:rgba(255,255,255,0.4);padding:0.3rem 0;">No members yet.</div>'}
+            </div>
+
+            <!-- Join / Edit — always at the bottom -->
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:1.25rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.08);">
+              <button class="btn btn-primary" style="background:#f97316;padding:0.65rem 2.25rem;" onclick="openAddMemberModal(${g.id})">Join</button>
+              <button onclick="openEditGroupById(${g.id})" style="font-size:0.75rem;color:rgba(255,255,255,0.45);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;white-space:nowrap;">Edit</button>
             </div>
           </div>
         </div>
