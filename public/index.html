@@ -449,6 +449,7 @@
         }
         if (!coords) continue;
 
+        const key = `${type}-${data.id}`;   // must be before popupHtml uses it
         let popupHtml;
         if (type === 'summit') {
           const d = new Date(data.date + 'T00:00:00');
@@ -485,7 +486,6 @@
         }
 
         const popup = L.popup({ className: 'dark-popup', maxWidth: 210, autoPan: isMobile, autoClose: false, closeOnClick: false }).setContent(popupHtml);
-        const key = `${type}-${data.id}`;
         const markerClass = type === 'group' ? 'group-marker' : type === 'summit' ? 'summit-marker' : 'action-marker';
         const icon = L.divIcon({
           className: '',
