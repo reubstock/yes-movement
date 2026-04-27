@@ -475,7 +475,12 @@
 
         // Auto-open popups on load
         const itemTitle = (data.title || data.name || '').toLowerCase();
-        if (itemTitle.includes('zelda') || itemTitle.includes('local')) openManagedPopup(key);
+        if (
+          itemTitle.includes('zelda') ||
+          itemTitle.includes('local') ||
+          itemTitle.includes('red barn') ||
+          itemTitle.includes('new orleans')
+        ) openManagedPopup(key);
       }
 
     } catch (e) { console.error(e); }
