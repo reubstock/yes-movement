@@ -441,7 +441,7 @@
         const key = `${type}-${data.id}`;
         const m = L.marker([coords.lat, coords.lng], { icon, interactive: true }).bindPopup(popup).addTo(heroMap);
         markerRefs[key] = m;
-        m.on('click',     function() { openManagedPopup(key); });
+        m.on('click',     function() { zoomToMarker(key); });
         if (!isMobile) m.on('mouseover', function() { openManagedPopup(key); });
         m.on('popupclose', function() {
           const idx = openPopupKeys.indexOf(key);
@@ -539,7 +539,7 @@
         )).join('') : none;
   }
 
-// ── Multi-popup manager (max 2 open at once) ──
+// ── Multi-popup manager (max 3 open at once) ──
   const openPopupKeys = [];
   function openManagedPopup(key) {
     const m = markerRefs[key];
@@ -554,15 +554,33 @@
     m.openPopup();
   }
 
-  // ── Fly to marker ──
+  // ── Zoom-to-marker with 7 s auto-zoom-back ──
   const markerRefs = {};
-  function flyToMarker(type, id) {
-    const key = `${type}-${id}`;
+  let _zoomBackTimer = null;
+  function _cancelZoomBack() {
+    if (_zoomBackTimer) { clearTimeout(_zoomBackTimer); _zoomBackTimer = null; }
+  }
+  function _scheduleZoomBack() {
+    _cancelZoomBack();
+    _zoomBackTimer = setTimeout(() => {
+      heroMap.flyTo(initView, initZoom, { duration: 1.8 });
+      _zoomBackTimer = null;
+    }, 7000);
+  }
+  function zoomToMarker(key) {
     const m = markerRefs[key];
-    if (m) {
-      heroMap.flyTo(m.getLatLng(), 8, { duration: 1.2 });
-      setTimeout(() => openManagedPopup(key), 1300);
-    }
+    if (!m) return;
+    _cancelZoomBack();
+    heroMap.flyTo(m.getLatLng(), 8, { duration: 1.2 });
+    setTimeout(() => openManagedPopup(key), 900);
+    _scheduleZoomBack();
+  }
+  // Cancel auto-zoom-back if user starts dragging manually
+  heroMap.on('dragstart', _cancelZoomBack);
+
+  // ── Fly to marker (sidebar links) ──
+  function flyToMarker(type, id) {
+    zoomToMarker(`${type}-${id}`);
   }
 
   // ── Broadcast player ──
