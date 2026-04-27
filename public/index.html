@@ -366,6 +366,7 @@
 
   async function plotMarkersOnHero() {
     const delay = ms => new Promise(r => setTimeout(r, ms));
+    const autoOpenKeys = [];
     try {
       const [summitsRes, groupsRes] = await Promise.all([
         fetch('/api/summits'), fetch('/api/groups')
@@ -473,14 +474,19 @@
           });
         }
 
-        // Auto-open popups on load
+        // Collect auto-open candidates (open after all markers are placed)
         const itemTitle = (data.title || data.name || '').toLowerCase();
         if (
           itemTitle.includes('zelda') ||
           itemTitle.includes('local') ||
           itemTitle.includes('red barn') ||
           itemTitle.includes('new orleans')
-        ) openManagedPopup(key);
+        ) autoOpenKeys.push(key);
+      }
+
+      // Open up to 3 named popups now that all markers exist
+      for (const k of autoOpenKeys.slice(0, 3)) {
+        openManagedPopup(k);
       }
 
     } catch (e) { console.error(e); }
