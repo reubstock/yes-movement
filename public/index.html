@@ -15,14 +15,19 @@
     .map-marker {
       display: flex; align-items: center; gap: 5px;
       pointer-events: auto;
+      cursor: pointer;
     }
-    .map-marker .dot-wrap { position: relative; width: 11px; height: 11px; flex-shrink: 0; }
+    .map-marker .dot-wrap { position: relative; width: 28px; height: 28px; flex-shrink: 0; }
+    .map-marker .dot-wrap::after {
+      /* invisible circular hit-zone covers full dot-wrap */
+      content: ''; position: absolute; inset: 0; border-radius: 50%;
+    }
     .map-marker .ring {
-      position: absolute; inset: 0; border-radius: 50%;
+      position: absolute; inset: 8px; border-radius: 50%;
       animation: pulse-ring 1.8s ease-out infinite;
     }
     .map-marker .dot {
-      position: absolute; inset: 0; border-radius: 50%;
+      position: absolute; inset: 8px; border-radius: 50%;
       border: 1.5px solid #fff;
     }
     /* Summit — yellow */
@@ -335,17 +340,17 @@
   const summitIcon = L.divIcon({
     className: '',
     html: `<div class="map-marker summit-marker"><div class="dot-wrap"><div class="ring"></div><div class="dot"></div></div></div>`,
-    iconSize: [11, 11], iconAnchor: [5, 5], popupAnchor: [0, -7],
+    iconSize: [28, 28], iconAnchor: [14, 14], popupAnchor: [0, -14],
   });
   const groupIcon = L.divIcon({
     className: '',
     html: `<div class="map-marker group-marker"><div class="dot-wrap"><div class="ring"></div><div class="dot"></div></div></div>`,
-    iconSize: [11, 11], iconAnchor: [5, 5], popupAnchor: [0, -7],
+    iconSize: [28, 28], iconAnchor: [14, 14], popupAnchor: [0, -14],
   });
   const actionIcon = L.divIcon({
     className: '',
     html: `<div class="map-marker action-marker"><div class="dot-wrap"><div class="ring"></div><div class="dot"></div></div></div>`,
-    iconSize: [11, 11], iconAnchor: [5, 5], popupAnchor: [0, -7],
+    iconSize: [28, 28], iconAnchor: [14, 14], popupAnchor: [0, -14],
   });
 
   async function geocode(location, country) {
@@ -441,8 +446,10 @@
         const key = `${type}-${data.id}`;
         const m = L.marker([coords.lat, coords.lng], { icon, interactive: true }).bindPopup(popup).addTo(heroMap);
         markerRefs[key] = m;
-        m.on('click',     function() { zoomToMarker(key); });
+        m.on('click', function() { zoomToMarker(key); });
         if (!isMobile) m.on('mouseover', function() { openManagedPopup(key); });
+        // Ensure cursor shows on the icon element itself
+        if (m.getElement) setTimeout(() => { const el = m.getElement(); if (el) el.style.cursor = 'pointer'; }, 0);
         m.on('popupclose', function() {
           const idx = openPopupKeys.indexOf(key);
           if (idx !== -1) openPopupKeys.splice(idx, 1);
@@ -557,26 +564,28 @@
   // ── Zoom-to-marker with 7 s auto-zoom-back ──
   const markerRefs = {};
   let _zoomBackTimer = null;
+
   function _cancelZoomBack() {
     if (_zoomBackTimer) { clearTimeout(_zoomBackTimer); _zoomBackTimer = null; }
   }
   function _scheduleZoomBack() {
     _cancelZoomBack();
     _zoomBackTimer = setTimeout(() => {
-      heroMap.flyTo(initView, initZoom, { duration: 1.8 });
       _zoomBackTimer = null;
+      heroMap.setView(initView, initZoom, { animate: true, duration: 1.8 });
     }, 7000);
   }
   function zoomToMarker(key) {
     const m = markerRefs[key];
     if (!m) return;
     _cancelZoomBack();
-    heroMap.flyTo(m.getLatLng(), 8, { duration: 1.2 });
-    setTimeout(() => openManagedPopup(key), 900);
+    const ll = m.getLatLng();
+    heroMap.setView(ll, 8, { animate: true, duration: 1.2 });
+    openManagedPopup(key);
     _scheduleZoomBack();
   }
-  // Cancel auto-zoom-back if user starts dragging manually
-  heroMap.on('dragstart', _cancelZoomBack);
+  // Cancel if user manually moves the map
+  heroMap.on('dragstart zoomstart', _cancelZoomBack);
 
   // ── Fly to marker (sidebar links) ──
   function flyToMarker(type, id) {
