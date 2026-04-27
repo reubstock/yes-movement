@@ -13,23 +13,43 @@
       100% { transform: scale(2.4); opacity: 0;   }
     }
     .map-marker {
-      display: flex; align-items: center; gap: 5px;
-      pointer-events: auto;
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(8,8,8,0.82);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 999px;
+      padding: 3px 10px 3px 3px;
       cursor: pointer;
+      pointer-events: auto;
+      white-space: nowrap;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.45);
+      transition: background 0.15s, border-color 0.15s;
     }
-    .map-marker .dot-wrap { position: relative; width: 28px; height: 28px; flex-shrink: 0; }
-    .map-marker .dot-wrap::after {
-      /* invisible circular hit-zone covers full dot-wrap */
-      content: ''; position: absolute; inset: 0; border-radius: 50%;
+    .map-marker:hover {
+      background: rgba(28,28,28,0.96);
+      border-color: rgba(255,255,255,0.35);
     }
+    .map-marker .dot-wrap { position: relative; width: 22px; height: 22px; flex-shrink: 0; }
     .map-marker .ring {
-      position: absolute; inset: 8px; border-radius: 50%;
+      position: absolute; inset: 5px; border-radius: 50%;
       animation: pulse-ring 1.8s ease-out infinite;
       pointer-events: none;
     }
     .map-marker .dot {
-      position: absolute; inset: 8px; border-radius: 50%;
-      border: 1.5px solid #fff;
+      position: absolute; inset: 5px; border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,0.9);
+    }
+    .marker-label {
+      font-family: Arial, sans-serif;
+      font-size: 0.62rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.03em;
+      pointer-events: none;
+      max-width: 110px;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     /* Summit — yellow */
     .summit-marker .ring { background: rgba(245,197,24,0.4); }
@@ -350,7 +370,7 @@
     window._cancelZoomBack();
     window._zoomBackTimer = setTimeout(function() {
       window._zoomBackTimer = null;
-      heroMap.setView(initView, initZoom, { animate: true, duration: 1.8 });
+      heroMap.flyTo(initView, initZoom, { duration: 2.2, easeLinearity: 0.12 });
     }, 7000);
   };
   window._openManagedPopup = function(key) {
@@ -369,11 +389,28 @@
     window._cancelZoomBack();
     var m = window._markerRefs[key];
     if (!m) return;
-    heroMap.setView(m.getLatLng(), 8, { animate: true, duration: 1.2 });
-    window._openManagedPopup(key);
-    window._scheduleZoomBack();
+    var target = m.getLatLng();
+    var currentCenter = heroMap.getCenter();
+    var distMeters = heroMap.distance(currentCenter, target);
+    var SIXTY_MILES = 96560; // metres
+    var alreadyZoomedIn = heroMap.getZoom() > (initZoom + 1.5);
+
+    if (distMeters > SIXTY_MILES && alreadyZoomedIn) {
+      // Pull back to country view, then dive into the new marker
+      heroMap.once('moveend', function() {
+        heroMap.flyTo(target, 8, { duration: 2.2, easeLinearity: 0.12 });
+        setTimeout(function() { window._openManagedPopup(key); }, 600);
+        window._scheduleZoomBack();
+      });
+      heroMap.flyTo(initView, initZoom, { duration: 1.8, easeLinearity: 0.18 });
+    } else {
+      // Close enough — cinematic direct zoom
+      heroMap.flyTo(target, 8, { duration: 1.8, easeLinearity: 0.12 });
+      setTimeout(function() { window._openManagedPopup(key); }, 500);
+      window._scheduleZoomBack();
+    }
   };
-  heroMap.on('dragstart zoomstart', window._cancelZoomBack);
+  heroMap.on('dragstart', window._cancelZoomBack);
 
   async function geocode(location, country) {
     const q = encodeURIComponent(`${location}, ${country}`);
@@ -467,10 +504,11 @@
         const popup = L.popup({ className: 'dark-popup', maxWidth: 210, autoPan: isMobile, autoClose: false, closeOnClick: false }).setContent(popupHtml);
         const key = `${type}-${data.id}`;
         const markerClass = type === 'group' ? 'group-marker' : type === 'summit' ? 'summit-marker' : 'action-marker';
+        const labelText = (data.name || data.title || '').substring(0, 22);
         const icon = L.divIcon({
           className: '',
-          html: `<div class="map-marker ${markerClass}" onclick="window._mapMarkerClick('${key}')"><div class="dot-wrap"><div class="ring"></div><div class="dot"></div></div></div>`,
-          iconSize: [28, 28], iconAnchor: [14, 14], popupAnchor: [0, -14],
+          html: `<div class="map-marker ${markerClass}" onclick="window._mapMarkerClick('${key}')"><div class="dot-wrap"><div class="ring"></div><div class="dot"></div></div><span class="marker-label">${labelText}</span></div>`,
+          iconAnchor: [14, 14], popupAnchor: [60, -14],
         });
         const m = L.marker([coords.lat, coords.lng], { icon, interactive: true }).bindPopup(popup).addTo(heroMap);
         m.off('click'); // remove bindPopup's auto-open handler — our onclick handles it
