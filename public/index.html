@@ -13,43 +13,26 @@
       100% { transform: scale(2.4); opacity: 0;   }
     }
     .map-marker {
-      display: inline-flex; align-items: center; gap: 5px;
-      background: rgba(8,8,8,0.82);
-      border: 1px solid rgba(255,255,255,0.18);
-      border-radius: 999px;
-      padding: 3px 10px 3px 3px;
+      display: flex; align-items: center;
       cursor: pointer;
       pointer-events: auto;
-      white-space: nowrap;
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.45);
-      transition: background 0.15s, border-color 0.15s;
     }
-    .map-marker:hover {
-      background: rgba(28,28,28,0.96);
-      border-color: rgba(255,255,255,0.35);
-    }
-    .map-marker .dot-wrap { position: relative; width: 22px; height: 22px; flex-shrink: 0; }
+    .map-marker .dot-wrap { position: relative; width: 28px; height: 28px; flex-shrink: 0; }
     .map-marker .ring {
-      position: absolute; inset: 5px; border-radius: 50%;
+      position: absolute; inset: 8px; border-radius: 50%;
       animation: pulse-ring 1.8s ease-out infinite;
       pointer-events: none;
     }
     .map-marker .dot {
-      position: absolute; inset: 5px; border-radius: 50%;
+      position: absolute; inset: 8px; border-radius: 50%;
       border: 1.5px solid rgba(255,255,255,0.9);
     }
-    .marker-label {
-      font-family: Arial, sans-serif;
-      font-size: 0.62rem;
-      font-weight: 700;
-      color: #fff;
-      letter-spacing: 0.03em;
-      pointer-events: none;
-      max-width: 110px;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    /* Popup card is also clickable */
+    .popup-clickable {
+      cursor: pointer;
+    }
+    .popup-clickable:hover {
+      opacity: 0.92;
     }
     /* Summit — yellow */
     .summit-marker .ring { background: rgba(245,197,24,0.4); }
@@ -470,7 +453,7 @@
         if (type === 'summit') {
           const d = new Date(data.date + 'T00:00:00');
           const dateStr = d.toLocaleDateString('en', { day: 'numeric', month: 'long', year: 'numeric' });
-          popupHtml = `<div style="min-width:220px;max-width:260px;">
+          popupHtml = `<div class="popup-clickable" onclick="window._mapMarkerClick('${key}')" style="min-width:220px;max-width:260px;">
             ${data.image ? `<img src="${data.image}" alt="${data.title}" style="width:100%;height:120px;object-fit:cover;display:block;" />` : ''}
             <div style="font-family:Arial,sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#f5c518;margin-bottom:0.35rem;">Summit</div>
             <h4 style="margin:0 0 0.4rem;font-size:1rem;color:#fff;font-family:Georgia,serif;">${data.title}</h4>
@@ -478,37 +461,36 @@
             <p style="margin:0 0 0.2rem;font-size:0.82rem;color:#fff;font-family:Arial,sans-serif;">📅 ${dateStr}${data.time ? ' at ' + data.time : ''}</p>
             ${data.host_name ? `<p style="margin:0 0 0.2rem;font-size:0.82rem;color:#fff;font-family:Arial,sans-serif;">👤 ${data.host_name}</p>` : ''}
             ${data.description ? `<p style="margin:0.5rem 0 0;font-size:0.82rem;color:#fff;font-family:Arial,sans-serif;">${data.description}</p>` : ''}
-            <a href="/events.html" style="display:inline-block;margin-top:0.75rem;font-size:0.75rem;font-family:Arial,sans-serif;color:#f5c518;text-decoration:none;letter-spacing:0.05em;">View all summits →</a>
+            <a href="/events.html" onclick="event.stopPropagation()" style="display:inline-block;margin-top:0.75rem;font-size:0.75rem;font-family:Arial,sans-serif;color:#f5c518;text-decoration:none;letter-spacing:0.05em;">View all summits →</a>
           </div>`;
         } else if (type === 'group') {
-          popupHtml = `<div style="min-width:220px;max-width:260px;">
+          popupHtml = `<div class="popup-clickable" onclick="window._mapMarkerClick('${key}')" style="min-width:220px;max-width:260px;">
             ${data.image ? `<img src="${data.image}" alt="${data.name}" style="width:100%;height:120px;object-fit:cover;display:block;" />` : ''}
             <div style="font-family:Arial,sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#16a34a;margin-bottom:0.35rem;">Group</div>
             <h4 style="margin:0 0 0.4rem;font-size:1rem;color:#fff;font-family:Georgia,serif;">${data.name}</h4>
             <p style="margin:0 0 0.2rem;font-size:0.82rem;color:#fff;font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}</p>
             ${data.description ? `<p style="margin:0.5rem 0 0;font-size:0.82rem;color:#fff;font-family:Arial,sans-serif;">${data.description}</p>` : ''}
-            <a href="/members.html" style="display:inline-block;margin-top:0.75rem;font-size:0.75rem;font-family:Arial,sans-serif;color:#16a34a;text-decoration:none;letter-spacing:0.05em;">View all groups →</a>
+            <a href="/members.html" onclick="event.stopPropagation()" style="display:inline-block;margin-top:0.75rem;font-size:0.75rem;font-family:Arial,sans-serif;color:#16a34a;text-decoration:none;letter-spacing:0.05em;">View all groups →</a>
           </div>`;
         } else {
           const dateStr = data.date ? new Date(data.date + 'T00:00:00').toLocaleDateString('en', { day: 'numeric', month: 'long', year: 'numeric' }) : null;
-          popupHtml = `<div style="min-width:220px;max-width:260px;">
+          popupHtml = `<div class="popup-clickable" onclick="window._mapMarkerClick('${key}')" style="min-width:220px;max-width:260px;">
             <div style="font-family:Arial,sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#dc2626;margin-bottom:0.35rem;">Action</div>
             <h4 style="margin:0 0 0.4rem;font-size:1rem;color:#fff;font-family:Georgia,serif;">${data.title}</h4>
             <p style="margin:0 0 0.2rem;font-size:0.82rem;color:#fff;font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}</p>
             ${dateStr ? `<p style="margin:0 0 0.2rem;font-size:0.82rem;color:#fff;font-family:Arial,sans-serif;">📅 ${dateStr}</p>` : ''}
             ${data.description ? `<p style="margin:0.5rem 0 0;font-size:0.82rem;color:#fff;font-family:Arial,sans-serif;">${data.description}</p>` : ''}
-            <a href="#" onclick="openEditActionById(${data.id});return false;" style="display:inline-block;margin-top:0.6rem;font-size:0.72rem;font-family:Arial,sans-serif;color:rgba(255,255,255,0.55);text-decoration:underline;">Edit →</a>
+            <a href="#" onclick="openEditActionById(${data.id});event.stopPropagation();return false;" style="display:inline-block;margin-top:0.6rem;font-size:0.72rem;font-family:Arial,sans-serif;color:rgba(255,255,255,0.55);text-decoration:underline;">Edit →</a>
           </div>`;
         }
 
         const popup = L.popup({ className: 'dark-popup', maxWidth: 210, autoPan: isMobile, autoClose: false, closeOnClick: false }).setContent(popupHtml);
         const key = `${type}-${data.id}`;
         const markerClass = type === 'group' ? 'group-marker' : type === 'summit' ? 'summit-marker' : 'action-marker';
-        const labelText = (data.name || data.title || '').substring(0, 22);
         const icon = L.divIcon({
           className: '',
-          html: `<div class="map-marker ${markerClass}" onclick="window._mapMarkerClick('${key}')"><div class="dot-wrap"><div class="ring"></div><div class="dot"></div></div><span class="marker-label">${labelText}</span></div>`,
-          iconAnchor: [14, 14], popupAnchor: [60, -14],
+          html: `<div class="map-marker ${markerClass}" onclick="window._mapMarkerClick('${key}')"><div class="dot-wrap"><div class="ring"></div><div class="dot"></div></div></div>`,
+          iconSize: [28, 28], iconAnchor: [14, 14], popupAnchor: [0, -14],
         });
         const m = L.marker([coords.lat, coords.lng], { icon, interactive: true }).bindPopup(popup).addTo(heroMap);
         m.off('click'); // remove bindPopup's auto-open handler — our onclick handles it
