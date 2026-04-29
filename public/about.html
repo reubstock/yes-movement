@@ -5,6 +5,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>About — YES Movement</title>
   <link rel="stylesheet" href="/css/styles.css" />
+  <style>
+    /* Nature Six hex ring — entrance + hover animations */
+    .nature-six-ring .nature-icon {
+      opacity: 0;
+      transform: scale(0.55) translateY(6px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .nature-six-ring.in-view .nature-icon {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+    /* Staggered entrance — clockwise from Air */
+    .nature-six-ring.in-view .nature-icon:nth-child(1) { transition-delay: 0.00s; }
+    .nature-six-ring.in-view .nature-icon:nth-child(2) { transition-delay: 0.10s; }
+    .nature-six-ring.in-view .nature-icon:nth-child(3) { transition-delay: 0.20s; }
+    .nature-six-ring.in-view .nature-icon:nth-child(4) { transition-delay: 0.30s; }
+    .nature-six-ring.in-view .nature-icon:nth-child(5) { transition-delay: 0.40s; }
+    .nature-six-ring.in-view .nature-icon:nth-child(6) { transition-delay: 0.50s; }
+    /* Hover lift on the SVG */
+    .nature-six-ring .nature-icon img {
+      transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.28s ease;
+      display: block;
+    }
+    .nature-six-ring .nature-icon:hover img {
+      transform: scale(1.12) translateY(-3px);
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,0.18));
+    }
+    .nature-six-ring .nature-icon .icon-label {
+      transition: color 0.2s ease;
+    }
+    .nature-six-ring .nature-icon:hover .icon-label {
+      color: #111 !important;
+    }
+  </style>
 </head>
 <body>
 
@@ -50,36 +84,48 @@
   <p style="font-size:1.05rem;line-height:1.85;color:#333;margin-bottom:1.5rem;">
     Restoration begins with repaying our debts to nature. We start in six areas:
   </p>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem;">
+  <!--
+    Hex ring: 6 icons at 60° steps, radius 108px, clockwise from top.
+    Container centre: (155, 155). Icon size: 84px.
+    pos = centre + r×(cos θ, sin θ)   θ₀ = −90° (12 o'clock)
+    top-left = pos − 42
+  -->
+  <div class="nature-six-ring" style="position:relative;width:310px;height:350px;margin:2.5rem auto 2rem;">
 
-    <div style="text-align:center;padding:1.25rem;">
-      <img src="/images/icons/01-Air.svg" alt="Air" style="width:72px;height:72px;margin-bottom:0.6rem;display:block;margin-left:auto;margin-right:auto;" />
-      <div style="font-family:Arial,sans-serif;font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;color:#555;">Air</div>
+    <!-- Air — top (θ = −90°) -->
+    <div class="nature-icon" style="position:absolute;left:113px;top:5px;text-align:center;width:84px;cursor:default;">
+      <img src="/images/icons/01-Air.svg" alt="Air" style="width:84px;height:84px;" />
+      <div class="icon-label" style="font-family:Arial,sans-serif;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:#555;margin-top:5px;">Air</div>
     </div>
 
-    <div style="text-align:center;padding:1.25rem;">
-      <img src="/images/icons/02-Water.svg" alt="Water" style="width:72px;height:72px;margin-bottom:0.6rem;display:block;margin-left:auto;margin-right:auto;" />
-      <div style="font-family:Arial,sans-serif;font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;color:#555;">Water</div>
+    <!-- Water — top-right (θ = −30°) -->
+    <div class="nature-icon" style="position:absolute;left:207px;top:61px;text-align:center;width:84px;cursor:default;">
+      <img src="/images/icons/02-Water.svg" alt="Water" style="width:84px;height:84px;" />
+      <div class="icon-label" style="font-family:Arial,sans-serif;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:#555;margin-top:5px;">Water</div>
     </div>
 
-    <div style="text-align:center;padding:1.25rem;">
-      <img src="/images/icons/03-Soil.svg" alt="Soil" style="width:72px;height:72px;margin-bottom:0.6rem;display:block;margin-left:auto;margin-right:auto;" />
-      <div style="font-family:Arial,sans-serif;font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;color:#555;">Soil</div>
+    <!-- Soil — bottom-right (θ = 30°) -->
+    <div class="nature-icon" style="position:absolute;left:207px;top:171px;text-align:center;width:84px;cursor:default;">
+      <img src="/images/icons/03-Soil.svg" alt="Soil" style="width:84px;height:84px;" />
+      <div class="icon-label" style="font-family:Arial,sans-serif;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:#555;margin-top:5px;">Soil</div>
     </div>
 
-    <div style="text-align:center;padding:1.25rem;">
-      <img src="/images/icons/04-Biodiversity.svg" alt="Biodiversity" style="width:72px;height:72px;margin-bottom:0.6rem;display:block;margin-left:auto;margin-right:auto;" />
-      <div style="font-family:Arial,sans-serif;font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;color:#555;">Biodiversity</div>
+    <!-- Biodiversity — bottom (θ = 90°) -->
+    <div class="nature-icon" style="position:absolute;left:113px;top:227px;text-align:center;width:84px;cursor:default;">
+      <img src="/images/icons/04-Biodiversity.svg" alt="Biodiversity" style="width:84px;height:84px;" />
+      <div class="icon-label" style="font-family:Arial,sans-serif;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:#555;margin-top:5px;white-space:nowrap;">Biodiversity</div>
     </div>
 
-    <div style="text-align:center;padding:1.25rem;">
-      <img src="/images/icons/05-Equity.svg" alt="Equity" style="width:72px;height:72px;margin-bottom:0.6rem;display:block;margin-left:auto;margin-right:auto;" />
-      <div style="font-family:Arial,sans-serif;font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;color:#555;">Equity</div>
+    <!-- Equity — bottom-left (θ = 150°) -->
+    <div class="nature-icon" style="position:absolute;left:19px;top:171px;text-align:center;width:84px;cursor:default;">
+      <img src="/images/icons/05-Equity.svg" alt="Equity" style="width:84px;height:84px;" />
+      <div class="icon-label" style="font-family:Arial,sans-serif;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:#555;margin-top:5px;">Equity</div>
     </div>
 
-    <div style="text-align:center;padding:1.25rem;">
-      <img src="/images/icons/06-Carbon.svg" alt="Carbon" style="width:72px;height:72px;margin-bottom:0.6rem;display:block;margin-left:auto;margin-right:auto;" />
-      <div style="font-family:Arial,sans-serif;font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;color:#555;">Carbon</div>
+    <!-- Carbon — top-left (θ = 210°) -->
+    <div class="nature-icon" style="position:absolute;left:19px;top:61px;text-align:center;width:84px;cursor:default;">
+      <img src="/images/icons/06-Carbon.svg" alt="Carbon" style="width:84px;height:84px;" />
+      <div class="icon-label" style="font-family:Arial,sans-serif;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:#555;margin-top:5px;">Carbon</div>
     </div>
 
   </div>
@@ -130,6 +176,20 @@
 </footer>
 
 <script src="/js/nav.js"></script>
+<script>
+  // Nature Six — scroll-triggered entrance
+  (function () {
+    var ring = document.querySelector('.nature-six-ring');
+    if (!ring) return;
+    var observer = new IntersectionObserver(function (entries, obs) {
+      if (entries[0].isIntersecting) {
+        ring.classList.add('in-view');
+        obs.disconnect();
+      }
+    }, { threshold: 0.15 });
+    observer.observe(ring);
+  })();
+</script>
 <script>
   // Load groups into the Join panel
   async function loadAboutGroups() {
