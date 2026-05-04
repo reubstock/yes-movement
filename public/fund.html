@@ -207,6 +207,20 @@
       background: #fff;
       border-bottom: 1px solid #eee;
       padding: 5rem 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .telescope-map-bg {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .telescope-map-bg svg { width: 100%; height: 100%; }
+    .p-telescope > .panel-inner { position: relative; z-index: 1; }
+    @keyframes green-pulse {
+      0%   { r: 5; opacity: 0.6; }
+      100% { r: 18; opacity: 0; }
     }
     .p-telescope-layout {
       display: grid;
@@ -1128,6 +1142,76 @@
 
 <!-- ══ PANEL 6 — THE TELESCOPE ══ -->
 <div class="panel p-telescope">
+  <!-- US map background with group dots -->
+  <div class="telescope-map-bg">
+    <svg viewBox="0 0 800 420" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <!-- Continental US outline — simplified but recognizable -->
+      <!-- Projection: x=(lon+125)/59*800, y=(50-lat)/26*420 -->
+      <g fill="#f0f8f0" stroke="#b8d4b8" stroke-width="1.2" stroke-linejoin="round" opacity="0.7">
+        <path d="M 4,24
+          C 8,50 10,90 10,120 C 10,158 9,188 28,228
+          C 46,268 60,288 68,308 C 82,338 96,355 115,372
+          C 136,390 160,400 190,400 C 220,400 250,388 278,376
+          C 308,364 336,372 360,404 C 372,420 385,420 398,408
+          C 412,394 430,386 455,382 C 480,378 510,388 548,402
+          C 568,410 582,418 595,418 C 608,416 615,404 608,390
+          C 600,374 598,362 612,338 C 628,310 655,282 672,250
+          C 688,218 700,188 710,156 C 720,124 722,95 718,68
+          C 714,45 706,32 694,24 C 678,14 655,12 628,10
+          C 598,8 565,8 530,8 C 494,8 458,8 420,8
+          C 382,8 344,8 306,10 C 268,12 230,14 192,16
+          C 154,18 116,20 78,22 C 55,23 28,23 4,24Z"/>
+        <!-- Florida peninsula -->
+        <path d="M 595,390 C 600,400 606,410 612,418 C 618,424 625,418 622,408 C 619,396 614,384 608,376 Z"/>
+      </g>
+      <!-- Interior state lines — very faint -->
+      <g stroke="#c8dcc8" stroke-width="0.7" fill="none" opacity="0.5">
+        <!-- East/West rough dividers -->
+        <line x1="410" y1="8" x2="405" y2="380"/>
+        <line x1="550" y1="8" x2="545" y2="370"/>
+        <line x1="270" y1="8" x2="268" y2="390"/>
+        <line x1="130" y1="8" x2="128" y2="360"/>
+        <!-- North/South rough dividers -->
+        <line x1="10" y1="170" x2="715" y2="155"/>
+        <line x1="10" y1="290" x2="700" y2="275"/>
+        <!-- Mississippi River line -->
+        <path d="M 450,8 C 448,60 446,100 450,140 C 454,180 458,210 455,250 C 452,290 448,320 445,360 C 443,380 440,400 438,420" stroke="#a0c8d8" stroke-width="1.2" opacity="0.6"/>
+      </g>
+      <!-- 10 green group dots with pulse rings -->
+      <g>
+        <!-- 1. Seattle -->
+        <circle cx="36" cy="44" r="14" fill="#22c55e" opacity="0"><animate attributeName="r" values="5;18;5" dur="2.8s" repeatCount="indefinite" begin="0s"/><animate attributeName="opacity" values="0.4;0;0.4" dur="2.8s" repeatCount="indefinite" begin="0s"/></circle>
+        <circle cx="36" cy="44" r="5" fill="#22c55e"/>
+        <!-- 2. San Francisco -->
+        <circle cx="35" cy="222" r="14" fill="#22c55e" opacity="0"><animate attributeName="r" values="5;18;5" dur="3.1s" repeatCount="indefinite" begin="0.4s"/><animate attributeName="opacity" values="0.4;0;0.4" dur="3.1s" repeatCount="indefinite" begin="0.4s"/></circle>
+        <circle cx="35" cy="222" r="5" fill="#22c55e"/>
+        <!-- 3. Los Angeles -->
+        <circle cx="92" cy="288" r="14" fill="#22c55e" opacity="0"><animate attributeName="r" values="5;18;5" dur="2.6s" repeatCount="indefinite" begin="0.8s"/><animate attributeName="opacity" values="0.4;0;0.4" dur="2.6s" repeatCount="indefinite" begin="0.8s"/></circle>
+        <circle cx="92" cy="288" r="5" fill="#22c55e"/>
+        <!-- 4. Phoenix -->
+        <circle cx="148" cy="316" r="14" fill="#22c55e" opacity="0"><animate attributeName="r" values="5;18;5" dur="3.4s" repeatCount="indefinite" begin="1.2s"/><animate attributeName="opacity" values="0.4;0;0.4" dur="3.4s" repeatCount="indefinite" begin="1.2s"/></circle>
+        <circle cx="148" cy="316" r="5" fill="#22c55e"/>
+        <!-- 5. Denver -->
+        <circle cx="272" cy="187" r="14" fill="#22c55e" opacity="0"><animate attributeName="r" values="5;18;5" dur="2.9s" repeatCount="indefinite" begin="1.6s"/><animate attributeName="opacity" values="0.4;0;0.4" dur="2.9s" repeatCount="indefinite" begin="1.6s"/></circle>
+        <circle cx="272" cy="187" r="5" fill="#22c55e"/>
+        <!-- 6. Minneapolis -->
+        <circle cx="430" cy="90" r="14" fill="#22c55e" opacity="0"><animate attributeName="r" values="5;18;5" dur="3.2s" repeatCount="indefinite" begin="2.0s"/><animate attributeName="opacity" values="0.4;0;0.4" dur="3.2s" repeatCount="indefinite" begin="2.0s"/></circle>
+        <circle cx="430" cy="90" r="5" fill="#22c55e"/>
+        <!-- 7. Chicago -->
+        <circle cx="507" cy="148" r="14" fill="#22c55e" opacity="0"><animate attributeName="r" values="5;18;5" dur="2.7s" repeatCount="indefinite" begin="2.4s"/><animate attributeName="opacity" values="0.4;0;0.4" dur="2.7s" repeatCount="indefinite" begin="2.4s"/></circle>
+        <circle cx="507" cy="148" r="5" fill="#22c55e"/>
+        <!-- 8. Austin -->
+        <circle cx="370" cy="358" r="14" fill="#22c55e" opacity="0"><animate attributeName="r" values="5;18;5" dur="3.0s" repeatCount="indefinite" begin="2.8s"/><animate attributeName="opacity" values="0.4;0;0.4" dur="3.0s" repeatCount="indefinite" begin="2.8s"/></circle>
+        <circle cx="370" cy="358" r="5" fill="#22c55e"/>
+        <!-- 9. Atlanta -->
+        <circle cx="554" cy="298" r="14" fill="#22c55e" opacity="0"><animate attributeName="r" values="5;18;5" dur="3.3s" repeatCount="indefinite" begin="3.2s"/><animate attributeName="opacity" values="0.4;0;0.4" dur="3.3s" repeatCount="indefinite" begin="3.2s"/></circle>
+        <circle cx="554" cy="298" r="5" fill="#22c55e"/>
+        <!-- 10. New York -->
+        <circle cx="693" cy="169" r="14" fill="#22c55e" opacity="0"><animate attributeName="r" values="5;18;5" dur="2.5s" repeatCount="indefinite" begin="3.6s"/><animate attributeName="opacity" values="0.4;0;0.4" dur="2.5s" repeatCount="indefinite" begin="3.6s"/></circle>
+        <circle cx="693" cy="169" r="5" fill="#22c55e"/>
+      </g>
+    </svg>
+  </div>
   <div class="panel-inner">
     <span class="eyebrow">The Telescope</span>
     <div class="p-telescope-layout">
