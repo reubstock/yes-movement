@@ -389,30 +389,41 @@
       border-bottom: 1px solid #111;
       padding: 5rem 2rem;
     }
-    .p-nature-grid {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      border: 1px solid #111;
-      margin-top: 2.5rem;
+    /* ─── Hex ring ─── */
+    .p-nature-hex {
+      --hx: 150px;
+      --hg: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin: 3rem auto 0;
+      width: calc(3 * var(--hx) + 2 * var(--hg));
     }
-    .p-nature-cell {
-      padding: 2rem 1rem;
-      border-right: 1px solid #111;
+    .p-nature-hex-row {
+      display: flex;
+      gap: var(--hg);
+    }
+    .p-nature-hex-row:nth-child(2) {
+      transform: translateX(calc(var(--hx) / 2 + var(--hg) / 2));
+      margin-top: calc(var(--hx) * -0.08);
+    }
+    .p-nature-hex-item {
+      width: var(--hx);
       text-align: center;
     }
-    .p-nature-cell:last-child { border-right: none; }
-    .p-nature-cell img {
-      width: 52px;
-      height: 52px;
+    .p-nature-hex-item img {
+      width: var(--hx);
+      height: var(--hx);
       display: block;
-      margin: 0 auto 0.75rem;
     }
-    .p-nature-cell span {
+    .p-nature-hex-item span {
       font-family: Arial, sans-serif;
       font-size: 0.58rem;
-      letter-spacing: 0.16em;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
       color: #555;
+      display: block;
+      margin-top: 0.35rem;
     }
 
     /* ══════════════════════════════════
@@ -488,7 +499,6 @@
     }
     .p-year-season:last-child { border-right: none; }
     .p-year-season-header {
-      background: #000;
       color: #fff;
       padding: 0.75rem 1.25rem;
       font-family: Arial, sans-serif;
@@ -496,6 +506,10 @@
       letter-spacing: 0.16em;
       text-transform: uppercase;
     }
+    .p-year-season.s1 .p-year-season-header { background: #1a4a8a; }
+    .p-year-season.s2 .p-year-season-header { background: #1a6b3a; }
+    .p-year-season.s3 .p-year-season-header { background: #b84a18; }
+    .p-year-season.s4 .p-year-season-header { background: #4a6030; }
     .p-year-season-body {
       padding: 1.25rem;
     }
@@ -738,11 +752,8 @@
       .p-week1-step:nth-child(2n) { border-right: none; }
       .p-week1-step { border-bottom: 1px solid #111; }
       .p-season-grid { grid-template-columns: repeat(6, 1fr); }
-      .p-nature-grid { grid-template-columns: repeat(3, 1fr); }
-      .p-nature-cell:nth-child(3n) { border-right: none; }
-      .p-nature-cell:nth-child(4),
-      .p-nature-cell:nth-child(5),
-      .p-nature-cell:nth-child(6) { border-top: 1px solid #111; }
+      .p-nature-hex { --hx: 100px; }
+      .p-nature-hex-row:nth-child(2) { margin-top: calc(100px * -0.08); }
       .p-year-seasons { grid-template-columns: 1fr 1fr; }
       .p-year-season:nth-child(2n) { border-right: none; }
       .p-year-season:nth-child(3),
@@ -1027,30 +1038,34 @@
 <div class="panel p-nature">
   <div class="panel-inner">
     <span class="eyebrow">The Nature Six — six areas of focus</span>
-    <div class="p-nature-grid">
-      <div class="p-nature-cell">
-        <img src="/images/icons/01-Air.svg" alt="Air" />
-        <span>Air</span>
+    <div class="p-nature-hex">
+      <div class="p-nature-hex-row">
+        <div class="p-nature-hex-item">
+          <img src="/images/icons/01-Air.svg" alt="Air" />
+          <span>Air</span>
+        </div>
+        <div class="p-nature-hex-item">
+          <img src="/images/icons/02-Water.svg" alt="Water" />
+          <span>Water</span>
+        </div>
+        <div class="p-nature-hex-item">
+          <img src="/images/icons/03-Soil.svg" alt="Soil" />
+          <span>Soil</span>
+        </div>
       </div>
-      <div class="p-nature-cell">
-        <img src="/images/icons/02-Water.svg" alt="Water" />
-        <span>Water</span>
-      </div>
-      <div class="p-nature-cell">
-        <img src="/images/icons/03-Soil.svg" alt="Soil" />
-        <span>Soil</span>
-      </div>
-      <div class="p-nature-cell">
-        <img src="/images/icons/04-Biodiversity.svg" alt="Biodiversity" />
-        <span>Biodiversity</span>
-      </div>
-      <div class="p-nature-cell">
-        <img src="/images/icons/05-Equity.svg" alt="Equity" />
-        <span>Equity</span>
-      </div>
-      <div class="p-nature-cell">
-        <img src="/images/icons/06-Carbon.svg" alt="Carbon" />
-        <span>Carbon</span>
+      <div class="p-nature-hex-row">
+        <div class="p-nature-hex-item">
+          <img src="/images/icons/04-Biodiversity.svg" alt="Biodiversity" />
+          <span>Biodiversity</span>
+        </div>
+        <div class="p-nature-hex-item">
+          <img src="/images/icons/05-Equity.svg" alt="Equity" />
+          <span>Equity</span>
+        </div>
+        <div class="p-nature-hex-item">
+          <img src="/images/icons/06-Carbon.svg" alt="Carbon" />
+          <span>Carbon</span>
+        </div>
       </div>
     </div>
   </div>
@@ -1100,7 +1115,7 @@
   <div class="panel-inner">
     <span class="eyebrow">A year — four seasons</span>
     <div class="p-year-seasons">
-      <div class="p-year-season">
+      <div class="p-year-season s1">
         <div class="p-year-season-header">Season 1</div>
         <div class="p-year-season-body">
           <div class="p-year-week-row">
@@ -1118,7 +1133,7 @@
           <div class="p-year-season-label">Launch · 10 groups · Water Summit</div>
         </div>
       </div>
-      <div class="p-year-season">
+      <div class="p-year-season s2">
         <div class="p-year-season-header">Season 2</div>
         <div class="p-year-season-body">
           <div class="p-year-week-row">
@@ -1136,7 +1151,7 @@
           <div class="p-year-season-label">Growth · 100 groups · Air Summit</div>
         </div>
       </div>
-      <div class="p-year-season">
+      <div class="p-year-season s3">
         <div class="p-year-season-header">Season 3</div>
         <div class="p-year-season-body">
           <div class="p-year-week-row">
@@ -1154,7 +1169,7 @@
           <div class="p-year-season-label">Scale · 500 groups · Soil Summit</div>
         </div>
       </div>
-      <div class="p-year-season">
+      <div class="p-year-season s4">
         <div class="p-year-season-header">Season 4</div>
         <div class="p-year-season-body">
           <div class="p-year-week-row">
@@ -1179,16 +1194,16 @@
         <span class="p-year-target-label">Seasons</span>
       </div>
       <div class="p-year-target">
-        <span class="p-year-target-num">1,000</span>
-        <span class="p-year-target-label">Groups — year 1 target</span>
+        <span class="p-year-target-num">4</span>
+        <span class="p-year-target-label">Summits</span>
       </div>
       <div class="p-year-target">
         <span class="p-year-target-num">16K</span>
         <span class="p-year-target-label">Members at scale</span>
       </div>
       <div class="p-year-target">
-        <span class="p-year-target-num">4</span>
-        <span class="p-year-target-label">Summits</span>
+        <span class="p-year-target-num">1,000</span>
+        <span class="p-year-target-label">Groups — year 1 target</span>
       </div>
     </div>
   </div>
