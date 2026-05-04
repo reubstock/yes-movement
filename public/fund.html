@@ -96,19 +96,27 @@
       border-right: 1px solid #333;
     }
     .p-failure-cell:last-child { border-right: none; }
+    .p-failures-heading {
+      font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+      font-weight: 300;
+      color: #fff;
+      letter-spacing: -0.02em;
+      margin: 0 0 2.5rem;
+      line-height: 1.2;
+    }
     .p-failure-label {
       font-family: Arial, sans-serif;
       font-size: 0.58rem;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.35);
+      color: rgba(255,255,255,0.4);
       margin-bottom: 0.8rem;
       display: block;
     }
     .p-failure-cell p {
-      font-size: 0.9rem;
-      color: rgba(255,255,255,0.75);
-      line-height: 1.6;
+      font-size: 1.05rem;
+      color: #fff;
+      line-height: 1.65;
       margin: 0;
     }
 
@@ -780,7 +788,7 @@
 <!-- ══ PANEL 3 — FIVE FAILURES ══ -->
 <div class="panel p-failures">
   <div class="panel-inner">
-    <span class="eyebrow eyebrow-white">Why existing approaches fall short</span>
+    <h2 class="p-failures-heading">Why existing approaches fall short.</h2>
     <div class="p-failures-grid">
       <div class="p-failure-cell">
         <span class="p-failure-label">Finite</span>
