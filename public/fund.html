@@ -816,10 +816,10 @@
     /* Stem */
     .fl-stem {
       stroke: #2d6a1e;
-      stroke-width: 3;
+      stroke-width: 4;
       stroke-linecap: round;
-      stroke-dasharray: 182;
-      stroke-dashoffset: 182;
+      stroke-dasharray: 165;
+      stroke-dashoffset: 165;
       transition: stroke-dashoffset 1.0s ease-out;
     }
     .fl-stem.growing { stroke-dashoffset: 0; }
@@ -1711,39 +1711,39 @@
         '<path class="fl-hand" id="fl-hand-ra" d="M 384,74 L 378,62"/>' +
         '<path class="fl-hand" id="fl-hand-rb" d="M 384,74 L 391,61"/>' +
       '</g>' +
-      // ── Left flower ──
+      // ── Left flower — plump, petals r=15 at tight orbit so they overlap nicely ──
       '<g class="fl-plant fl-plant-l" id="fl-plant-l">' +
-        '<ellipse cx="80" cy="255" rx="36" ry="9" fill="#6b4226"/>' +
-        '<ellipse cx="80" cy="251" rx="22" ry="5" fill="#8b5e3c"/>' +
-        '<line class="fl-stem" id="fl-stem-l" x1="80" y1="248" x2="80" y2="68"/>' +
-        '<path class="fl-leaf fl-lf" id="fl-lf-l" d="M80,162 C68,154 52,150 54,138 C64,144 77,156 80,162Z"/>' +
-        '<path class="fl-leaf fl-lr" id="fl-lr-l" d="M80,144 C92,136 108,132 108,120 C98,126 82,140 80,144Z"/>' +
-        '<circle class="fl-petal" cx="80" cy="38" r="11"/>' +
-        '<circle class="fl-petal" cx="95" cy="46" r="11"/>' +
-        '<circle class="fl-petal" cx="95" cy="64" r="11"/>' +
-        '<circle class="fl-petal" cx="80" cy="72" r="11"/>' +
-        '<circle class="fl-petal" cx="65" cy="64" r="11"/>' +
-        '<circle class="fl-petal" cx="65" cy="46" r="11"/>' +
-        '<circle class="fl-center" cx="80" cy="55" r="13"/>' +
-        '<circle class="fl-center-hi" cx="80" cy="55" r="6"/>' +
-        '<text class="yes-label" id="yes-l" x="80" y="22" text-anchor="middle">YES</text>' +
+        '<ellipse cx="80" cy="257" rx="42" ry="12" fill="#6b4226"/>' +
+        '<ellipse cx="80" cy="252" rx="26" ry="7" fill="#8b5e3c"/>' +
+        '<line class="fl-stem" id="fl-stem-l" x1="80" y1="248" x2="80" y2="88"/>' +
+        '<path class="fl-leaf fl-lf" id="fl-lf-l" d="M80,172 C62,160 40,157 43,140 C58,149 76,164 80,172Z"/>' +
+        '<path class="fl-leaf fl-lr" id="fl-lr-l" d="M80,150 C98,138 120,135 120,118 C104,127 82,144 80,150Z"/>' +
+        '<circle class="fl-petal" cx="80" cy="37" r="15"/>' +
+        '<circle class="fl-petal" cx="96" cy="46" r="15"/>' +
+        '<circle class="fl-petal" cx="96" cy="66" r="15"/>' +
+        '<circle class="fl-petal" cx="80" cy="75" r="15"/>' +
+        '<circle class="fl-petal" cx="64" cy="66" r="15"/>' +
+        '<circle class="fl-petal" cx="64" cy="46" r="15"/>' +
+        '<circle class="fl-center" cx="80" cy="56" r="18"/>' +
+        '<circle class="fl-center-hi" cx="80" cy="56" r="9"/>' +
+        '<text class="yes-label" id="yes-l" x="80" y="16" text-anchor="middle">YES</text>' +
       '</g>' +
-      // ── Right flower ──
+      // ── Right flower — mirrored ──
       '<g class="fl-plant fl-plant-r" id="fl-plant-r">' +
-        '<ellipse cx="560" cy="255" rx="36" ry="9" fill="#6b4226"/>' +
-        '<ellipse cx="560" cy="251" rx="22" ry="5" fill="#8b5e3c"/>' +
-        '<line class="fl-stem" id="fl-stem-r" x1="560" y1="248" x2="560" y2="68"/>' +
-        '<path class="fl-leaf fl-lf" id="fl-lf-r" d="M560,162 C548,154 532,150 534,138 C544,144 557,156 560,162Z"/>' +
-        '<path class="fl-leaf fl-lr" id="fl-lr-r" d="M560,144 C572,136 588,132 588,120 C578,126 562,140 560,144Z"/>' +
-        '<circle class="fl-petal" cx="560" cy="38" r="11"/>' +
-        '<circle class="fl-petal" cx="575" cy="46" r="11"/>' +
-        '<circle class="fl-petal" cx="575" cy="64" r="11"/>' +
-        '<circle class="fl-petal" cx="560" cy="72" r="11"/>' +
-        '<circle class="fl-petal" cx="545" cy="64" r="11"/>' +
-        '<circle class="fl-petal" cx="545" cy="46" r="11"/>' +
-        '<circle class="fl-center" cx="560" cy="55" r="13"/>' +
-        '<circle class="fl-center-hi" cx="560" cy="55" r="6"/>' +
-        '<text class="yes-label" id="yes-r" x="560" y="22" text-anchor="middle">YES</text>' +
+        '<ellipse cx="560" cy="257" rx="42" ry="12" fill="#6b4226"/>' +
+        '<ellipse cx="560" cy="252" rx="26" ry="7" fill="#8b5e3c"/>' +
+        '<line class="fl-stem" id="fl-stem-r" x1="560" y1="248" x2="560" y2="88"/>' +
+        '<path class="fl-leaf fl-lf" id="fl-lf-r" d="M560,172 C542,160 520,157 523,140 C538,149 556,164 560,172Z"/>' +
+        '<path class="fl-leaf fl-lr" id="fl-lr-r" d="M560,150 C578,138 600,135 600,118 C584,127 562,144 560,150Z"/>' +
+        '<circle class="fl-petal" cx="560" cy="37" r="15"/>' +
+        '<circle class="fl-petal" cx="576" cy="46" r="15"/>' +
+        '<circle class="fl-petal" cx="576" cy="66" r="15"/>' +
+        '<circle class="fl-petal" cx="560" cy="75" r="15"/>' +
+        '<circle class="fl-petal" cx="544" cy="66" r="15"/>' +
+        '<circle class="fl-petal" cx="544" cy="46" r="15"/>' +
+        '<circle class="fl-center" cx="560" cy="56" r="18"/>' +
+        '<circle class="fl-center-hi" cx="560" cy="56" r="9"/>' +
+        '<text class="yes-label" id="yes-r" x="560" y="16" text-anchor="middle">YES</text>' +
       '</g>' +
       // ── "Say Hi" box (on top, centered, clickable) ──
       '<g class="welcome-box" id="welcome-box" style="pointer-events:all;">' +
