@@ -111,10 +111,11 @@
     }
     .p-failure-label {
       font-family: Arial, sans-serif;
-      font-size: 0.58rem;
-      letter-spacing: 0.2em;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: rgba(255,255,255,0.4);
+      color: rgba(255,255,255,0.85);
       margin-bottom: 0.8rem;
       display: block;
     }
@@ -1094,14 +1095,6 @@
   </div>
 </div>
 
-<!-- ══ PANEL 3b — CHANGE LIVES HERE ══ -->
-<div class="panel" style="background:#1a0a00;padding:5rem 2rem;text-align:center;">
-  <div style="max-width:720px;margin:0 auto;">
-    <div style="font-family:Arial,sans-serif;font-size:clamp(2.2rem,6vw,4.8rem);font-weight:900;letter-spacing:-0.02em;color:#fff;line-height:1;text-transform:uppercase;margin-bottom:1.25rem;">CHANGE LIVES HERE</div>
-    <p style="font-size:clamp(1.1rem,2.5vw,1.5rem);color:rgba(255,255,255,0.6);font-weight:300;letter-spacing:0.01em;margin:0;">Take action where you live.</p>
-  </div>
-</div>
-
 <!-- ══ PANEL 4 — THE ANSWER ══ -->
 <div class="panel p-answer">
   <div class="p-answer-yes">Yes.</div>
@@ -1908,6 +1901,28 @@
       </div>
     </div>
     <p class="p-budget-note">The model is designed to become self-sustaining through membership and licensing as the network grows.<br>Full production budget available on request.</p>
+  </div>
+</div>
+
+<!-- ══ PANEL 15b — CHANGE LIVES HERE ══ -->
+<div class="panel" style="background:#1a0a00;padding:7rem 2rem 6rem;text-align:center;">
+  <div style="max-width:720px;margin:0 auto;">
+    <!-- Glowing red dot -->
+    <div style="display:flex;justify-content:center;margin-bottom:2.5rem;">
+      <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;">
+        <circle cx="24" cy="24" r="6" fill="#e53e3e"/>
+        <circle cx="24" cy="24" r="6" fill="#e53e3e" opacity="0">
+          <animate attributeName="r" values="6;22;6" dur="2.4s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.55;0;0.55" dur="2.4s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="24" cy="24" r="6" fill="#e53e3e" opacity="0">
+          <animate attributeName="r" values="6;14;6" dur="2.4s" begin="0.8s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values="0.35;0;0.35" dur="2.4s" begin="0.8s" repeatCount="indefinite"/>
+        </circle>
+      </svg>
+    </div>
+    <div style="font-family:Arial,sans-serif;font-size:clamp(2.2rem,6vw,4.8rem);font-weight:900;letter-spacing:-0.02em;color:#fff;line-height:1;text-transform:uppercase;margin-bottom:1.25rem;">CHANGE LIVES HERE</div>
+    <p style="font-size:clamp(1.1rem,2.5vw,1.5rem);color:rgba(255,255,255,0.6);font-weight:300;letter-spacing:0.01em;margin:0;">Take action where you live.</p>
   </div>
 </div>
 
