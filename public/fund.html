@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fund — YES Movement</title>
   <link rel="stylesheet" href="/css/styles.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     *, *::before, *::after { box-sizing: border-box; }
     body { background: #fff; color: #111; margin: 0; }
@@ -169,6 +168,11 @@
     .p-arch-cell:nth-child(2n) { border-right: none; }
     .p-arch-cell:nth-child(3),
     .p-arch-cell:nth-child(4) { border-bottom: none; }
+    .p-arch-icon {
+      display: block;
+      margin-bottom: 1rem;
+      opacity: 0.7;
+    }
     .p-arch-num {
       font-family: Arial, sans-serif;
       font-size: 0.58rem;
@@ -455,15 +459,9 @@
       inset: 0;
       z-index: 0;
       pointer-events: none;
-      height: 100%;
     }
-    #guide-map { height: 100%; }
-    #guide-map .leaflet-tile-pane { opacity: 0.55; }
-    #guide-map .leaflet-control-container { display: none; }
+    .guide-map-bg svg { width: 100%; height: 100%; }
     .p-guide > .panel-inner { position: relative; z-index: 1; }
-    /* Readable text on dark map */
-    .p-guide-left h2 { text-shadow: 0 1px 8px rgba(0,0,0,0.8); }
-    .p-guide-left p  { text-shadow: 0 1px 4px rgba(0,0,0,0.9); }
     /* ─── Field guide book ─── */
     .guide-book-wrap {
       margin-top: 2rem;
@@ -495,7 +493,7 @@
     .p-guide-left p {
       font-size: 0.95rem;
       line-height: 1.8;
-      color: rgba(255,255,255,0.5);
+      color: rgba(255,255,255,0.75);
       margin: 0;
     }
     .p-guide-right { padding: 3rem 2.5rem; }
@@ -1016,21 +1014,52 @@
     <span class="eyebrow eyebrow-white">Four components. One system.</span>
     <div class="p-arch-grid">
       <div class="p-arch-cell">
+        <!-- Telescope icon: broadcast signal + lens -->
+        <svg class="p-arch-icon" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="18" cy="18" r="6" stroke="#c9a84c" stroke-width="1.8"/>
+          <path d="M18 4 L18 8M18 28 L18 32M4 18 L8 18M28 18 L32 18" stroke="#c9a84c" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M8.1 8.1 L11 11M25 25 L27.9 27.9M27.9 8.1 L25 11M11 25 L8.1 27.9" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="18" cy="18" r="2.5" fill="#c9a84c"/>
+        </svg>
         <span class="p-arch-num">01</span>
         <h3>The Telescope</h3>
         <p>A twice-weekly broadcast setting the agenda for every group worldwide. Call and response — the movement's shared signal.</p>
       </div>
       <div class="p-arch-cell">
+        <!-- Groups icon: three people -->
+        <svg class="p-arch-icon" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="18" cy="11" r="4.5" stroke="#c9a84c" stroke-width="1.8"/>
+          <path d="M10 30 C10 24 13.6 20 18 20 C22.4 20 26 24 26 30" stroke="#c9a84c" stroke-width="1.8" stroke-linecap="round"/>
+          <circle cx="8" cy="14" r="3.2" stroke="#c9a84c" stroke-width="1.5"/>
+          <path d="M2 30 C2 25.5 4.6 22.5 8 22.5" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="28" cy="14" r="3.2" stroke="#c9a84c" stroke-width="1.5"/>
+          <path d="M34 30 C34 25.5 31.4 22.5 28 22.5" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
         <span class="p-arch-num">02</span>
         <h3>YES Groups</h3>
         <p>Local groups of up to 16 volunteers meeting weekly to watch, discuss, and act. 12 sessions per season. Their work feeds back into The Telescope.</p>
       </div>
       <div class="p-arch-cell">
+        <!-- Field guide icon: open book -->
+        <svg class="p-arch-icon" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 9 C18 9 12 7 5 9 L5 28 C12 26 18 28 18 28 C18 28 24 26 31 28 L31 9 C24 7 18 9 18 9Z" stroke="#c9a84c" stroke-width="1.8" stroke-linejoin="round"/>
+          <line x1="18" y1="9" x2="18" y2="28" stroke="#c9a84c" stroke-width="1.5"/>
+          <line x1="8" y1="13" x2="15" y2="12" stroke="#c9a84c" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+          <line x1="8" y1="17" x2="15" y2="16" stroke="#c9a84c" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+          <line x1="21" y1="12" x2="28" y2="13" stroke="#c9a84c" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+          <line x1="21" y1="16" x2="28" y2="17" stroke="#c9a84c" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+        </svg>
         <span class="p-arch-num">03</span>
         <h3>The Field Guide</h3>
         <p>A physical guide given to every member. 12 weeks of content, challenges, and worksheets. Ecological knowledge made tactile and local.</p>
       </div>
       <div class="p-arch-cell">
+        <!-- Summit icon: mountain peaks -->
+        <svg class="p-arch-icon" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 6 L28 26 L8 26 Z" stroke="#c9a84c" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M26 18 L33 30 L19 30" stroke="#c9a84c" stroke-width="1.5" stroke-linejoin="round" opacity="0.6"/>
+          <path d="M18 6 L21 11" stroke="#fff" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
+        </svg>
         <span class="p-arch-num">04</span>
         <h3>Quarterly Summit</h3>
         <p>Groups converge in person. Synthesis, community, renewal. The movement's exhale.</p>
@@ -1301,8 +1330,120 @@
 
 <!-- ══ PANEL 11 — THE FIELD GUIDE ══ -->
 <div class="panel p-guide">
-  <!-- Leaflet world map background -->
-  <div class="guide-map-bg" id="guide-map"></div>
+  <!-- Dark world map background -->
+  <div class="guide-map-bg">
+    <svg viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <!-- Ocean -->
+      <rect width="1000" height="500" fill="#080c14"/>
+      <!-- Graticule -->
+      <g stroke="rgba(255,255,255,0.035)" stroke-width="0.7" fill="none">
+        <line x1="0" y1="83" x2="1000" y2="83"/><line x1="0" y1="167" x2="1000" y2="167"/>
+        <line x1="0" y1="250" x2="1000" y2="250" stroke="rgba(255,255,255,0.06)"/>
+        <line x1="0" y1="333" x2="1000" y2="333"/><line x1="0" y1="417" x2="1000" y2="417"/>
+        <line x1="83" y1="0" x2="83" y2="500"/><line x1="167" y1="0" x2="167" y2="500"/>
+        <line x1="250" y1="0" x2="250" y2="500"/><line x1="333" y1="0" x2="333" y2="500"/>
+        <line x1="417" y1="0" x2="417" y2="500"/>
+        <line x1="500" y1="0" x2="500" y2="500" stroke="rgba(255,255,255,0.06)"/>
+        <line x1="583" y1="0" x2="583" y2="500"/><line x1="667" y1="0" x2="667" y2="500"/>
+        <line x1="750" y1="0" x2="750" y2="500"/><line x1="833" y1="0" x2="833" y2="500"/>
+        <line x1="917" y1="0" x2="917" y2="500"/>
+      </g>
+      <!-- Continents -->
+      <g fill="#1a2b1a" stroke="#2d442d" stroke-width="0.8" stroke-linejoin="round">
+        <!-- North America -->
+        <path d="M33,83 C48,70 65,60 75,57 C88,62 100,76 118,79 C130,79 142,79 152,108
+                 C162,128 172,153 186,173 C196,185 212,196 232,203 C244,208 256,214 263,222
+                 C268,218 265,208 268,198 C272,188 279,184 284,190 C282,200 278,207 284,200
+                 C290,190 293,175 294,158 C298,143 305,128 312,118 C320,110 332,108 344,113
+                 C352,116 358,112 352,103 C346,93 337,86 328,83 C318,80 308,80 300,85
+                 C292,90 284,89 274,78 C264,68 255,62 242,56 C226,50 208,46 190,46
+                 C172,46 155,50 140,54 C126,57 114,60 100,58 C86,56 72,60 60,67 Z"/>
+        <!-- Greenland -->
+        <path d="M362,80 C372,68 388,54 405,45 C420,36 432,33 440,40 C450,50 450,66 440,78
+                 C430,85 415,88 402,87 C388,86 374,85 362,80Z"/>
+        <!-- South America -->
+        <path d="M267,228 C274,220 284,217 297,220 C312,224 326,232 338,242 C352,253 363,267
+                 370,284 C377,300 379,318 374,336 C369,352 358,365 346,375 C334,384 321,390
+                 310,394 C299,398 290,395 285,385 C280,373 279,358 281,342 C284,326 287,310
+                 283,293 C279,276 272,260 268,245 C265,235 264,230 267,228Z"/>
+        <!-- Europe (detailed) -->
+        <path d="M472,147 C476,134 480,120 484,104 C488,90 494,76 506,68 C520,60 534,58 548,61
+                 C560,64 570,70 578,60 C588,48 603,40 620,44 C637,47 650,58 654,72 C658,86
+                 651,100 638,110 C624,120 608,126 592,131 C576,136 558,140 542,143 C526,145
+                 510,146 496,146 Z"/>
+        <!-- Scandinavia -->
+        <path d="M490,60 C494,50 500,40 508,35 C516,42 518,55 514,67 C510,78 502,85 494,80
+                 C487,75 487,68 490,60Z"/>
+        <!-- Africa -->
+        <path d="M480,150 C492,144 508,141 524,142 C540,144 556,150 568,160 C580,170 588,184
+                 594,200 C600,216 602,234 598,252 C594,268 584,282 572,294 C559,307 546,317
+                 536,328 C528,337 524,345 522,350 C520,354 516,352 513,343 C510,332 508,318
+                 506,302 C503,284 500,266 493,248 C486,230 477,214 469,198 C462,182 457,167
+                 460,155 C462,148 470,148 480,150Z"/>
+        <!-- Madagascar -->
+        <path d="M620,285 C624,275 630,268 636,268 C641,270 643,280 640,292 C637,303 630,310
+                 624,308 C618,305 617,295 620,285Z"/>
+        <!-- Asia (main body) -->
+        <path d="M572,132 C584,122 598,112 614,102 C632,90 652,78 675,66 C698,54 724,46 752,43
+                 C780,40 808,42 834,48 C858,54 878,64 894,76 C908,86 916,98 916,112 C916,126
+                 906,138 890,148 C874,157 855,162 834,165 C812,168 788,166 764,162 C740,158
+                 714,152 688,148 C662,144 636,144 614,148 C596,152 580,158 566,152
+                 C556,147 555,138 572,132Z"/>
+        <!-- Indian subcontinent -->
+        <path d="M690,160 C698,165 703,175 703,188 C703,202 698,218 690,230 C682,240 672,246
+                 662,244 C652,241 645,232 642,220 C639,207 640,193 645,182 C650,172 658,165
+                 668,161 C676,158 684,157 690,160Z"/>
+        <!-- SE Asia peninsula -->
+        <path d="M732,155 C740,162 744,174 742,187 C740,199 732,210 722,216 C714,220 707,217
+                 702,208 C697,198 696,185 700,174 C704,163 712,156 720,153 C726,151 730,153 732,155Z"/>
+        <!-- Japan -->
+        <path d="M890,125 C895,118 902,114 907,117 C912,120 913,128 910,136 C907,144 900,149
+                 894,146 C888,143 886,132 890,125Z"/>
+        <!-- Australia -->
+        <path d="M808,293 C820,282 838,276 856,274 C873,272 890,276 902,285 C913,293 919,306
+                 918,320 C917,334 910,346 900,354 C890,361 877,364 864,362 C851,360 840,354
+                 832,344 C824,334 818,322 814,309 C810,298 808,296 808,293Z"/>
+        <!-- New Zealand (tiny) -->
+        <path d="M940,360 C942,354 947,350 951,352 C954,355 953,362 950,368 C947,373 942,375
+                 939,372 C937,368 938,364 940,360Z"/>
+      </g>
+      <!-- Major rivers — subtle dark teal lines -->
+      <g stroke="#1e3830" stroke-width="1.2" fill="none" opacity="0.8">
+        <!-- Mississippi -->
+        <path d="M237,119 C235,136 233,156 236,178 C239,198 245,212 250,224"/>
+        <!-- Amazon -->
+        <path d="M282,248 C298,244 318,241 340,244 C362,247 376,254 385,258"/>
+        <!-- Nile -->
+        <path d="M558,196 C556,178 554,160 556,142 C558,126 562,112 564,98"/>
+        <!-- Congo -->
+        <path d="M530,238 C542,233 556,230 568,234 C580,238 588,246 592,254"/>
+        <!-- Yangtze -->
+        <path d="M760,148 C778,150 798,152 816,152 C834,152 850,150 862,148"/>
+        <!-- Ob (Siberia) -->
+        <path d="M748,58 C748,74 746,92 745,108 C744,122 743,134 740,148"/>
+      </g>
+      <!-- Major lakes — dark water patches -->
+      <g fill="#0a1520" stroke="#142030" stroke-width="0.5" opacity="0.9">
+        <!-- Great Lakes -->
+        <ellipse cx="258" cy="117" rx="14" ry="5"/>
+        <ellipse cx="274" cy="120" rx="9" ry="5"/>
+        <!-- Lake Baikal -->
+        <ellipse cx="776" cy="94" rx="4" ry="14"/>
+        <!-- Caspian Sea -->
+        <ellipse cx="634" cy="124" rx="7" ry="15"/>
+        <!-- Lake Victoria -->
+        <ellipse cx="592" cy="252" rx="8" ry="7"/>
+        <!-- Lake Chad -->
+        <ellipse cx="540" cy="198" rx="6" ry="5"/>
+      </g>
+      <!-- Single pulsing dot — Mississippi Headwaters (Lake Itasca, MN: 47.2°N, 95.2°W) -->
+      <circle cx="236" cy="119" r="16" fill="#e53e3e" opacity="0">
+        <animate attributeName="r" values="6;22;6" dur="2.4s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.5;0;0.5" dur="2.4s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="236" cy="119" r="5" fill="#e53e3e"/>
+    </svg>
+  </div>
   <div class="panel-inner">
     <span class="eyebrow eyebrow-white">The Field Guide</span>
     <div class="p-guide-layout">
@@ -1618,32 +1759,7 @@
 </footer>
 
 <script src="/js/nav.js"></script>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-  // ── Leaflet guide map ──
-  (function() {
-    var mapEl = document.getElementById('guide-map');
-    if (!mapEl) return;
-    var m = L.map('guide-map', {
-      center: [30, 5], zoom: 2,
-      zoomControl: false, scrollWheelZoom: false,
-      doubleClickZoom: false, dragging: false,
-      keyboard: false, touchZoom: false,
-      attributionControl: false
-    });
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_matter_all/{z}/{x}/{y}{r}.png', {
-      subdomains: 'abcd', opacity: 1
-    }).addTo(m);
-    // Single pulsing dot — Mississippi Headwaters (Lake Itasca, MN)
-    var pulseHtml =
-      '<div style="position:relative;width:12px;height:12px;">' +
-        '<div style="position:absolute;top:50%;left:50%;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:#e53e3e;animation:gmap-pulse 2.2s ease-out infinite;"></div>' +
-        '<div style="position:absolute;top:50%;left:50%;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:#e53e3e;border:2px solid #fff;"></div>' +
-      '</div>';
-    L.marker([47.24, -95.22], {
-      icon: L.divIcon({ className: '', html: pulseHtml, iconSize: [12,12], iconAnchor: [6,6] })
-    }).addTo(m);
-  })();
 
   // ── CTA buttons ──
   function ctaNo() {
