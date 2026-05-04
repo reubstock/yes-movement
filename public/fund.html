@@ -876,9 +876,9 @@
       stroke-width: 2.5;
       stroke-linecap: round;
       fill: none;
-      stroke-dasharray: 185;
-      stroke-dashoffset: 185;
-      transition: stroke-dashoffset 0.85s ease-out;
+      stroke-dasharray: 280;
+      stroke-dashoffset: 280;
+      transition: stroke-dashoffset 1.1s ease-out;
     }
     .fl-arm.grown { stroke-dashoffset: 0; }
     /* Hand forks */
@@ -892,19 +892,17 @@
       transition: stroke-dashoffset 0.3s ease-out;
     }
     .fl-hand.grown { stroke-dashoffset: 0; }
-    /* Wiggle dance — pivots from bottom of each flower group */
+    /* Gentle sway — pivots from bottom of each flower group */
     .fl-plant-l { transform-box: fill-box; transform-origin: center bottom; }
     .fl-plant-r { transform-box: fill-box; transform-origin: center bottom; }
-    @keyframes wiggle {
+    @keyframes sway {
       0%   { transform: rotate(0deg); }
-      20%  { transform: rotate(-8deg); }
-      40%  { transform: rotate(8deg); }
-      60%  { transform: rotate(-5deg); }
-      80%  { transform: rotate(5deg); }
+      25%  { transform: rotate(-4deg); }
+      75%  { transform: rotate(4deg); }
       100% { transform: rotate(0deg); }
     }
-    .fl-plant-l.dancing { animation: wiggle 0.75s ease-in-out infinite; }
-    .fl-plant-r.dancing { animation: wiggle 0.75s ease-in-out 0.15s infinite; }
+    .fl-plant-l.dancing { animation: sway 2.8s ease-in-out infinite; }
+    .fl-plant-r.dancing { animation: sway 2.8s ease-in-out 0.5s infinite; }
     /* Pulsing map dot */
     @keyframes gmap-pulse {
       0%   { transform: scale(1); opacity: 0.8; }
@@ -1672,55 +1670,56 @@
   }
 
   function buildGardenSVG() {
-    // Arms rendered first (behind flowers), welcome box last (on top)
-    return '<svg class="garden-svg" viewBox="0 0 440 270" xmlns="http://www.w3.org/2000/svg">' +
-      // ── Arms & hands ──
+    // Flowers at x=80 and x=560 (480 apart — twice the original 240).
+    // ViewBox widened to 640. Welcome box centered at x=320.
+    return '<svg class="garden-svg" viewBox="0 0 640 270" xmlns="http://www.w3.org/2000/svg">' +
+      // ── Arms & hands (behind flowers) ──
       '<g id="fl-arms">' +
-        '<path class="fl-arm" id="fl-arm-l" d="M 100,158 C 128,155 150,110 165,74"/>' +
-        '<path class="fl-hand" id="fl-hand-la" d="M 165,74 L 158,61"/>' +
-        '<path class="fl-hand" id="fl-hand-lb" d="M 165,74 L 171,62"/>' +
-        '<path class="fl-arm" id="fl-arm-r" d="M 340,158 C 312,155 290,110 275,74"/>' +
-        '<path class="fl-hand" id="fl-hand-ra" d="M 275,74 L 269,62"/>' +
-        '<path class="fl-hand" id="fl-hand-rb" d="M 275,74 L 282,61"/>' +
+        '<path class="fl-arm" id="fl-arm-l" d="M 80,158 C 115,155 240,110 256,74"/>' +
+        '<path class="fl-hand" id="fl-hand-la" d="M 256,74 L 249,61"/>' +
+        '<path class="fl-hand" id="fl-hand-lb" d="M 256,74 L 262,62"/>' +
+        '<path class="fl-arm" id="fl-arm-r" d="M 560,158 C 525,155 400,110 384,74"/>' +
+        '<path class="fl-hand" id="fl-hand-ra" d="M 384,74 L 378,62"/>' +
+        '<path class="fl-hand" id="fl-hand-rb" d="M 384,74 L 391,61"/>' +
       '</g>' +
       // ── Left flower ──
       '<g class="fl-plant fl-plant-l" id="fl-plant-l">' +
-        '<ellipse cx="100" cy="255" rx="36" ry="9" fill="#6b4226"/>' +
-        '<ellipse cx="100" cy="251" rx="22" ry="5" fill="#8b5e3c"/>' +
-        '<line class="fl-stem" id="fl-stem-l" x1="100" y1="248" x2="100" y2="68"/>' +
-        '<path class="fl-leaf fl-lf" id="fl-lf-l" d="M100,162 C88,154 72,150 74,138 C84,144 97,156 100,162Z"/>' +
-        '<path class="fl-leaf fl-lr" id="fl-lr-l" d="M100,144 C112,136 128,132 128,120 C118,126 102,140 100,144Z"/>' +
-        '<circle class="fl-petal" cx="100" cy="38" r="11"/>' +
-        '<circle class="fl-petal" cx="115" cy="46" r="11"/>' +
-        '<circle class="fl-petal" cx="115" cy="64" r="11"/>' +
-        '<circle class="fl-petal" cx="100" cy="72" r="11"/>' +
-        '<circle class="fl-petal" cx="85" cy="64" r="11"/>' +
-        '<circle class="fl-petal" cx="85" cy="46" r="11"/>' +
-        '<circle class="fl-center" cx="100" cy="55" r="13"/>' +
-        '<circle class="fl-center-hi" cx="100" cy="55" r="6"/>' +
-        '<text class="yes-label" id="yes-l" x="100" y="22" text-anchor="middle">YES</text>' +
+        '<ellipse cx="80" cy="255" rx="36" ry="9" fill="#6b4226"/>' +
+        '<ellipse cx="80" cy="251" rx="22" ry="5" fill="#8b5e3c"/>' +
+        '<line class="fl-stem" id="fl-stem-l" x1="80" y1="248" x2="80" y2="68"/>' +
+        '<path class="fl-leaf fl-lf" id="fl-lf-l" d="M80,162 C68,154 52,150 54,138 C64,144 77,156 80,162Z"/>' +
+        '<path class="fl-leaf fl-lr" id="fl-lr-l" d="M80,144 C92,136 108,132 108,120 C98,126 82,140 80,144Z"/>' +
+        '<circle class="fl-petal" cx="80" cy="38" r="11"/>' +
+        '<circle class="fl-petal" cx="95" cy="46" r="11"/>' +
+        '<circle class="fl-petal" cx="95" cy="64" r="11"/>' +
+        '<circle class="fl-petal" cx="80" cy="72" r="11"/>' +
+        '<circle class="fl-petal" cx="65" cy="64" r="11"/>' +
+        '<circle class="fl-petal" cx="65" cy="46" r="11"/>' +
+        '<circle class="fl-center" cx="80" cy="55" r="13"/>' +
+        '<circle class="fl-center-hi" cx="80" cy="55" r="6"/>' +
+        '<text class="yes-label" id="yes-l" x="80" y="22" text-anchor="middle">YES</text>' +
       '</g>' +
       // ── Right flower ──
       '<g class="fl-plant fl-plant-r" id="fl-plant-r">' +
-        '<ellipse cx="340" cy="255" rx="36" ry="9" fill="#6b4226"/>' +
-        '<ellipse cx="340" cy="251" rx="22" ry="5" fill="#8b5e3c"/>' +
-        '<line class="fl-stem" id="fl-stem-r" x1="340" y1="248" x2="340" y2="68"/>' +
-        '<path class="fl-leaf fl-lf" id="fl-lf-r" d="M340,162 C328,154 312,150 314,138 C324,144 337,156 340,162Z"/>' +
-        '<path class="fl-leaf fl-lr" id="fl-lr-r" d="M340,144 C352,136 368,132 368,120 C358,126 342,140 340,144Z"/>' +
-        '<circle class="fl-petal" cx="340" cy="38" r="11"/>' +
-        '<circle class="fl-petal" cx="355" cy="46" r="11"/>' +
-        '<circle class="fl-petal" cx="355" cy="64" r="11"/>' +
-        '<circle class="fl-petal" cx="340" cy="72" r="11"/>' +
-        '<circle class="fl-petal" cx="325" cy="64" r="11"/>' +
-        '<circle class="fl-petal" cx="325" cy="46" r="11"/>' +
-        '<circle class="fl-center" cx="340" cy="55" r="13"/>' +
-        '<circle class="fl-center-hi" cx="340" cy="55" r="6"/>' +
-        '<text class="yes-label" id="yes-r" x="340" y="22" text-anchor="middle">YES</text>' +
+        '<ellipse cx="560" cy="255" rx="36" ry="9" fill="#6b4226"/>' +
+        '<ellipse cx="560" cy="251" rx="22" ry="5" fill="#8b5e3c"/>' +
+        '<line class="fl-stem" id="fl-stem-r" x1="560" y1="248" x2="560" y2="68"/>' +
+        '<path class="fl-leaf fl-lf" id="fl-lf-r" d="M560,162 C548,154 532,150 534,138 C544,144 557,156 560,162Z"/>' +
+        '<path class="fl-leaf fl-lr" id="fl-lr-r" d="M560,144 C572,136 588,132 588,120 C578,126 562,140 560,144Z"/>' +
+        '<circle class="fl-petal" cx="560" cy="38" r="11"/>' +
+        '<circle class="fl-petal" cx="575" cy="46" r="11"/>' +
+        '<circle class="fl-petal" cx="575" cy="64" r="11"/>' +
+        '<circle class="fl-petal" cx="560" cy="72" r="11"/>' +
+        '<circle class="fl-petal" cx="545" cy="64" r="11"/>' +
+        '<circle class="fl-petal" cx="545" cy="46" r="11"/>' +
+        '<circle class="fl-center" cx="560" cy="55" r="13"/>' +
+        '<circle class="fl-center-hi" cx="560" cy="55" r="6"/>' +
+        '<text class="yes-label" id="yes-r" x="560" y="22" text-anchor="middle">YES</text>' +
       '</g>' +
-      // ── Welcome box (on top) ──
+      // ── "Say Hi" box (on top, centered) ──
       '<g class="welcome-box" id="welcome-box">' +
-        '<rect x="162" y="14" width="116" height="48" rx="6" fill="#fff" stroke="#c9a84c" stroke-width="2"/>' +
-        '<text x="220" y="44" font-family="Georgia,serif" font-size="19" font-weight="bold" fill="#111" text-anchor="middle">Welcome!</text>' +
+        '<rect x="253" y="14" width="134" height="48" rx="6" fill="#fff" stroke="#c9a84c" stroke-width="2"/>' +
+        '<text x="320" y="44" font-family="Georgia,serif" font-size="19" font-weight="bold" fill="#111" text-anchor="middle">Say Hi</text>' +
       '</g>' +
     '</svg>';
   }
@@ -1761,7 +1760,7 @@
   function startDance() {
     document.getElementById('fl-plant-l').classList.add('dancing');
     setTimeout(function() { document.getElementById('fl-plant-r').classList.add('dancing'); }, 150);
-    setTimeout(function() { window.location.href = 'mailto:reuben@yesmovement.org'; }, 5500);
+    setTimeout(function() { window.location.href = 'mailto:reuben@yesmovement.org'; }, 11000);
   }
 </script>
 </body>
