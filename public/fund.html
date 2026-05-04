@@ -455,10 +455,15 @@
       inset: 0;
       z-index: 0;
       pointer-events: none;
+      height: 100%;
     }
-    #guide-map .leaflet-tile-pane { opacity: 0.18; }
+    #guide-map { height: 100%; }
+    #guide-map .leaflet-tile-pane { opacity: 0.55; }
     #guide-map .leaflet-control-container { display: none; }
     .p-guide > .panel-inner { position: relative; z-index: 1; }
+    /* Readable text on dark map */
+    .p-guide-left h2 { text-shadow: 0 1px 8px rgba(0,0,0,0.8); }
+    .p-guide-left p  { text-shadow: 0 1px 4px rgba(0,0,0,0.9); }
     /* ─── Field guide book ─── */
     .guide-book-wrap {
       margin-top: 2rem;
@@ -1616,8 +1621,8 @@
       keyboard: false, touchZoom: false,
       attributionControl: false
     });
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-      subdomains: 'abcd', opacity: 0.18
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_matter_all/{z}/{x}/{y}{r}.png', {
+      subdomains: 'abcd', opacity: 1
     }).addTo(m);
     // Single pulsing dot — Mississippi Headwaters (Lake Itasca, MN)
     var pulseHtml =
