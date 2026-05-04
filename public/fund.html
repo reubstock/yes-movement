@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fund — YES Movement</title>
   <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     *, *::before, *::after { box-sizing: border-box; }
     body { background: #fff; color: #111; margin: 0; }
@@ -455,6 +456,8 @@
       z-index: 0;
       pointer-events: none;
     }
+    #guide-map .leaflet-tile-pane { opacity: 0.18; }
+    #guide-map .leaflet-control-container { display: none; }
     .p-guide > .panel-inner { position: relative; z-index: 1; }
     /* ─── Field guide book ─── */
     .guide-book-wrap {
@@ -795,42 +798,24 @@
     /* ─── Flower garden animation ─── */
     .flowers-stage {
       display: none;
-      justify-content: center;
-      align-items: flex-end;
-      flex-wrap: wrap;
-      gap: 3px;
+      width: 100%;
+      max-width: 480px;
       margin: 2.5rem auto 0;
-      max-width: 460px;
     }
-    .flower-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 40px;
-      transform-origin: bottom center;
+    .garden-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      overflow: visible;
     }
-    .flower-wrap svg { width: 40px; height: 125px; display: block; }
-    .yes-word {
-      font-family: Arial, sans-serif;
-      font-size: 0.58rem;
-      font-weight: 900;
-      color: #ea580c;
-      letter-spacing: 0.1em;
-      opacity: 0;
-      transition: opacity 0.35s ease;
-      height: 13px;
-      line-height: 1;
-      margin-bottom: 2px;
-    }
-    .yes-word.visible { opacity: 1; }
     /* Stem */
     .fl-stem {
       stroke: #2d6a1e;
-      stroke-width: 2.5;
+      stroke-width: 3;
       stroke-linecap: round;
-      stroke-dasharray: 82;
-      stroke-dashoffset: 82;
-      transition: stroke-dashoffset 0.6s ease-out;
+      stroke-dasharray: 182;
+      stroke-dashoffset: 182;
+      transition: stroke-dashoffset 1.0s ease-out;
     }
     .fl-stem.growing { stroke-dashoffset: 0; }
     /* Leaves */
@@ -838,12 +823,12 @@
       fill: #2d8b3e;
       opacity: 0;
       transform-box: fill-box;
-      transform-origin: 80% 100%;
       transform: scale(0);
     }
-    .fl-lr { transform-origin: 20% 100%; }
+    .fl-lf { transform-origin: 100% 100%; }
+    .fl-lr { transform-origin: 0% 100%; }
     .fl-leaf.bloomed {
-      animation: part-pop 0.38s cubic-bezier(0.34,1.56,0.64,1) forwards;
+      animation: part-pop 0.42s cubic-bezier(0.34,1.56,0.64,1) forwards;
     }
     /* Petals */
     .fl-petal {
@@ -854,17 +839,17 @@
       transform: scale(0);
     }
     .fl-petal.bloomed {
-      animation: petal-pop 0.32s cubic-bezier(0.34,1.56,0.64,1) forwards;
+      animation: petal-pop 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards;
     }
     /* Flower center */
     .fl-center { fill: #d97706; opacity: 0; transform-box: fill-box; transform-origin: 50% 50%; transform: scale(0); }
     .fl-center-hi { fill: #fde68a; opacity: 0; transform-box: fill-box; transform-origin: 50% 50%; transform: scale(0); }
     .fl-center.bloomed, .fl-center-hi.bloomed {
-      animation: part-pop 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards;
+      animation: part-pop 0.38s cubic-bezier(0.34,1.56,0.64,1) forwards;
     }
     @keyframes part-pop {
       0%   { opacity: 0; transform: scale(0); }
-      70%  { opacity: 1; transform: scale(1.2); }
+      70%  { opacity: 1; transform: scale(1.22); }
       100% { opacity: 1; transform: scale(1); }
     }
     @keyframes petal-pop {
@@ -872,17 +857,58 @@
       65%  { opacity: 1; transform: scale(1.18); }
       100% { opacity: 1; transform: scale(1); }
     }
-    /* Wiggle dance */
+    /* YES labels in SVG */
+    .yes-label {
+      font-family: Arial, sans-serif;
+      font-size: 10px;
+      font-weight: 900;
+      fill: #ea580c;
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .yes-label.visible { opacity: 1; }
+    /* Welcome box */
+    .welcome-box { opacity: 0; transition: opacity 0.6s; }
+    .welcome-box.visible { opacity: 1; }
+    /* Arm branches */
+    .fl-arm {
+      stroke: #2d6a1e;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      fill: none;
+      stroke-dasharray: 185;
+      stroke-dashoffset: 185;
+      transition: stroke-dashoffset 0.85s ease-out;
+    }
+    .fl-arm.grown { stroke-dashoffset: 0; }
+    /* Hand forks */
+    .fl-hand {
+      stroke: #2d6a1e;
+      stroke-width: 2;
+      stroke-linecap: round;
+      fill: none;
+      stroke-dasharray: 18;
+      stroke-dashoffset: 18;
+      transition: stroke-dashoffset 0.3s ease-out;
+    }
+    .fl-hand.grown { stroke-dashoffset: 0; }
+    /* Wiggle dance — pivots from bottom of each flower group */
+    .fl-plant-l { transform-box: fill-box; transform-origin: center bottom; }
+    .fl-plant-r { transform-box: fill-box; transform-origin: center bottom; }
     @keyframes wiggle {
       0%   { transform: rotate(0deg); }
-      20%  { transform: rotate(-10deg); }
-      40%  { transform: rotate(10deg); }
-      60%  { transform: rotate(-6deg); }
-      80%  { transform: rotate(6deg); }
+      20%  { transform: rotate(-8deg); }
+      40%  { transform: rotate(8deg); }
+      60%  { transform: rotate(-5deg); }
+      80%  { transform: rotate(5deg); }
       100% { transform: rotate(0deg); }
     }
-    .flower-wrap.dancing {
-      animation: wiggle 0.72s ease-in-out infinite;
+    .fl-plant-l.dancing { animation: wiggle 0.75s ease-in-out infinite; }
+    .fl-plant-r.dancing { animation: wiggle 0.75s ease-in-out 0.15s infinite; }
+    /* Pulsing map dot */
+    @keyframes gmap-pulse {
+      0%   { transform: scale(1); opacity: 0.8; }
+      100% { transform: scale(4); opacity: 0; }
     }
 
     /* ─── Responsive ─── */
@@ -1262,81 +1288,14 @@
 
 <!-- ══ PANEL 11 — THE FIELD GUIDE ══ -->
 <div class="panel p-guide">
-  <!-- Sedate world map background -->
-  <div class="guide-map-bg">
-    <svg viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-      <!-- Graticule grid lines -->
-      <g stroke="rgba(255,255,255,0.06)" stroke-width="0.8" fill="none">
-        <!-- Latitude lines at 60°,30°,0°,-30°,-60° -->
-        <line x1="0" y1="83" x2="1000" y2="83"/>
-        <line x1="0" y1="167" x2="1000" y2="167"/>
-        <line x1="0" y1="250" x2="1000" y2="250" stroke="rgba(255,255,255,0.1)"/>
-        <line x1="0" y1="333" x2="1000" y2="333"/>
-        <line x1="0" y1="417" x2="1000" y2="417"/>
-        <!-- Longitude lines every 30° -->
-        <line x1="83" y1="0" x2="83" y2="500"/>
-        <line x1="167" y1="0" x2="167" y2="500"/>
-        <line x1="250" y1="0" x2="250" y2="500"/>
-        <line x1="333" y1="0" x2="333" y2="500"/>
-        <line x1="417" y1="0" x2="417" y2="500"/>
-        <line x1="500" y1="0" x2="500" y2="500" stroke="rgba(255,255,255,0.1)"/>
-        <line x1="583" y1="0" x2="583" y2="500"/>
-        <line x1="667" y1="0" x2="667" y2="500"/>
-        <line x1="750" y1="0" x2="750" y2="500"/>
-        <line x1="833" y1="0" x2="833" y2="500"/>
-        <line x1="917" y1="0" x2="917" y2="500"/>
-      </g>
-      <!-- Continent fills (simplified outlines, low opacity) -->
-      <g fill="rgba(255,255,255,0.11)" stroke="rgba(255,255,255,0.07)" stroke-width="1" stroke-linejoin="round">
-        <!-- North America -->
-        <polygon points="42,56 250,50 319,56 353,119 305,153 275,181 258,206 211,197 194,186 175,158 155,119 125,92 39,83"/>
-        <!-- Greenland -->
-        <polygon points="361,83 431,83 450,36 389,19 347,36"/>
-        <!-- South America -->
-        <polygon points="286,228 327,219 402,261 389,300 353,342 311,403 291,375 278,264"/>
-        <!-- Europe -->
-        <polygon points="475,147 486,86 528,95 578,53 650,69 653,97 597,133 561,147"/>
-        <!-- Africa -->
-        <polygon points="483,150 528,147 597,167 639,219 611,278 591,347 550,347 533,330 508,231 456,236 453,214"/>
-        <!-- Asia -->
-        <polygon points="572,133 650,69 778,50 944,69 950,106 858,156 833,242 789,247 722,228 625,217 603,172 622,139"/>
-        <!-- Australia -->
-        <polygon points="817,303 878,286 903,292 925,328 917,358 861,356 817,347"/>
-      </g>
-      <!-- Red meeting dots with pulse rings — full opacity -->
-      <g>
-        <!-- San Francisco -->
-        <circle cx="161" cy="145" r="12" fill="#e53e3e" opacity="0.15"><animate attributeName="r" values="6;20;6" dur="3s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.5;0;0.5" dur="3s" repeatCount="indefinite"/></circle>
-        <circle cx="161" cy="145" r="5" fill="#e53e3e"/>
-        <!-- New York -->
-        <circle cx="294" cy="137" r="10" fill="#e53e3e" opacity="0.12"><animate attributeName="r" values="5;17;5" dur="3.4s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.5;0;0.5" dur="3.4s" repeatCount="indefinite"/></circle>
-        <circle cx="294" cy="137" r="4.5" fill="#e53e3e"/>
-        <!-- London -->
-        <circle cx="500" cy="107" r="10" fill="#e53e3e" opacity="0.12"><animate attributeName="r" values="5;17;5" dur="2.8s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.5;0;0.5" dur="2.8s" repeatCount="indefinite"/></circle>
-        <circle cx="500" cy="107" r="4.5" fill="#e53e3e"/>
-        <!-- Nairobi -->
-        <circle cx="602" cy="254" r="10" fill="#e53e3e" opacity="0.12"><animate attributeName="r" values="5;17;5" dur="3.2s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.5;0;0.5" dur="3.2s" repeatCount="indefinite"/></circle>
-        <circle cx="602" cy="254" r="4.5" fill="#e53e3e"/>
-        <!-- Mumbai -->
-        <circle cx="702" cy="197" r="10" fill="#e53e3e" opacity="0.12"><animate attributeName="r" values="5;17;5" dur="3.6s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.5;0;0.5" dur="3.6s" repeatCount="indefinite"/></circle>
-        <circle cx="702" cy="197" r="4.5" fill="#e53e3e"/>
-        <!-- Tokyo -->
-        <circle cx="888" cy="151" r="10" fill="#e53e3e" opacity="0.12"><animate attributeName="r" values="5;17;5" dur="2.6s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.5;0;0.5" dur="2.6s" repeatCount="indefinite"/></circle>
-        <circle cx="888" cy="151" r="4.5" fill="#e53e3e"/>
-        <!-- São Paulo -->
-        <circle cx="371" cy="315" r="10" fill="#e53e3e" opacity="0.12"><animate attributeName="r" values="5;17;5" dur="3.8s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.5;0;0.5" dur="3.8s" repeatCount="indefinite"/></circle>
-        <circle cx="371" cy="315" r="4.5" fill="#e53e3e"/>
-      </g>
-    </svg>
-  </div>
+  <!-- Leaflet world map background -->
+  <div class="guide-map-bg" id="guide-map"></div>
   <div class="panel-inner">
     <span class="eyebrow eyebrow-white">The Field Guide</span>
     <div class="p-guide-layout">
       <div class="p-guide-left">
-        <h2>Ecological knowledge made physical.</h2>
-        <p>Every member receives a copy. 12 weeks of content, challenges, and worksheets. Members sketch, sample, measure, and document — then upload their work to The Telescope, where it becomes part of the global signal.</p>
-        <!-- Open field guide book illustration -->
-        <div class="guide-book-wrap">
+        <!-- Open field guide book illustration — top left -->
+        <div class="guide-book-wrap" style="margin-top:0;margin-bottom:1.75rem;padding-top:0;border-top:none;">
           <svg width="180" height="100" viewBox="0 0 180 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <!-- Book shadow -->
             <ellipse cx="90" cy="97" rx="72" ry="4" fill="rgba(0,0,0,0.4)"/>
@@ -1382,6 +1341,8 @@
             <circle cx="158" cy="60" r="1.5" fill="rgba(255,255,255,0.8)"/>
           </svg>
         </div>
+        <h2>Ecological knowledge made physical.</h2>
+        <p>Every member receives a copy. 12 weeks of content, challenges, and worksheets. Members sketch, sample, measure, and document — then upload their work to The Telescope, where it becomes part of the global signal.</p>
       </div>
       <div class="p-guide-right">
         <div class="p-guide-item">
@@ -1523,6 +1484,48 @@
         <p>The Summit is the movement's exhale. Community, synthesis, renewal.</p>
       </div>
       <div class="p-summit-first">
+        <!-- Mississippi Headwaters scene -->
+        <div style="width:100%;height:160px;overflow:hidden;margin-bottom:1.25rem;border-radius:2px;background:#0d1f2d;position:relative;">
+          <svg width="100%" height="100%" viewBox="0 0 480 160" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+            <!-- Sky gradient -->
+            <defs>
+              <linearGradient id="sky-g" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#1a3a52"/>
+                <stop offset="100%" stop-color="#2a6080"/>
+              </linearGradient>
+              <linearGradient id="water-g" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#1a4a6a"/>
+                <stop offset="100%" stop-color="#0d2a40"/>
+              </linearGradient>
+            </defs>
+            <!-- Sky -->
+            <rect width="480" height="100" fill="url(#sky-g)"/>
+            <!-- Water/lake -->
+            <rect y="100" width="480" height="60" fill="url(#water-g)"/>
+            <!-- Far treeline -->
+            <path d="M0,80 C20,70 40,72 60,68 C80,64 100,72 120,70 C140,68 160,62 180,65 C200,68 220,64 240,66 C260,68 280,62 300,65 C320,68 340,70 360,66 C380,62 400,68 420,65 C440,62 460,68 480,70 L480,100 L0,100Z" fill="#0d2d1a"/>
+            <!-- Near treeline (darker, closer) -->
+            <path d="M0,92 C15,84 35,88 50,82 C70,76 90,86 110,82 C125,79 145,88 165,84 C182,80 200,90 215,86 L215,100 L0,100Z" fill="#071a0e"/>
+            <path d="M215,86 C232,82 250,92 270,88 C288,84 308,90 325,86 C342,82 360,90 380,86 C400,82 420,90 440,86 C455,83 470,90 480,88 L480,100 L215,100Z" fill="#071a0e"/>
+            <!-- Water reflections -->
+            <path d="M80,105 Q120,102 160,107 Q200,112 240,108 Q280,104 320,109" stroke="rgba(255,255,255,0.07)" stroke-width="1.5" fill="none"/>
+            <path d="M50,118 Q100,114 150,120 Q200,126 250,120 Q300,114 350,120 Q400,126 440,120" stroke="rgba(255,255,255,0.05)" stroke-width="1" fill="none"/>
+            <!-- Stepping stones across the river -->
+            <ellipse cx="195" cy="102" rx="14" ry="5" fill="#2a3d2a" stroke="#3a5a3a" stroke-width="0.5"/>
+            <ellipse cx="225" cy="103" rx="11" ry="4.5" fill="#253828" stroke="#3a5a3a" stroke-width="0.5"/>
+            <ellipse cx="252" cy="102" rx="13" ry="4.5" fill="#2a3d2a" stroke="#3a5a3a" stroke-width="0.5"/>
+            <ellipse cx="279" cy="103" rx="10" ry="4" fill="#253828" stroke="#3a5a3a" stroke-width="0.5"/>
+            <!-- Stars -->
+            <circle cx="60" cy="18" r="0.8" fill="rgba(255,255,255,0.6)"/>
+            <circle cx="140" cy="12" r="0.7" fill="rgba(255,255,255,0.5)"/>
+            <circle cx="220" cy="22" r="0.9" fill="rgba(255,255,255,0.7)"/>
+            <circle cx="310" cy="10" r="0.7" fill="rgba(255,255,255,0.5)"/>
+            <circle cx="400" cy="16" r="0.8" fill="rgba(255,255,255,0.6)"/>
+            <circle cx="450" cy="25" r="0.6" fill="rgba(255,255,255,0.4)"/>
+            <!-- Caption -->
+            <text x="240" y="148" font-family="Georgia,serif" font-size="9" fill="rgba(255,255,255,0.35)" text-anchor="middle" font-style="italic">Lake Itasca, Minnesota — Mississippi Headwaters</text>
+          </svg>
+        </div>
         <span class="p-summit-first-label">First Summit</span>
         <h3>Water — Mississippi Headwaters</h3>
         <p>The first Summit gathers groups working on Water at the headwaters of the Mississippi River. A symbolic and geographic anchor for what the movement is building.</p>
@@ -1544,12 +1547,12 @@
       <div>
         <div class="p-who-creds">
           <div class="p-who-cred">Douglas Gayeton — Ecological Benefits Framework</div>
+          <div class="p-who-cred">Josh Koppel — Interactive Producer, Lincoln Project, No Kings</div>
+          <div class="p-who-cred">Reuben Steiger — Serial Entrepreneur, Metaverse Pioneer, Local Organizer</div>
           <div class="p-who-cred">The Lexicon — California-based NGO</div>
           <div class="p-who-cred">Google — 5-year partnership</div>
           <div class="p-who-cred">Gates Foundation — Partner</div>
-          <div class="p-who-cred">US Federal Agencies — Partner</div>
           <div class="p-who-cred">1,000+ partner organisations</div>
-          <div class="p-who-cred">Lincoln Project, No Kings — storytelling tools</div>
         </div>
       </div>
     </div>
@@ -1602,7 +1605,33 @@
 </footer>
 
 <script src="/js/nav.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+  // ── Leaflet guide map ──
+  (function() {
+    var mapEl = document.getElementById('guide-map');
+    if (!mapEl) return;
+    var m = L.map('guide-map', {
+      center: [30, 5], zoom: 2,
+      zoomControl: false, scrollWheelZoom: false,
+      doubleClickZoom: false, dragging: false,
+      keyboard: false, touchZoom: false,
+      attributionControl: false
+    });
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      subdomains: 'abcd', opacity: 0.18
+    }).addTo(m);
+    // Single pulsing dot — Mississippi Headwaters (Lake Itasca, MN)
+    var pulseHtml =
+      '<div style="position:relative;width:12px;height:12px;">' +
+        '<div style="position:absolute;top:50%;left:50%;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:#e53e3e;animation:gmap-pulse 2.2s ease-out infinite;"></div>' +
+        '<div style="position:absolute;top:50%;left:50%;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:#e53e3e;border:2px solid #fff;"></div>' +
+      '</div>';
+    L.marker([47.24, -95.22], {
+      icon: L.divIcon({ className: '', html: pulseHtml, iconSize: [12,12], iconAnchor: [6,6] })
+    }).addTo(m);
+  })();
+
   // ── CTA buttons ──
   function ctaNo() {
     showMsg("We're all a little slow sometimes. Try again.");
@@ -1631,90 +1660,108 @@
     s.style.display = 'none';
   }
 
-  // ── 10-flower garden animation ──
+  // ── 2-flower garden animation ──
   function growFlowers() {
     var stage = document.getElementById('flowers-stage');
-    stage.style.display = 'flex';
-    var TOTAL = 10;
-    var doneCount = 0;
-    for (var i = 0; i < TOTAL; i++) {
-      (function(idx) {
-        setTimeout(function() {
-          var el = buildFlower();
-          stage.appendChild(el);
-          animateFlower(el, function() {
-            doneCount++;
-            if (doneCount === TOTAL) {
-              setTimeout(startDance, 300);
-            }
-          });
-        }, idx * 420);
-      })(i);
-    }
+    stage.style.display = 'block';
+    stage.innerHTML = buildGardenSVG();
+    var doneSide = 0;
+    function flowerDone() { if (++doneSide === 2) afterBothGrown(); }
+    animateSVGFlower('l', flowerDone);
+    animateSVGFlower('r', flowerDone);
   }
 
-  function buildFlower() {
-    var f = document.createElement('div');
-    f.className = 'flower-wrap';
-    f.innerHTML =
-      '<div class="yes-word">YES</div>' +
-      '<svg viewBox="0 0 40 125" fill="none" xmlns="http://www.w3.org/2000/svg">' +
-        // dirt mound
-        '<ellipse cx="20" cy="119" rx="17" ry="6.5" fill="#6b4226"/>' +
-        '<ellipse cx="20" cy="116" rx="11" ry="4" fill="#8b5e3c"/>' +
-        // stem
-        '<line class="fl-stem" x1="20" y1="114" x2="20" y2="35"/>' +
-        // leaves
-        '<path class="fl-leaf fl-lf" d="M20,78 C12,72 3,70 6,60 C14,66 19,76 20,78Z"/>' +
-        '<path class="fl-leaf fl-lr" d="M20,65 C28,59 37,57 36,47 C28,53 22,63 20,65Z"/>' +
-        // 6 round petals arranged in a ring around center (20,33)
-        '<circle class="fl-petal" cx="20" cy="19" r="7.5"/>' +
-        '<circle class="fl-petal" cx="32" cy="26" r="7.5"/>' +
-        '<circle class="fl-petal" cx="32" cy="40" r="7.5"/>' +
-        '<circle class="fl-petal" cx="20" cy="47" r="7.5"/>' +
-        '<circle class="fl-petal" cx="8"  cy="40" r="7.5"/>' +
-        '<circle class="fl-petal" cx="8"  cy="26" r="7.5"/>' +
-        // center button
-        '<circle class="fl-center"    cx="20" cy="33" r="9.5"/>' +
-        '<circle class="fl-center-hi" cx="20" cy="33" r="4.5"/>' +
-      '</svg>';
-    return f;
+  function buildGardenSVG() {
+    // Arms rendered first (behind flowers), welcome box last (on top)
+    return '<svg class="garden-svg" viewBox="0 0 440 270" xmlns="http://www.w3.org/2000/svg">' +
+      // ── Arms & hands ──
+      '<g id="fl-arms">' +
+        '<path class="fl-arm" id="fl-arm-l" d="M 100,158 C 128,155 150,110 165,74"/>' +
+        '<path class="fl-hand" id="fl-hand-la" d="M 165,74 L 158,61"/>' +
+        '<path class="fl-hand" id="fl-hand-lb" d="M 165,74 L 171,62"/>' +
+        '<path class="fl-arm" id="fl-arm-r" d="M 340,158 C 312,155 290,110 275,74"/>' +
+        '<path class="fl-hand" id="fl-hand-ra" d="M 275,74 L 269,62"/>' +
+        '<path class="fl-hand" id="fl-hand-rb" d="M 275,74 L 282,61"/>' +
+      '</g>' +
+      // ── Left flower ──
+      '<g class="fl-plant fl-plant-l" id="fl-plant-l">' +
+        '<ellipse cx="100" cy="255" rx="36" ry="9" fill="#6b4226"/>' +
+        '<ellipse cx="100" cy="251" rx="22" ry="5" fill="#8b5e3c"/>' +
+        '<line class="fl-stem" id="fl-stem-l" x1="100" y1="248" x2="100" y2="68"/>' +
+        '<path class="fl-leaf fl-lf" id="fl-lf-l" d="M100,162 C88,154 72,150 74,138 C84,144 97,156 100,162Z"/>' +
+        '<path class="fl-leaf fl-lr" id="fl-lr-l" d="M100,144 C112,136 128,132 128,120 C118,126 102,140 100,144Z"/>' +
+        '<circle class="fl-petal" cx="100" cy="38" r="11"/>' +
+        '<circle class="fl-petal" cx="115" cy="46" r="11"/>' +
+        '<circle class="fl-petal" cx="115" cy="64" r="11"/>' +
+        '<circle class="fl-petal" cx="100" cy="72" r="11"/>' +
+        '<circle class="fl-petal" cx="85" cy="64" r="11"/>' +
+        '<circle class="fl-petal" cx="85" cy="46" r="11"/>' +
+        '<circle class="fl-center" cx="100" cy="55" r="13"/>' +
+        '<circle class="fl-center-hi" cx="100" cy="55" r="6"/>' +
+        '<text class="yes-label" id="yes-l" x="100" y="22" text-anchor="middle">YES</text>' +
+      '</g>' +
+      // ── Right flower ──
+      '<g class="fl-plant fl-plant-r" id="fl-plant-r">' +
+        '<ellipse cx="340" cy="255" rx="36" ry="9" fill="#6b4226"/>' +
+        '<ellipse cx="340" cy="251" rx="22" ry="5" fill="#8b5e3c"/>' +
+        '<line class="fl-stem" id="fl-stem-r" x1="340" y1="248" x2="340" y2="68"/>' +
+        '<path class="fl-leaf fl-lf" id="fl-lf-r" d="M340,162 C328,154 312,150 314,138 C324,144 337,156 340,162Z"/>' +
+        '<path class="fl-leaf fl-lr" id="fl-lr-r" d="M340,144 C352,136 368,132 368,120 C358,126 342,140 340,144Z"/>' +
+        '<circle class="fl-petal" cx="340" cy="38" r="11"/>' +
+        '<circle class="fl-petal" cx="355" cy="46" r="11"/>' +
+        '<circle class="fl-petal" cx="355" cy="64" r="11"/>' +
+        '<circle class="fl-petal" cx="340" cy="72" r="11"/>' +
+        '<circle class="fl-petal" cx="325" cy="64" r="11"/>' +
+        '<circle class="fl-petal" cx="325" cy="46" r="11"/>' +
+        '<circle class="fl-center" cx="340" cy="55" r="13"/>' +
+        '<circle class="fl-center-hi" cx="340" cy="55" r="6"/>' +
+        '<text class="yes-label" id="yes-r" x="340" y="22" text-anchor="middle">YES</text>' +
+      '</g>' +
+      // ── Welcome box (on top) ──
+      '<g class="welcome-box" id="welcome-box">' +
+        '<rect x="162" y="14" width="116" height="48" rx="6" fill="#fff" stroke="#c9a84c" stroke-width="2"/>' +
+        '<text x="220" y="44" font-family="Georgia,serif" font-size="19" font-weight="bold" fill="#111" text-anchor="middle">Welcome!</text>' +
+      '</g>' +
+    '</svg>';
   }
 
-  function animateFlower(el, onDone) {
-    // Stem draws
-    setTimeout(function() { el.querySelector('.fl-stem').classList.add('growing'); }, 20);
-    // Left leaf
-    setTimeout(function() { el.querySelector('.fl-lf').classList.add('bloomed'); }, 440);
-    // Right leaf
-    setTimeout(function() { el.querySelector('.fl-lr').classList.add('bloomed'); }, 590);
-    // Petals one by one
-    var petals = el.querySelectorAll('.fl-petal');
-    petals.forEach(function(p, i) {
-      setTimeout(function() { p.classList.add('bloomed'); }, 710 + i * 95);
+  function animateSVGFlower(side, onDone) {
+    var s = '-' + side;
+    setTimeout(function() { document.getElementById('fl-stem' + s).classList.add('growing'); }, 20);
+    setTimeout(function() { document.getElementById('fl-lf' + s).classList.add('bloomed'); }, 750);
+    setTimeout(function() { document.getElementById('fl-lr' + s).classList.add('bloomed'); }, 960);
+    var plant = document.getElementById('fl-plant' + s);
+    plant.querySelectorAll('.fl-petal').forEach(function(p, i) {
+      setTimeout(function() { p.classList.add('bloomed'); }, 1100 + i * 100);
     });
-    // Center button
     setTimeout(function() {
-      el.querySelector('.fl-center').classList.add('bloomed');
-      el.querySelector('.fl-center-hi').classList.add('bloomed');
-    }, 1390);
-    // YES label + done callback
+      plant.querySelector('.fl-center').classList.add('bloomed');
+      plant.querySelector('.fl-center-hi').classList.add('bloomed');
+    }, 1730);
     setTimeout(function() {
-      el.querySelector('.yes-word').classList.add('visible');
+      document.getElementById('yes-' + side).classList.add('visible');
       if (onDone) onDone();
-    }, 1540);
+    }, 1920);
+  }
+
+  function afterBothGrown() {
+    setTimeout(function() { document.getElementById('welcome-box').classList.add('visible'); }, 200);
+    setTimeout(function() {
+      document.getElementById('fl-arm-l').classList.add('grown');
+      document.getElementById('fl-arm-r').classList.add('grown');
+    }, 650);
+    setTimeout(function() {
+      ['fl-hand-la','fl-hand-lb','fl-hand-ra','fl-hand-rb'].forEach(function(id) {
+        document.getElementById(id).classList.add('grown');
+      });
+    }, 1450);
+    setTimeout(startDance, 1850);
   }
 
   function startDance() {
-    var flowers = document.querySelectorAll('#flowers-stage .flower-wrap');
-    flowers.forEach(function(f, i) {
-      f.style.animationDelay = (i * 60) + 'ms';
-      f.classList.add('dancing');
-    });
-    // Open email after the dance
-    setTimeout(function() {
-      window.location.href = 'mailto:reuben@yesmovement.org';
-    }, 4500);
+    document.getElementById('fl-plant-l').classList.add('dancing');
+    setTimeout(function() { document.getElementById('fl-plant-r').classList.add('dancing'); }, 150);
+    setTimeout(function() { window.location.href = 'mailto:reuben@yesmovement.org'; }, 5500);
   }
 </script>
 </body>
