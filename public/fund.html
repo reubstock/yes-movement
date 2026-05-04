@@ -792,52 +792,97 @@
       transition: opacity 0.4s;
     }
     .cta-response.visible { opacity: 1; }
-    /* ─── Plant animation ─── */
-    .plant-wrap {
+    /* ─── Flower garden animation ─── */
+    .flowers-stage {
       display: none;
-      margin: 1.5rem auto 0;
-      width: 80px;
-      height: 80px;
+      justify-content: center;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 3px;
+      margin: 2.5rem auto 0;
+      max-width: 460px;
     }
-    .plant-wrap.growing { display: block; }
-    .plant-wrap svg { width: 100%; height: 100%; }
-    .plant-stem {
-      stroke-dasharray: 120;
-      stroke-dashoffset: 120;
-      animation: none;
+    .flower-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 40px;
+      transform-origin: bottom center;
     }
-    .plant-wrap.growing .plant-stem {
-      animation: drawStem 0.8s ease forwards 0.1s;
-    }
-    .plant-leaf-l {
+    .flower-wrap svg { width: 40px; height: 125px; display: block; }
+    .yes-word {
+      font-family: Arial, sans-serif;
+      font-size: 0.58rem;
+      font-weight: 900;
+      color: #ea580c;
+      letter-spacing: 0.1em;
       opacity: 0;
-      transform-origin: 40px 45px;
+      transition: opacity 0.35s ease;
+      height: 13px;
+      line-height: 1;
+      margin-bottom: 2px;
+    }
+    .yes-word.visible { opacity: 1; }
+    /* Stem */
+    .fl-stem {
+      stroke: #2d6a1e;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-dasharray: 82;
+      stroke-dashoffset: 82;
+      transition: stroke-dashoffset 0.6s ease-out;
+    }
+    .fl-stem.growing { stroke-dashoffset: 0; }
+    /* Leaves */
+    .fl-leaf {
+      fill: #2d8b3e;
+      opacity: 0;
+      transform-box: fill-box;
+      transform-origin: 80% 100%;
       transform: scale(0);
     }
-    .plant-wrap.growing .plant-leaf-l {
-      animation: leafPop 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards 0.7s;
+    .fl-lr { transform-origin: 20% 100%; }
+    .fl-leaf.bloomed {
+      animation: part-pop 0.38s cubic-bezier(0.34,1.56,0.64,1) forwards;
     }
-    .plant-leaf-r {
+    /* Petals */
+    .fl-petal {
+      fill: #fbbf24;
       opacity: 0;
-      transform-origin: 40px 38px;
+      transform-box: fill-box;
+      transform-origin: 50% 50%;
       transform: scale(0);
     }
-    .plant-wrap.growing .plant-leaf-r {
-      animation: leafPop 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards 0.95s;
+    .fl-petal.bloomed {
+      animation: petal-pop 0.32s cubic-bezier(0.34,1.56,0.64,1) forwards;
     }
-    .plant-flower {
-      opacity: 0;
-      transform-origin: 40px 22px;
-      transform: scale(0);
+    /* Flower center */
+    .fl-center { fill: #d97706; opacity: 0; transform-box: fill-box; transform-origin: 50% 50%; transform: scale(0); }
+    .fl-center-hi { fill: #fde68a; opacity: 0; transform-box: fill-box; transform-origin: 50% 50%; transform: scale(0); }
+    .fl-center.bloomed, .fl-center-hi.bloomed {
+      animation: part-pop 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards;
     }
-    .plant-wrap.growing .plant-flower {
-      animation: leafPop 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards 1.2s;
+    @keyframes part-pop {
+      0%   { opacity: 0; transform: scale(0); }
+      70%  { opacity: 1; transform: scale(1.2); }
+      100% { opacity: 1; transform: scale(1); }
     }
-    @keyframes drawStem {
-      to { stroke-dashoffset: 0; }
+    @keyframes petal-pop {
+      0%   { opacity: 0; transform: scale(0); }
+      65%  { opacity: 1; transform: scale(1.18); }
+      100% { opacity: 1; transform: scale(1); }
     }
-    @keyframes leafPop {
-      to { opacity: 1; transform: scale(1); }
+    /* Wiggle dance */
+    @keyframes wiggle {
+      0%   { transform: rotate(0deg); }
+      20%  { transform: rotate(-10deg); }
+      40%  { transform: rotate(10deg); }
+      60%  { transform: rotate(-6deg); }
+      80%  { transform: rotate(6deg); }
+      100% { transform: rotate(0deg); }
+    }
+    .flower-wrap.dancing {
+      animation: wiggle 0.72s ease-in-out infinite;
     }
 
     /* ─── Responsive ─── */
@@ -1540,7 +1585,7 @@
 <!-- ══ PANEL 16 — CTA ══ -->
 <div class="panel p-cta" id="cta">
   <span class="eyebrow">Are you in?</span>
-  <h2>Are you ready to say yes?</h2>
+  <h2>Your turn. We're all ears.</h2>
   <p>We are selective about our early funding partners. No forms, no decks — just a direct conversation with people who are ready.</p>
   <div class="cta-buttons">
     <button class="cta-btn btn-no"  onclick="ctaNo()">No</button>
@@ -1548,19 +1593,7 @@
     <button class="cta-btn btn-yes"  onclick="ctaYes()">Yes</button>
   </div>
   <div class="cta-response" id="cta-msg"></div>
-  <div class="plant-wrap" id="plant-wrap">
-    <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- stem -->
-      <path class="plant-stem" d="M40 72 C40 72 40 30 40 20" stroke="#1a7a3c" stroke-width="3" stroke-linecap="round"/>
-      <!-- left leaf -->
-      <path class="plant-leaf-l" d="M40 48 C32 44 22 48 24 56 C30 52 38 52 40 48Z" fill="#22a854"/>
-      <!-- right leaf -->
-      <path class="plant-leaf-r" d="M40 38 C48 33 58 36 57 44 C51 41 42 40 40 38Z" fill="#22a854"/>
-      <!-- flower -->
-      <circle class="plant-flower" cx="40" cy="20" r="8" fill="#fbbf24"/>
-      <circle class="plant-flower" cx="40" cy="20" r="4" fill="#f59e0b"/>
-    </svg>
-  </div>
+  <div class="flowers-stage" id="flowers-stage"></div>
 </div>
 
 <footer>
@@ -1573,34 +1606,115 @@
   // ── CTA buttons ──
   function ctaNo() {
     showMsg("We're all a little slow sometimes. Try again.");
-    hidePlant();
+    clearFlowers();
   }
   function ctaMaybe() {
     showMsg("We're all a little slow.");
-    hidePlant();
-    setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 800);
+    clearFlowers();
+    setTimeout(function() { window.scrollTo({ top: 0, behavior: 'smooth' }); }, 800);
   }
   function ctaYes() {
     showMsg('');
-    growPlant();
-    setTimeout(() => { window.location.href = 'mailto:reuben@yesmovement.org'; }, 1800);
+    clearFlowers();
+    growFlowers();
   }
   function showMsg(text) {
     var el = document.getElementById('cta-msg');
     el.textContent = text;
     el.classList.remove('visible');
-    void el.offsetWidth; // reflow
+    void el.offsetWidth;
     if (text) el.classList.add('visible');
   }
-  function hidePlant() {
-    var p = document.getElementById('plant-wrap');
-    p.classList.remove('growing');
+  function clearFlowers() {
+    var s = document.getElementById('flowers-stage');
+    s.innerHTML = '';
+    s.style.display = 'none';
   }
-  function growPlant() {
-    var p = document.getElementById('plant-wrap');
-    p.classList.remove('growing');
-    void p.offsetWidth;
-    p.classList.add('growing');
+
+  // ── 10-flower garden animation ──
+  function growFlowers() {
+    var stage = document.getElementById('flowers-stage');
+    stage.style.display = 'flex';
+    var TOTAL = 10;
+    var doneCount = 0;
+    for (var i = 0; i < TOTAL; i++) {
+      (function(idx) {
+        setTimeout(function() {
+          var el = buildFlower();
+          stage.appendChild(el);
+          animateFlower(el, function() {
+            doneCount++;
+            if (doneCount === TOTAL) {
+              setTimeout(startDance, 300);
+            }
+          });
+        }, idx * 420);
+      })(i);
+    }
+  }
+
+  function buildFlower() {
+    var f = document.createElement('div');
+    f.className = 'flower-wrap';
+    f.innerHTML =
+      '<div class="yes-word">YES</div>' +
+      '<svg viewBox="0 0 40 125" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+        // dirt mound
+        '<ellipse cx="20" cy="119" rx="17" ry="6.5" fill="#6b4226"/>' +
+        '<ellipse cx="20" cy="116" rx="11" ry="4" fill="#8b5e3c"/>' +
+        // stem
+        '<line class="fl-stem" x1="20" y1="114" x2="20" y2="35"/>' +
+        // leaves
+        '<path class="fl-leaf fl-lf" d="M20,78 C12,72 3,70 6,60 C14,66 19,76 20,78Z"/>' +
+        '<path class="fl-leaf fl-lr" d="M20,65 C28,59 37,57 36,47 C28,53 22,63 20,65Z"/>' +
+        // 6 round petals arranged in a ring around center (20,33)
+        '<circle class="fl-petal" cx="20" cy="19" r="7.5"/>' +
+        '<circle class="fl-petal" cx="32" cy="26" r="7.5"/>' +
+        '<circle class="fl-petal" cx="32" cy="40" r="7.5"/>' +
+        '<circle class="fl-petal" cx="20" cy="47" r="7.5"/>' +
+        '<circle class="fl-petal" cx="8"  cy="40" r="7.5"/>' +
+        '<circle class="fl-petal" cx="8"  cy="26" r="7.5"/>' +
+        // center button
+        '<circle class="fl-center"    cx="20" cy="33" r="9.5"/>' +
+        '<circle class="fl-center-hi" cx="20" cy="33" r="4.5"/>' +
+      '</svg>';
+    return f;
+  }
+
+  function animateFlower(el, onDone) {
+    // Stem draws
+    setTimeout(function() { el.querySelector('.fl-stem').classList.add('growing'); }, 20);
+    // Left leaf
+    setTimeout(function() { el.querySelector('.fl-lf').classList.add('bloomed'); }, 440);
+    // Right leaf
+    setTimeout(function() { el.querySelector('.fl-lr').classList.add('bloomed'); }, 590);
+    // Petals one by one
+    var petals = el.querySelectorAll('.fl-petal');
+    petals.forEach(function(p, i) {
+      setTimeout(function() { p.classList.add('bloomed'); }, 710 + i * 95);
+    });
+    // Center button
+    setTimeout(function() {
+      el.querySelector('.fl-center').classList.add('bloomed');
+      el.querySelector('.fl-center-hi').classList.add('bloomed');
+    }, 1390);
+    // YES label + done callback
+    setTimeout(function() {
+      el.querySelector('.yes-word').classList.add('visible');
+      if (onDone) onDone();
+    }, 1540);
+  }
+
+  function startDance() {
+    var flowers = document.querySelectorAll('#flowers-stage .flower-wrap');
+    flowers.forEach(function(f, i) {
+      f.style.animationDelay = (i * 60) + 'ms';
+      f.classList.add('dancing');
+    });
+    // Open email after the dance
+    setTimeout(function() {
+      window.location.href = 'mailto:reuben@yesmovement.org';
+    }, 4500);
   }
 </script>
 </body>
