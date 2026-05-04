@@ -6,269 +6,751 @@
   <title>Fund — YES Movement</title>
   <link rel="stylesheet" href="/css/styles.css" />
   <style>
-    /* ── Reset nav for white page ── */
-    body { background: #fff; color: #111; }
+    *, *::before, *::after { box-sizing: border-box; }
+    body { background: #fff; color: #111; margin: 0; }
 
-    /* ── Hero ── */
-    .f-hero {
-      background: #000;
-      color: #fff;
-      padding: 7rem 2rem 6rem;
-      text-align: center;
-    }
-    .f-hero-eyebrow {
-      font-family: Arial, sans-serif;
-      font-size: 0.68rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.45);
-      margin-bottom: 1.5rem;
-    }
-    .f-hero h1 {
-      font-size: clamp(2.2rem, 5vw, 4rem);
-      font-weight: 300;
-      line-height: 1.15;
-      margin: 0 auto 2rem;
-      max-width: 820px;
-      letter-spacing: -0.02em;
-    }
-    .f-hero h1 em {
-      font-style: italic;
-      font-weight: 300;
-    }
-    .f-hero-sub {
-      font-family: Arial, sans-serif;
-      font-size: 0.85rem;
-      letter-spacing: 0.06em;
-      color: rgba(255,255,255,0.4);
-      text-transform: uppercase;
-    }
+    /* ─── Panel base ─── */
+    .panel { width: 100%; }
+    .panel-inner { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
 
-    /* ── Pull quote divider ── */
-    .f-pull {
-      border-top: 1px solid #111;
-      border-bottom: 1px solid #111;
-      padding: 3rem 2rem;
-      text-align: center;
-      margin: 0;
-    }
-    .f-pull p {
-      font-size: clamp(1.2rem, 2.5vw, 1.7rem);
-      font-weight: 300;
-      line-height: 1.5;
-      max-width: 760px;
-      margin: 0 auto;
-      letter-spacing: -0.01em;
-    }
-
-    /* ── Body ── */
-    .f-body {
-      max-width: 680px;
-      margin: 0 auto;
-      padding: 5rem 2rem;
-    }
-    .f-body h2 {
-      font-family: Arial, sans-serif;
-      font-size: 0.68rem;
-      font-weight: 700;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: #999;
-      margin: 4rem 0 1.25rem;
-      padding-top: 3rem;
-      border-top: 1px solid #e5e5e5;
-    }
-    .f-body h2:first-child { margin-top: 0; padding-top: 0; border-top: none; }
-    .f-body p {
-      font-size: 1.08rem;
-      line-height: 1.9;
-      color: #222;
-      margin-bottom: 1.4rem;
-    }
-    .f-body p strong {
-      font-weight: 600;
-      color: #000;
-    }
-
-    /* ── Four pillars ── */
-    .f-pillars {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0;
-      border: 1px solid #111;
-      margin: 2.5rem 0 3.5rem;
-    }
-    .f-pillar {
-      padding: 1.75rem 1.5rem;
-      border-right: 1px solid #111;
-      border-bottom: 1px solid #111;
-    }
-    .f-pillar:nth-child(2n) { border-right: none; }
-    .f-pillar:nth-child(3),
-    .f-pillar:nth-child(4) { border-bottom: none; }
-    .f-pillar-num {
-      font-family: Arial, sans-serif;
-      font-size: 0.6rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: #999;
-      margin-bottom: 0.5rem;
-    }
-    .f-pillar h3 {
-      font-size: 1rem;
-      font-weight: 600;
-      color: #000;
-      margin: 0 0 0.6rem;
-      line-height: 1.3;
-    }
-    .f-pillar p {
-      font-size: 0.85rem;
-      line-height: 1.65;
-      color: #555;
-      margin: 0;
-    }
-
-    /* ── Nature Six strip ── */
-    .f-nature {
-      display: flex;
-      border: 1px solid #111;
-      margin: 2.5rem 0 3.5rem;
-      overflow: hidden;
-    }
-    .f-nature-item {
-      flex: 1;
-      padding: 1.1rem 0.5rem;
-      text-align: center;
-      border-right: 1px solid #111;
-      font-family: Arial, sans-serif;
-      font-size: 0.6rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: #333;
-    }
-    .f-nature-item:last-child { border-right: none; }
-    .f-nature-item .f-nature-icon {
-      display: block;
-      margin: 0 auto 0.5rem;
-      width: 32px;
-      height: 32px;
-    }
-
-    /* ── Stat row ── */
-    .f-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      border: 1px solid #111;
-      margin: 2.5rem 0 3.5rem;
-    }
-    .f-stat {
-      padding: 2rem 1.5rem;
-      border-right: 1px solid #111;
-      text-align: center;
-    }
-    .f-stat:last-child { border-right: none; }
-    .f-stat-num {
-      font-size: 2.4rem;
-      font-weight: 300;
-      color: #000;
-      line-height: 1;
-      display: block;
-      margin-bottom: 0.3rem;
-    }
-    .f-stat-label {
+    /* ─── Eyebrow label ─── */
+    .eyebrow {
       font-family: Arial, sans-serif;
       font-size: 0.62rem;
-      letter-spacing: 0.14em;
+      font-weight: 700;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
       color: #999;
+      margin-bottom: 1.5rem;
+      display: block;
+    }
+    .eyebrow-white { color: rgba(255,255,255,0.35); }
+
+    /* ══════════════════════════════════
+       PANEL 1 — HERO
+    ══════════════════════════════════ */
+    .p-hero {
+      background: #000;
+      padding: 9rem 2rem 8rem;
+      text-align: center;
+    }
+    .p-hero h1 {
+      font-size: clamp(2.4rem, 6vw, 5rem);
+      font-weight: 300;
+      color: #fff;
+      line-height: 1.12;
+      letter-spacing: -0.025em;
+      margin: 0 auto 2rem;
+      max-width: 900px;
+    }
+    .p-hero h1 em { font-style: italic; }
+    .p-hero-meta {
+      font-family: Arial, sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
     }
 
-    /* ── Blockquote ── */
-    .f-blockquote {
-      border-left: 2px solid #000;
-      padding: 0.25rem 0 0.25rem 1.75rem;
-      margin: 2.5rem 0;
+    /* ══════════════════════════════════
+       PANEL 2 — PULL QUOTE
+    ══════════════════════════════════ */
+    .p-pull {
+      background: #fff;
+      border-bottom: 1px solid #111;
+      padding: 4rem 2rem;
+      text-align: center;
     }
-    .f-blockquote p {
-      font-size: 1.15rem;
-      font-style: italic;
+    .p-pull p {
+      font-size: clamp(1.25rem, 2.8vw, 1.9rem);
       font-weight: 300;
-      color: #111;
-      margin: 0;
-      line-height: 1.75;
+      line-height: 1.5;
+      max-width: 820px;
+      margin: 0 auto 1rem;
+      letter-spacing: -0.01em;
     }
-    .f-blockquote cite {
-      display: block;
-      margin-top: 0.75rem;
+    .p-pull cite {
       font-family: Arial, sans-serif;
-      font-size: 0.68rem;
-      letter-spacing: 0.1em;
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
       color: #999;
       font-style: normal;
     }
 
-    /* ── CTA ── */
-    .f-cta {
-      background: #000;
-      color: #fff;
+    /* ══════════════════════════════════
+       PANEL 3 — FIVE FAILURES
+    ══════════════════════════════════ */
+    .p-failures {
+      background: #0a0a0a;
       padding: 5rem 2rem;
-      text-align: center;
     }
-    .f-cta-eyebrow {
+    .p-failures-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      border: 1px solid #333;
+      margin-top: 2.5rem;
+    }
+    .p-failure-cell {
+      padding: 2rem 1.5rem;
+      border-right: 1px solid #333;
+    }
+    .p-failure-cell:last-child { border-right: none; }
+    .p-failure-label {
       font-family: Arial, sans-serif;
-      font-size: 0.68rem;
+      font-size: 0.58rem;
       letter-spacing: 0.2em;
       text-transform: uppercase;
       color: rgba(255,255,255,0.35);
-      margin-bottom: 1.5rem;
+      margin-bottom: 0.8rem;
+      display: block;
     }
-    .f-cta h2 {
-      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    .p-failure-cell p {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* ══════════════════════════════════
+       PANEL 4 — THE ANSWER
+    ══════════════════════════════════ */
+    .p-answer {
+      background: #fff;
+      border-bottom: 1px solid #111;
+      padding: 6rem 2rem;
+      text-align: center;
+    }
+    .p-answer-yes {
+      font-size: clamp(5rem, 18vw, 14rem);
+      font-weight: 300;
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      color: #000;
+      margin-bottom: 2rem;
+      font-style: italic;
+    }
+    .p-answer p {
+      font-size: 1.1rem;
+      color: #555;
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.75;
+    }
+
+    /* ══════════════════════════════════
+       PANEL 5 — THE ARCHITECTURE
+    ══════════════════════════════════ */
+    .p-arch {
+      background: #111;
+      padding: 5rem 2rem;
+    }
+    .p-arch-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: 1px solid #2a2a2a;
+      margin-top: 2.5rem;
+    }
+    .p-arch-cell {
+      padding: 2.5rem 2rem;
+      border-right: 1px solid #2a2a2a;
+      border-bottom: 1px solid #2a2a2a;
+    }
+    .p-arch-cell:nth-child(2n) { border-right: none; }
+    .p-arch-cell:nth-child(3),
+    .p-arch-cell:nth-child(4) { border-bottom: none; }
+    .p-arch-num {
+      font-family: Arial, sans-serif;
+      font-size: 0.58rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.25);
+      margin-bottom: 0.6rem;
+      display: block;
+    }
+    .p-arch-cell h3 {
+      font-size: 1.15rem;
+      font-weight: 400;
+      color: #fff;
+      margin: 0 0 0.75rem;
+    }
+    .p-arch-cell p {
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.65;
+      margin: 0;
+    }
+
+    /* ══════════════════════════════════
+       PANEL 6 — THE TELESCOPE
+    ══════════════════════════════════ */
+    .p-telescope {
+      background: #fff;
+      border-bottom: 1px solid #eee;
+      padding: 5rem 2rem;
+    }
+    .p-telescope-layout {
+      display: grid;
+      grid-template-columns: 5fr 4fr;
+      gap: 4rem;
+      align-items: center;
+      margin-top: 2.5rem;
+    }
+    .p-telescope h2 {
+      font-size: clamp(1.8rem, 3.5vw, 3rem);
+      font-weight: 300;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin: 0 0 1.25rem;
+    }
+    .p-telescope p {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: #444;
+      margin: 0;
+    }
+    .p-telescope-stat {
+      border: 1px solid #111;
+    }
+    .p-telescope-stat-row {
+      padding: 1.5rem;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .p-telescope-stat-row:last-child { border-bottom: none; }
+    .p-telescope-stat-label {
+      font-family: Arial, sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #999;
+    }
+    .p-telescope-stat-val {
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: #111;
+    }
+
+    /* ══════════════════════════════════
+       PANEL 7 — YES GROUPS
+    ══════════════════════════════════ */
+    .p-groups {
+      background: #0a0a0a;
+      padding: 5rem 2rem;
+    }
+    .p-groups-layout {
+      display: grid;
+      grid-template-columns: 4fr 5fr;
+      gap: 4rem;
+      align-items: start;
+      margin-top: 2.5rem;
+    }
+    .p-groups h2 {
+      font-size: clamp(1.8rem, 3.5vw, 3rem);
+      font-weight: 300;
+      line-height: 1.2;
+      color: #fff;
+      letter-spacing: -0.02em;
+      margin: 0 0 1.25rem;
+    }
+    .p-groups p {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: rgba(255,255,255,0.55);
+      margin: 0;
+    }
+
+    /* ══════════════════════════════════
+       PANEL 8 — WEEK 1 GRAPHIC
+    ══════════════════════════════════ */
+    .p-week1 {
+      background: #fff;
+      border-top: 1px solid #111;
+      border-bottom: 1px solid #111;
+      padding: 4rem 2rem;
+    }
+    .p-week1-flow {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      margin-top: 2.5rem;
+      border: 1px solid #111;
+    }
+    .p-week1-step {
+      padding: 2rem 1.25rem;
+      border-right: 1px solid #111;
+      position: relative;
+    }
+    .p-week1-step:last-child { border-right: none; }
+    .p-week1-step-num {
+      font-family: Arial, sans-serif;
+      font-size: 0.55rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #bbb;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+    .p-week1-step h4 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #000;
+      margin: 0 0 0.5rem;
+      line-height: 1.3;
+    }
+    .p-week1-step p {
+      font-size: 0.78rem;
+      color: #777;
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    /* ══════════════════════════════════
+       PANEL 9 — A SEASON (12 WEEKS)
+    ══════════════════════════════════ */
+    .p-season {
+      background: #0a0a0a;
+      padding: 5rem 2rem;
+    }
+    .p-season-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      border: 1px solid #333;
+      margin-top: 2.5rem;
+    }
+    .p-season-week {
+      border-right: 1px solid #333;
+      padding: 1.25rem 0.6rem;
+      text-align: center;
+    }
+    .p-season-week:last-child { border-right: none; }
+    .p-season-week-num {
+      font-family: Arial, sans-serif;
+      font-size: 0.5rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.25);
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .p-season-week-topic {
+      font-size: 0.62rem;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.4;
+      font-family: Arial, sans-serif;
+    }
+    .p-season-week.launch { background: rgba(255,255,255,0.06); }
+    .p-season-week.summit-week {
+      background: rgba(255,255,255,0.1);
+    }
+    .p-season-stat-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border: 1px solid #333;
+      border-top: none;
+    }
+    .p-season-stat {
+      padding: 1.5rem;
+      border-right: 1px solid #333;
+      text-align: center;
+    }
+    .p-season-stat:last-child { border-right: none; }
+    .p-season-stat-num {
+      font-size: 1.8rem;
+      font-weight: 300;
+      color: #fff;
+      display: block;
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+    .p-season-stat-label {
+      font-family: Arial, sans-serif;
+      font-size: 0.58rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+    }
+
+    /* ══════════════════════════════════
+       PANEL 10 — NATURE SIX
+    ══════════════════════════════════ */
+    .p-nature {
+      background: #fff;
+      border-bottom: 1px solid #111;
+      padding: 5rem 2rem;
+    }
+    .p-nature-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      border: 1px solid #111;
+      margin-top: 2.5rem;
+    }
+    .p-nature-cell {
+      padding: 2rem 1rem;
+      border-right: 1px solid #111;
+      text-align: center;
+    }
+    .p-nature-cell:last-child { border-right: none; }
+    .p-nature-cell img {
+      width: 52px;
+      height: 52px;
+      display: block;
+      margin: 0 auto 0.75rem;
+    }
+    .p-nature-cell span {
+      font-family: Arial, sans-serif;
+      font-size: 0.58rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #555;
+    }
+
+    /* ══════════════════════════════════
+       PANEL 11 — THE FIELD GUIDE
+    ══════════════════════════════════ */
+    .p-guide {
+      background: #111;
+      padding: 5rem 2rem;
+    }
+    .p-guide-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: 1px solid #2a2a2a;
+      margin-top: 2.5rem;
+    }
+    .p-guide-left {
+      padding: 3rem 2.5rem;
+      border-right: 1px solid #2a2a2a;
+    }
+    .p-guide-left h2 {
+      font-size: clamp(1.6rem, 3vw, 2.5rem);
+      font-weight: 300;
+      color: #fff;
+      letter-spacing: -0.02em;
+      margin: 0 0 1rem;
+    }
+    .p-guide-left p {
+      font-size: 0.95rem;
+      line-height: 1.8;
+      color: rgba(255,255,255,0.5);
+      margin: 0;
+    }
+    .p-guide-right { padding: 3rem 2.5rem; }
+    .p-guide-item {
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #2a2a2a;
+      display: flex;
+      gap: 1rem;
+      align-items: baseline;
+    }
+    .p-guide-item:last-child { border-bottom: none; }
+    .p-guide-item-num {
+      font-family: Arial, sans-serif;
+      font-size: 0.55rem;
+      letter-spacing: 0.15em;
+      color: rgba(255,255,255,0.25);
+      flex-shrink: 0;
+      width: 24px;
+    }
+    .p-guide-item-text {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.5;
+    }
+
+    /* ══════════════════════════════════
+       PANEL 12 — A YEAR
+    ══════════════════════════════════ */
+    .p-year {
+      background: #fff;
+      border-bottom: 1px solid #111;
+      padding: 5rem 2rem;
+    }
+    .p-year-seasons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border: 1px solid #111;
+      margin-top: 2.5rem;
+    }
+    .p-year-season {
+      border-right: 1px solid #111;
+    }
+    .p-year-season:last-child { border-right: none; }
+    .p-year-season-header {
+      background: #000;
+      color: #fff;
+      padding: 0.75rem 1.25rem;
+      font-family: Arial, sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+    .p-year-season-body {
+      padding: 1.25rem;
+    }
+    .p-year-week-row {
+      display: flex;
+      gap: 3px;
+      margin-bottom: 3px;
+    }
+    .p-year-week-dot {
+      width: 100%;
+      height: 8px;
+      background: #e5e5e5;
+      flex: 1;
+    }
+    .p-year-week-dot.active { background: #111; }
+    .p-year-week-dot.summit { background: #000; height: 16px; margin-top: -4px; }
+    .p-year-season-label {
+      font-family: Arial, sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #999;
+      margin-top: 0.75rem;
+    }
+    .p-year-targets {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border: 1px solid #111;
+      border-top: none;
+    }
+    .p-year-target {
+      padding: 1.5rem 1.25rem;
+      border-right: 1px solid #111;
+      text-align: center;
+    }
+    .p-year-target:last-child { border-right: none; }
+    .p-year-target-num {
+      font-size: 1.9rem;
+      font-weight: 300;
+      color: #000;
+      display: block;
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+    .p-year-target-label {
+      font-family: Arial, sans-serif;
+      font-size: 0.58rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #999;
+    }
+
+    /* ══════════════════════════════════
+       PANEL 13 — SUMMIT
+    ══════════════════════════════════ */
+    .p-summit {
+      background: #0a0a0a;
+      padding: 5rem 2rem;
+    }
+    .p-summit-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      margin-top: 2.5rem;
+    }
+    .p-summit h2 {
+      font-size: clamp(1.8rem, 3.5vw, 3rem);
+      font-weight: 300;
+      color: #fff;
+      letter-spacing: -0.02em;
+      margin: 0 0 1.25rem;
+      line-height: 1.2;
+    }
+    .p-summit p {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: rgba(255,255,255,0.5);
+      margin: 0 0 1rem;
+    }
+    .p-summit-first {
+      border: 1px solid #333;
+      padding: 2rem;
+    }
+    .p-summit-first-label {
+      font-family: Arial, sans-serif;
+      font-size: 0.58rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.25);
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+    .p-summit-first h3 {
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: #fff;
+      margin: 0 0 0.5rem;
+    }
+    .p-summit-first p {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.45);
+      margin: 0;
+    }
+
+    /* ══════════════════════════════════
+       PANEL 14 — WHO
+    ══════════════════════════════════ */
+    .p-who {
+      background: #fff;
+      border-bottom: 1px solid #111;
+      padding: 5rem 2rem;
+    }
+    .p-who-layout {
+      display: grid;
+      grid-template-columns: 5fr 4fr;
+      gap: 4rem;
+      align-items: start;
+      margin-top: 2.5rem;
+    }
+    .p-who h2 {
+      font-size: clamp(1.8rem, 3.5vw, 3rem);
       font-weight: 300;
       letter-spacing: -0.02em;
       margin: 0 0 1.25rem;
       line-height: 1.2;
     }
-    .f-cta p {
-      font-size: 0.95rem;
-      color: rgba(255,255,255,0.55);
-      max-width: 460px;
-      margin: 0 auto 2.5rem;
-      line-height: 1.75;
+    .p-who p {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: #444;
+      margin: 0 0 1rem;
     }
-    .f-cta a.f-cta-link {
-      display: inline-block;
-      border: 1px solid rgba(255,255,255,0.35);
-      color: #fff;
-      padding: 0.75rem 2.5rem;
+    .p-who-creds {
+      border: 1px solid #e5e5e5;
+    }
+    .p-who-cred {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid #e5e5e5;
       font-family: Arial, sans-serif;
       font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      text-decoration: none;
-      transition: border-color 0.2s, background 0.2s;
+      letter-spacing: 0.06em;
+      color: #444;
     }
-    .f-cta a.f-cta-link:hover {
-      background: rgba(255,255,255,0.08);
-      border-color: rgba(255,255,255,0.7);
+    .p-who-cred:last-child { border-bottom: none; }
+
+    /* ══════════════════════════════════
+       PANEL 15 — BUDGET
+    ══════════════════════════════════ */
+    .p-budget {
+      background: #0a0a0a;
+      padding: 5rem 2rem;
+    }
+    .p-budget-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border: 1px solid #333;
+      margin-top: 2.5rem;
+    }
+    .p-budget-cell {
+      padding: 2.5rem 1.75rem;
+      border-right: 1px solid #333;
+      text-align: center;
+    }
+    .p-budget-cell:last-child { border-right: none; }
+    .p-budget-num {
+      font-size: 2.4rem;
+      font-weight: 300;
+      color: #fff;
+      display: block;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+    .p-budget-label {
+      font-family: Arial, sans-serif;
+      font-size: 0.58rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+    }
+    .p-budget-note {
+      font-family: Arial, sans-serif;
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.35);
+      text-align: center;
+      margin-top: 1.5rem;
+      line-height: 1.7;
     }
 
-    @media (max-width: 600px) {
-      .f-pillars { grid-template-columns: 1fr; }
-      .f-pillar { border-right: none !important; }
-      .f-pillar:last-child { border-bottom: none; }
-      .f-stats { grid-template-columns: 1fr; }
-      .f-stat { border-right: none; border-bottom: 1px solid #111; }
-      .f-stat:last-child { border-bottom: none; }
-      .f-nature { flex-wrap: wrap; }
-      .f-nature-item { flex: 0 0 33.33%; border-bottom: 1px solid #111; }
+    /* ══════════════════════════════════
+       PANEL 16 — CTA
+    ══════════════════════════════════ */
+    .p-cta {
+      background: #fff;
+      border-top: 1px solid #111;
+      padding: 8rem 2rem;
+      text-align: center;
+    }
+    .p-cta h2 {
+      font-size: clamp(2rem, 5vw, 4rem);
+      font-weight: 300;
+      letter-spacing: -0.025em;
+      color: #000;
+      margin: 0 auto 1.5rem;
+      max-width: 700px;
+      line-height: 1.15;
+    }
+    .p-cta p {
+      font-size: 1rem;
+      color: #777;
+      max-width: 420px;
+      margin: 0 auto 3rem;
+      line-height: 1.75;
+    }
+    .p-cta a {
+      display: inline-block;
+      background: #000;
+      color: #fff;
+      padding: 0.9rem 3rem;
+      font-family: Arial, sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .p-cta a:hover { background: #333; }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 800px) {
+      .p-failures-grid { grid-template-columns: 1fr 1fr; }
+      .p-failure-cell:nth-child(2n) { border-right: none; }
+      .p-failure-cell { border-bottom: 1px solid #333; }
+      .p-arch-grid, .p-telescope-layout, .p-groups-layout,
+      .p-guide-layout, .p-summit-layout, .p-who-layout { grid-template-columns: 1fr; }
+      .p-guide-left { border-right: none; border-bottom: 1px solid #2a2a2a; }
+      .p-arch-cell { border-right: none !important; }
+      .p-week1-flow { grid-template-columns: 1fr 1fr; }
+      .p-week1-step:nth-child(2n) { border-right: none; }
+      .p-week1-step { border-bottom: 1px solid #111; }
+      .p-season-grid { grid-template-columns: repeat(6, 1fr); }
+      .p-nature-grid { grid-template-columns: repeat(3, 1fr); }
+      .p-nature-cell:nth-child(3n) { border-right: none; }
+      .p-nature-cell:nth-child(4),
+      .p-nature-cell:nth-child(5),
+      .p-nature-cell:nth-child(6) { border-top: 1px solid #111; }
+      .p-year-seasons { grid-template-columns: 1fr 1fr; }
+      .p-year-season:nth-child(2n) { border-right: none; }
+      .p-year-season:nth-child(3),
+      .p-year-season:nth-child(4) { border-top: 1px solid #111; }
+      .p-year-targets { grid-template-columns: 1fr 1fr; }
+      .p-year-target:nth-child(2n) { border-right: none; }
+      .p-budget-grid { grid-template-columns: 1fr 1fr; }
+      .p-budget-cell:nth-child(2n) { border-right: none; }
+      .p-budget-cell:nth-child(1),
+      .p-budget-cell:nth-child(2) { border-bottom: 1px solid #333; }
     }
   </style>
 </head>
 <body>
 
+<!-- NAV -->
 <nav>
   <a href="/" class="nav-brand" style="display:flex;align-items:center;gap:0.4rem;"><span style="font-family:Arial,sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.12em;color:#fff;text-transform:uppercase;">THE</span><img src="/images/yes-flower.png" alt="YES" style="height:38px;width:auto;display:block;border-radius:50%;" /><span style="font-family:Arial,sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.12em;color:#fff;text-transform:uppercase;">MOVEMENT</span></a>
   <ul class="nav-links">
@@ -282,167 +764,504 @@
   <button class="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
 </nav>
 
-<!-- Hero -->
-<div class="f-hero">
-  <div class="f-hero-eyebrow">A proposal for philanthropists</div>
+<!-- ══ PANEL 1 — HERO ══ -->
+<div class="panel p-hero">
+  <span class="eyebrow eyebrow-white">A proposal for funding partners</span>
   <h1>For 12,000 years we mastered<br>the art of extraction.<br><em>The first bill has come due.</em></h1>
-  <div class="f-hero-sub">YES Movement &nbsp;·&nbsp; 2025</div>
+  <div class="p-hero-meta">YES Movement &nbsp;·&nbsp; 2025</div>
 </div>
 
-<!-- Pull quote -->
-<div class="f-pull">
-  <p>We think in fractions. Nature thinks in wholes. When we respond with fractional solutions, we get fractional change. The YES Movement is the architecture of a different response.</p>
+<!-- ══ PANEL 2 — PULL QUOTE ══ -->
+<div class="panel p-pull">
+  <p>"Nobody gets out of bed to do less bad. But tell us to save the planet, and we're there."</p>
+  <cite>— Douglas Gayeton, Molotov Alva and the Museum of Extraction</cite>
 </div>
 
-<!-- Body -->
-<div class="f-body">
-
-  <h2>The diagnosis</h2>
-  <p>
-    We are the first generation to wake up to a world of finite resources. The bills are arriving: climate change first, biodiversity collapse next, then unbreathable air, undrinkable water, mass displacement. Our collective responses have been fractional — project by project, crisis by crisis — while nature operates as a single, interconnected system.
-  </p>
-  <p>
-    The problem is not a lack of awareness. The problem is a lack of <strong>architecture</strong>. There is no coordinated, community-rooted, globally connected movement organised around restoration. The YES Movement is being built to be exactly that.
-  </p>
-
-  <div class="f-blockquote">
-    <p>"Nobody gets out of bed to do less bad. But tell us to save the planet, and we're there."</p>
-    <cite>— Douglas Gayeton, Molotov Alva and the Museum of Extraction</cite>
-  </div>
-
-  <h2>The movement</h2>
-  <p>
-    The YES Movement is a coordinated initiative grounded in the <em>Ecological Benefits Framework</em> and the forthcoming book <em>Molotov Alva and the Museum of Extraction</em> by Douglas Gayeton. It operates through four interlocking components, each one reinforcing the others.
-  </p>
-
-  <div class="f-pillars">
-    <div class="f-pillar">
-      <div class="f-pillar-num">01</div>
-      <h3>The Telescope</h3>
-      <p>A twice-weekly broadcast from Substack. The first episode sets the subject and frames the challenge for groups. The second features what groups have done in response — call and answer, week by week.</p>
-    </div>
-    <div class="f-pillar">
-      <div class="f-pillar-num">02</div>
-      <h3>YES Groups</h3>
-      <p>Local groups of up to 16 volunteers who meet to watch, discuss, and act on each broadcast. 12 sessions per season. Their work is uploaded to The Telescope, closing the loop between local action and global signal.</p>
-    </div>
-    <div class="f-pillar">
-      <div class="f-pillar-num">03</div>
-      <h3>The Field Guide</h3>
-      <p>A physical user guide given to every member. Content and worksheets for 12 weeks. Members sketch, sample, measure, and document. The guide makes abstract ecological knowledge tactile and local.</p>
-    </div>
-    <div class="f-pillar">
-      <div class="f-pillar-num">04</div>
-      <h3>Quarterly Summit</h3>
-      <p>Groups converge in person. The first Summit is planned at the headwaters of the Mississippi River around Water. Summits are the movement's exhale — community, synthesis, and renewal.</p>
+<!-- ══ PANEL 3 — FIVE FAILURES ══ -->
+<div class="panel p-failures">
+  <div class="panel-inner">
+    <span class="eyebrow eyebrow-white">Why existing approaches fall short</span>
+    <div class="p-failures-grid">
+      <div class="p-failure-cell">
+        <span class="p-failure-label">Finite</span>
+        <p>We are the first generation to think of earth as finite.</p>
+      </div>
+      <div class="p-failure-cell">
+        <span class="p-failure-label">Due Date</span>
+        <p>We've been charging things to the planet. The bills are coming due.</p>
+      </div>
+      <div class="p-failure-cell">
+        <span class="p-failure-label">More Good</span>
+        <p>We are trapped in doing less bad instead of more good.</p>
+      </div>
+      <div class="p-failure-cell">
+        <span class="p-failure-label">Perspective</span>
+        <p>We are looking through the wrong end of the telescope.</p>
+      </div>
+      <div class="p-failure-cell">
+        <span class="p-failure-label">Holistic</span>
+        <p>We think fractionally. Nature thinks in wholes.</p>
+      </div>
     </div>
   </div>
-
-  <h2>Six areas of nature</h2>
-  <p>
-    Restoration begins with repaying our debts. Every group, every broadcast, every Field Guide session is organised around the same six priorities — the Nature Six.
-  </p>
-
-  <div class="f-nature">
-    <div class="f-nature-item">
-      <img class="f-nature-icon" src="/images/icons/01-Air.svg" alt="" />
-      Air
-    </div>
-    <div class="f-nature-item">
-      <img class="f-nature-icon" src="/images/icons/02-Water.svg" alt="" />
-      Water
-    </div>
-    <div class="f-nature-item">
-      <img class="f-nature-icon" src="/images/icons/03-Soil.svg" alt="" />
-      Soil
-    </div>
-    <div class="f-nature-item">
-      <img class="f-nature-icon" src="/images/icons/04-Biodiversity.svg" alt="" />
-      Biodiversity
-    </div>
-    <div class="f-nature-item">
-      <img class="f-nature-icon" src="/images/icons/05-Equity.svg" alt="" />
-      Equity
-    </div>
-    <div class="f-nature-item">
-      <img class="f-nature-icon" src="/images/icons/06-Carbon.svg" alt="" />
-      Carbon
-    </div>
-  </div>
-
-  <h2>Who is behind it</h2>
-  <p>
-    The YES Movement is built on fifteen years of work by <strong>Douglas Gayeton</strong> and <strong>The Lexicon</strong>, a California-based NGO that spent five years working with Google to develop an accelerator for good ideas — engaging over 1,000 companies and organisations at the intersection of food, agriculture, conservation, and climate change. That work included partnerships with the Gates Foundation, US federal agencies, and hundreds of international partners.
-  </p>
-  <p>
-    The Museum of Extraction — Gayeton's forthcoming book — is the intellectual and aesthetic foundation for the YES Movement. It names the problem. The YES Movement builds the response.
-  </p>
-
-  <h2>Where we are</h2>
-
-  <div class="f-stats">
-    <div class="f-stat">
-      <span class="f-stat-num" id="stat-groups">—</span>
-      <span class="f-stat-label">Active groups</span>
-    </div>
-    <div class="f-stat">
-      <span class="f-stat-num" id="stat-actions">—</span>
-      <span class="f-stat-label">Actions logged</span>
-    </div>
-    <div class="f-stat">
-      <span class="f-stat-num">6</span>
-      <span class="f-stat-label">Nature priorities</span>
-    </div>
-  </div>
-
-  <p>
-    The platform is live. Groups are forming. The Telescope is broadcasting. We are at the moment where infrastructure built in the right way, with the right partners, becomes something that cannot be stopped.
-  </p>
-
-  <h2>The budget</h2>
-  <p>
-    The Telescope is the movement's nervous system — the broadcast that sets each week's agenda for every group worldwide. Its production is a professional media operation: three shows per week, short-form social cuts, a quarterly livestreamed Summit, and the infrastructure to distribute it all.
-  </p>
-
-  <div class="f-stats" style="grid-template-columns:1fr 1fr 1fr 1fr;">
-    <div class="f-stat">
-      <span class="f-stat-num">$41K</span>
-      <span class="f-stat-label">Launch &amp; onboarding</span>
-    </div>
-    <div class="f-stat">
-      <span class="f-stat-num">$72K</span>
-      <span class="f-stat-label">Per month, full production</span>
-    </div>
-    <div class="f-stat">
-      <span class="f-stat-num">$31K</span>
-      <span class="f-stat-label">Per quarterly Summit</span>
-    </div>
-    <div class="f-stat">
-      <span class="f-stat-num">$1M</span>
-      <span class="f-stat-label">Estimated year one</span>
-    </div>
-  </div>
-
-  <p>
-    The production team — project lead, senior editor, show producer, social coordinator, assistant editor, tech director, designer — is a lean, professional unit. Costs not yet included: on-air talent, editor-in-chief, talent scout, podcast producer. Year one is the foundation. The model is designed to become self-sustaining through membership and licensing as the network grows.
-  </p>
-
-  <h2>What we are asking for</h2>
-  <p>
-    We are not running a campaign. We are looking for a small number of founding philanthropic partners who understand that the architecture of a movement — its tools, its broadcast, its Field Guides, its first Summits — must be funded before it can sustain itself. Early partners help determine not just what gets built, but how it gets built.
-  </p>
-  <p>
-    We believe in complete transparency. Every group, every action, every Summit is visible in real time on this platform. You will not wonder where the funding went. You will watch it become groups, become actions, become a map that grows.
-  </p>
-
 </div>
 
-<!-- CTA -->
-<div class="f-cta">
-  <div class="f-cta-eyebrow">Get in touch</div>
+<!-- ══ PANEL 4 — THE ANSWER ══ -->
+<div class="panel p-answer">
+  <div class="p-answer-yes">Yes.</div>
+  <p>Not a campaign. Not a coalition. An architecture — the connective tissue of a global restoration movement, built from the ground up, community by community.</p>
+</div>
+
+<!-- ══ PANEL 5 — THE ARCHITECTURE ══ -->
+<div class="panel p-arch">
+  <div class="panel-inner">
+    <span class="eyebrow eyebrow-white">Four components. One system.</span>
+    <div class="p-arch-grid">
+      <div class="p-arch-cell">
+        <span class="p-arch-num">01</span>
+        <h3>The Telescope</h3>
+        <p>A twice-weekly broadcast setting the agenda for every group worldwide. Call and response — the movement's shared signal.</p>
+      </div>
+      <div class="p-arch-cell">
+        <span class="p-arch-num">02</span>
+        <h3>YES Groups</h3>
+        <p>Local groups of up to 16 volunteers meeting weekly to watch, discuss, and act. 12 sessions per season. Their work feeds back into The Telescope.</p>
+      </div>
+      <div class="p-arch-cell">
+        <span class="p-arch-num">03</span>
+        <h3>The Field Guide</h3>
+        <p>A physical guide given to every member. 12 weeks of content, challenges, and worksheets. Ecological knowledge made tactile and local.</p>
+      </div>
+      <div class="p-arch-cell">
+        <span class="p-arch-num">04</span>
+        <h3>Quarterly Summit</h3>
+        <p>Groups converge in person. Synthesis, community, renewal. The movement's exhale.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PANEL 6 — THE TELESCOPE ══ -->
+<div class="panel p-telescope">
+  <div class="panel-inner">
+    <span class="eyebrow">The Telescope</span>
+    <div class="p-telescope-layout">
+      <div>
+        <h2>The broadcast that sets every group's agenda — worldwide.</h2>
+        <p>Twice a week Douglas Gayeton and guests broadcast from the field. The first episode frames the week's challenge for groups. The second features what groups have done in response. Call and answer, week after week — the loop between local action and global signal.</p>
+      </div>
+      <div class="p-telescope-stat">
+        <div class="p-telescope-stat-row">
+          <span class="p-telescope-stat-label">Broadcasts per season</span>
+          <span class="p-telescope-stat-val">24</span>
+        </div>
+        <div class="p-telescope-stat-row">
+          <span class="p-telescope-stat-label">Shows per week</span>
+          <span class="p-telescope-stat-val">3×</span>
+        </div>
+        <div class="p-telescope-stat-row">
+          <span class="p-telescope-stat-label">Distribution</span>
+          <span class="p-telescope-stat-val">Substack</span>
+        </div>
+        <div class="p-telescope-stat-row">
+          <span class="p-telescope-stat-label">Quarterly livestream</span>
+          <span class="p-telescope-stat-val">Summit</span>
+        </div>
+        <div class="p-telescope-stat-row">
+          <span class="p-telescope-stat-label">Monthly production cost</span>
+          <span class="p-telescope-stat-val">$72K</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PANEL 7 — YES GROUPS ══ -->
+<div class="panel p-groups">
+  <div class="panel-inner">
+    <span class="eyebrow eyebrow-white">YES Groups</span>
+    <div class="p-groups-layout">
+      <div>
+        <h2>Up to 16 people. One place. 12 weeks.</h2>
+        <p>Groups meet locally to watch The Telescope, discuss the week's challenge, and take one action. Their work is uploaded to the platform and featured in the second broadcast — closing the loop between the local and the global.</p>
+        <p style="margin-top:1rem;">Each member has a profile on the site. Groups have names combining their place and what they care about. <em style="color:rgba(255,255,255,0.65);">Petaluma Water. Chicago Soil. Red Barn Posse.</em> Year 1 target: 1,000 groups.</p>
+      </div>
+      <div>
+        <div style="border:1px solid #333;padding:1.75rem;">
+          <span class="eyebrow eyebrow-white" style="margin-bottom:1rem;">As individuals</span>
+          <div style="font-size:0.85rem;color:rgba(255,255,255,0.5);line-height:1.8;">
+            Passionate, action-focused people<br>
+            Each has a copy of the Field Guide<br>
+            5 minutes per meeting: share your work<br>
+            Thinking partners for restoration
+          </div>
+        </div>
+        <div style="border:1px solid #333;border-top:none;padding:1.75rem;">
+          <span class="eyebrow eyebrow-white" style="margin-bottom:1rem;">As a group</span>
+          <div style="font-size:0.85rem;color:rgba(255,255,255,0.5);line-height:1.8;">
+            Max 16 members<br>
+            Led from the middle — no hierarchy<br>
+            Work feeds up to the platform and broadcasts<br>
+            Collective actions each quarter
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PANEL 8 — WEEK 1 GRAPHIC ══ -->
+<div class="panel p-week1">
+  <div class="panel-inner">
+    <span class="eyebrow">Week 1 — How it begins</span>
+    <div class="p-week1-flow">
+      <div class="p-week1-step">
+        <span class="p-week1-step-num">Step 1</span>
+        <h4>Viewing Party</h4>
+        <p>Group screens The Telescope #1: Nature 2026 — a global update from Douglas Gayeton and guests.</p>
+      </div>
+      <div class="p-week1-step">
+        <span class="p-week1-step-num">Step 2</span>
+        <h4>Introductions</h4>
+        <p>Say what matters to you. Orient yourself on the map. This is the first moment of the movement becoming real.</p>
+      </div>
+      <div class="p-week1-step">
+        <span class="p-week1-step-num">Step 3</span>
+        <h4>Field Guide</h4>
+        <p>Distribution of copies. Members read the introduction and agree on a local target to improve by saying Yes.</p>
+      </div>
+      <div class="p-week1-step">
+        <span class="p-week1-step-num">Step 4</span>
+        <h4>Homework</h4>
+        <p>Go to the website. Connect with other YES members. Find who else is working on what you care about.</p>
+      </div>
+      <div class="p-week1-step">
+        <span class="p-week1-step-num">Step 5</span>
+        <h4>On the Map</h4>
+        <p>The group appears on the YES Movement map. The movement becomes visible to itself for the first time.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PANEL 9 — A SEASON ══ -->
+<div class="panel p-season">
+  <div class="panel-inner">
+    <span class="eyebrow eyebrow-white">A season — 12 weeks</span>
+    <div class="p-season-grid">
+      <div class="p-season-week launch">
+        <span class="p-season-week-num">Wk 1</span>
+        <div class="p-season-week-topic">Launch &amp; Nature 2026</div>
+      </div>
+      <div class="p-season-week">
+        <span class="p-season-week-num">Wk 2</span>
+        <div class="p-season-week-topic">Water</div>
+      </div>
+      <div class="p-season-week">
+        <span class="p-season-week-num">Wk 3</span>
+        <div class="p-season-week-topic">Air</div>
+      </div>
+      <div class="p-season-week">
+        <span class="p-season-week-num">Wk 4</span>
+        <div class="p-season-week-topic">Soil</div>
+      </div>
+      <div class="p-season-week">
+        <span class="p-season-week-num">Wk 5</span>
+        <div class="p-season-week-topic">Carbon</div>
+      </div>
+      <div class="p-season-week">
+        <span class="p-season-week-num">Wk 6</span>
+        <div class="p-season-week-topic">Biodiversity</div>
+      </div>
+      <div class="p-season-week">
+        <span class="p-season-week-num">Wk 7</span>
+        <div class="p-season-week-topic">Equity</div>
+      </div>
+      <div class="p-season-week">
+        <span class="p-season-week-num">Wk 8</span>
+        <div class="p-season-week-topic">Water</div>
+      </div>
+      <div class="p-season-week">
+        <span class="p-season-week-num">Wk 9</span>
+        <div class="p-season-week-topic">Air</div>
+      </div>
+      <div class="p-season-week">
+        <span class="p-season-week-num">Wk 10</span>
+        <div class="p-season-week-topic">Soil</div>
+      </div>
+      <div class="p-season-week">
+        <span class="p-season-week-num">Wk 11</span>
+        <div class="p-season-week-topic">Carbon</div>
+      </div>
+      <div class="p-season-week summit-week">
+        <span class="p-season-week-num">Wk 12</span>
+        <div class="p-season-week-topic">Summit ↑</div>
+      </div>
+    </div>
+    <div class="p-season-stat-row">
+      <div class="p-season-stat">
+        <span class="p-season-stat-num">24</span>
+        <span class="p-season-stat-label">Broadcasts per season</span>
+      </div>
+      <div class="p-season-stat">
+        <span class="p-season-stat-num">12</span>
+        <span class="p-season-stat-label">Group meetings</span>
+      </div>
+      <div class="p-season-stat">
+        <span class="p-season-stat-num">1</span>
+        <span class="p-season-stat-label">Summit per season</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PANEL 10 — NATURE SIX ══ -->
+<div class="panel p-nature">
+  <div class="panel-inner">
+    <span class="eyebrow">The Nature Six — six areas of focus</span>
+    <div class="p-nature-grid">
+      <div class="p-nature-cell">
+        <img src="/images/icons/01-Air.svg" alt="Air" />
+        <span>Air</span>
+      </div>
+      <div class="p-nature-cell">
+        <img src="/images/icons/02-Water.svg" alt="Water" />
+        <span>Water</span>
+      </div>
+      <div class="p-nature-cell">
+        <img src="/images/icons/03-Soil.svg" alt="Soil" />
+        <span>Soil</span>
+      </div>
+      <div class="p-nature-cell">
+        <img src="/images/icons/04-Biodiversity.svg" alt="Biodiversity" />
+        <span>Biodiversity</span>
+      </div>
+      <div class="p-nature-cell">
+        <img src="/images/icons/05-Equity.svg" alt="Equity" />
+        <span>Equity</span>
+      </div>
+      <div class="p-nature-cell">
+        <img src="/images/icons/06-Carbon.svg" alt="Carbon" />
+        <span>Carbon</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PANEL 11 — THE FIELD GUIDE ══ -->
+<div class="panel p-guide">
+  <div class="panel-inner">
+    <span class="eyebrow eyebrow-white">The Field Guide</span>
+    <div class="p-guide-layout">
+      <div class="p-guide-left">
+        <h2>Ecological knowledge made physical.</h2>
+        <p>Every member receives a copy. 12 weeks of content, challenges, and worksheets. Members sketch, sample, measure, and document — then upload their work to The Telescope, where it becomes part of the global signal.</p>
+      </div>
+      <div class="p-guide-right">
+        <div class="p-guide-item">
+          <span class="p-guide-item-num">01</span>
+          <span class="p-guide-item-text">Introduction to the YES Movement and local orientation</span>
+        </div>
+        <div class="p-guide-item">
+          <span class="p-guide-item-num">02</span>
+          <span class="p-guide-item-text">Weekly challenge drawn from The Telescope broadcast</span>
+        </div>
+        <div class="p-guide-item">
+          <span class="p-guide-item-num">03</span>
+          <span class="p-guide-item-text">Sketching, sampling, and documenting local systems</span>
+        </div>
+        <div class="p-guide-item">
+          <span class="p-guide-item-num">04</span>
+          <span class="p-guide-item-text">Agreeing on a local target — one thing to say Yes to</span>
+        </div>
+        <div class="p-guide-item">
+          <span class="p-guide-item-num">05</span>
+          <span class="p-guide-item-text">Photo upload to YES Movement platform for broadcast</span>
+        </div>
+        <div class="p-guide-item">
+          <span class="p-guide-item-num">06</span>
+          <span class="p-guide-item-text">Repeat across all six nature priorities over 12 weeks</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PANEL 12 — A YEAR ══ -->
+<div class="panel p-year">
+  <div class="panel-inner">
+    <span class="eyebrow">A year — four seasons</span>
+    <div class="p-year-seasons">
+      <div class="p-year-season">
+        <div class="p-year-season-header">Season 1</div>
+        <div class="p-year-season-body">
+          <div class="p-year-week-row">
+            <div class="p-year-week-dot active"></div><div class="p-year-week-dot active"></div><div class="p-year-week-dot active"></div>
+          </div>
+          <div class="p-year-week-row">
+            <div class="p-year-week-dot active"></div><div class="p-year-week-dot active"></div><div class="p-year-week-dot active"></div>
+          </div>
+          <div class="p-year-week-row">
+            <div class="p-year-week-dot active"></div><div class="p-year-week-dot active"></div><div class="p-year-week-dot active"></div>
+          </div>
+          <div class="p-year-week-row">
+            <div class="p-year-week-dot active"></div><div class="p-year-week-dot active"></div><div class="p-year-week-dot summit"></div>
+          </div>
+          <div class="p-year-season-label">Launch · 10 groups · Water Summit</div>
+        </div>
+      </div>
+      <div class="p-year-season">
+        <div class="p-year-season-header">Season 2</div>
+        <div class="p-year-season-body">
+          <div class="p-year-week-row">
+            <div class="p-year-week-dot active"></div><div class="p-year-week-dot active"></div><div class="p-year-week-dot active"></div>
+          </div>
+          <div class="p-year-week-row">
+            <div class="p-year-week-dot active"></div><div class="p-year-week-dot active"></div><div class="p-year-week-dot active"></div>
+          </div>
+          <div class="p-year-week-row">
+            <div class="p-year-week-dot active"></div><div class="p-year-week-dot active"></div><div class="p-year-week-dot active"></div>
+          </div>
+          <div class="p-year-week-row">
+            <div class="p-year-week-dot active"></div><div class="p-year-week-dot active"></div><div class="p-year-week-dot summit"></div>
+          </div>
+          <div class="p-year-season-label">Growth · 100 groups · Air Summit</div>
+        </div>
+      </div>
+      <div class="p-year-season">
+        <div class="p-year-season-header">Season 3</div>
+        <div class="p-year-season-body">
+          <div class="p-year-week-row">
+            <div class="p-year-week-dot active"></div><div class="p-year-week-dot active"></div><div class="p-year-week-dot active"></div>
+          </div>
+          <div class="p-year-week-row">
+            <div class="p-year-week-dot active"></div><div class="p-year-week-dot active"></div><div class="p-year-week-dot active"></div>
+          </div>
+          <div class="p-year-week-row">
+            <div class="p-year-week-dot active"></div><div class="p-year-week-dot active"></div><div class="p-year-week-dot active"></div>
+          </div>
+          <div class="p-year-week-row">
+            <div class="p-year-week-dot active"></div><div class="p-year-week-dot active"></div><div class="p-year-week-dot summit"></div>
+          </div>
+          <div class="p-year-season-label">Scale · 500 groups · Soil Summit</div>
+        </div>
+      </div>
+      <div class="p-year-season">
+        <div class="p-year-season-header">Season 4</div>
+        <div class="p-year-season-body">
+          <div class="p-year-week-row">
+            <div class="p-year-week-dot active"></div><div class="p-year-week-dot active"></div><div class="p-year-week-dot active"></div>
+          </div>
+          <div class="p-year-week-row">
+            <div class="p-year-week-dot active"></div><div class="p-year-week-dot active"></div><div class="p-year-week-dot active"></div>
+          </div>
+          <div class="p-year-week-row">
+            <div class="p-year-week-dot active"></div><div class="p-year-week-dot active"></div><div class="p-year-week-dot active"></div>
+          </div>
+          <div class="p-year-week-row">
+            <div class="p-year-week-dot active"></div><div class="p-year-week-dot active"></div><div class="p-year-week-dot summit"></div>
+          </div>
+          <div class="p-year-season-label">Movement · 1,000 groups · Carbon Summit</div>
+        </div>
+      </div>
+    </div>
+    <div class="p-year-targets">
+      <div class="p-year-target">
+        <span class="p-year-target-num">4</span>
+        <span class="p-year-target-label">Seasons</span>
+      </div>
+      <div class="p-year-target">
+        <span class="p-year-target-num">1,000</span>
+        <span class="p-year-target-label">Groups — year 1 target</span>
+      </div>
+      <div class="p-year-target">
+        <span class="p-year-target-num">16K</span>
+        <span class="p-year-target-label">Members at scale</span>
+      </div>
+      <div class="p-year-target">
+        <span class="p-year-target-num">4</span>
+        <span class="p-year-target-label">Summits</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PANEL 13 — SUMMIT ══ -->
+<div class="panel p-summit">
+  <div class="panel-inner">
+    <span class="eyebrow eyebrow-white">Quarterly Summit</span>
+    <div class="p-summit-layout">
+      <div>
+        <h2>Where the movement<br>sees itself.</h2>
+        <p>Every season ends with a Summit — groups converging in person to share what they've built, witness what others have done, and agree on what comes next.</p>
+        <p>The Summit is the movement's exhale. Community, synthesis, renewal.</p>
+      </div>
+      <div class="p-summit-first">
+        <span class="p-summit-first-label">First Summit</span>
+        <h3>Water — Mississippi Headwaters</h3>
+        <p>The first Summit gathers groups working on Water at the headwaters of the Mississippi River. A symbolic and geographic anchor for what the movement is building.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PANEL 14 — WHO ══ -->
+<div class="panel p-who">
+  <div class="panel-inner">
+    <span class="eyebrow">Who is behind it</span>
+    <div class="p-who-layout">
+      <div>
+        <h2>Fifteen years of work. A network already in place.</h2>
+        <p>The YES Movement is built on the work of Douglas Gayeton and The Lexicon — a California-based NGO that spent five years working with Google to develop an accelerator for good ideas, engaging over 1,000 organisations at the intersection of food, agriculture, conservation, and climate change.</p>
+        <p>The forthcoming book, <em>Molotov Alva and the Museum of Extraction</em>, is the intellectual and aesthetic foundation. It names the problem. The YES Movement builds the response.</p>
+      </div>
+      <div>
+        <div class="p-who-creds">
+          <div class="p-who-cred">Douglas Gayeton — Ecological Benefits Framework</div>
+          <div class="p-who-cred">The Lexicon — California-based NGO</div>
+          <div class="p-who-cred">Google — 5-year partnership</div>
+          <div class="p-who-cred">Gates Foundation — Partner</div>
+          <div class="p-who-cred">US Federal Agencies — Partner</div>
+          <div class="p-who-cred">1,000+ partner organisations</div>
+          <div class="p-who-cred">Lincoln Project, No Kings — storytelling tools</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PANEL 15 — BUDGET ══ -->
+<div class="panel p-budget">
+  <div class="panel-inner">
+    <span class="eyebrow eyebrow-white">The investment</span>
+    <div class="p-budget-grid">
+      <div class="p-budget-cell">
+        <span class="p-budget-num">$41K</span>
+        <span class="p-budget-label">Launch &amp; onboarding</span>
+      </div>
+      <div class="p-budget-cell">
+        <span class="p-budget-num">$72K</span>
+        <span class="p-budget-label">Per month, full production</span>
+      </div>
+      <div class="p-budget-cell">
+        <span class="p-budget-num">$31K</span>
+        <span class="p-budget-label">Per Summit</span>
+      </div>
+      <div class="p-budget-cell">
+        <span class="p-budget-num">~$1M</span>
+        <span class="p-budget-label">Estimated year one</span>
+      </div>
+    </div>
+    <p class="p-budget-note">The model is designed to become self-sustaining through membership and licensing as the network grows.<br>Full production budget available on request.</p>
+  </div>
+</div>
+
+<!-- ══ PANEL 16 — CTA ══ -->
+<div class="panel p-cta">
+  <span class="eyebrow">Get in touch</span>
   <h2>Let's start a conversation.</h2>
-  <p>We are selective about our early partners. If this resonates, we would welcome a direct conversation — no forms, no decks, just a conversation.</p>
-  <a href="mailto:reuben@yesmovement.org" class="f-cta-link">Write to us</a>
+  <p>We are selective about our early funding partners. No forms, no decks — just a direct conversation.</p>
+  <a href="mailto:reuben@yesmovement.org">Write to us</a>
 </div>
 
 <footer>
@@ -452,16 +1271,13 @@
 
 <script src="/js/nav.js"></script>
 <script>
+  // Live stats injected into year panel if available
   async function loadStats() {
     try {
       const [gr, ac] = await Promise.all([fetch('/api/groups'), fetch('/api/actions')]);
       const groups = await gr.json();
       const actions = await ac.json();
-      const ge = document.getElementById('stat-groups');
-      const ae = document.getElementById('stat-actions');
-      if (ge) ge.textContent = groups.length || '0';
-      if (ae) ae.textContent = actions.length || '0';
-    } catch (e) {}
+    } catch(e) {}
   }
   loadStats();
 </script>
