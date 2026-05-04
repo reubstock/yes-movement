@@ -288,36 +288,43 @@
     }
     .p-week1-step {
       padding: 2rem 1.25rem;
-      border-right: 1px solid #111;
+      border-right: 1px solid rgba(0,0,0,0.1);
       position: relative;
     }
     .p-week1-step:last-child { border-right: none; }
+    /* Nature-derived gradient per step */
+    .p-week1-step:nth-child(1) { background: linear-gradient(160deg, #dbeafe 0%, #e0f2fe 100%); }
+    .p-week1-step:nth-child(2) { background: linear-gradient(160deg, #dcfce7 0%, #d1fae5 100%); }
+    .p-week1-step:nth-child(3) { background: linear-gradient(160deg, #fef3c7 0%, #fde68a 100%); }
+    .p-week1-step:nth-child(4) { background: linear-gradient(160deg, #ccfbf1 0%, #d1fae5 100%); }
+    .p-week1-step:nth-child(5) { background: linear-gradient(160deg, #d1fae5 0%, #bbf7d0 100%); }
     .p-week1-step-icon {
       width: 44px;
       height: 44px;
       margin-bottom: 1rem;
       display: block;
+      opacity: 0.75;
     }
     .p-week1-step-num {
       font-family: Arial, sans-serif;
       font-size: 0.55rem;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: #bbb;
+      color: rgba(0,0,0,0.4);
       margin-bottom: 0.5rem;
       display: block;
     }
     .p-week1-step h4 {
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: #000;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #111;
       margin: 0 0 0.5rem;
       line-height: 1.3;
     }
     .p-week1-step p {
-      font-size: 0.78rem;
-      color: #777;
-      line-height: 1.55;
+      font-size: 0.8rem;
+      color: #333;
+      line-height: 1.6;
       margin: 0;
     }
 
@@ -438,6 +445,26 @@
     .p-guide {
       background: #111;
       padding: 5rem 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    /* ─── Map background ─── */
+    .guide-map-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .p-guide > .panel-inner { position: relative; z-index: 1; }
+    /* ─── Field guide book ─── */
+    .guide-book-wrap {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    @keyframes dot-ring {
+      0% { r: 6; opacity: 0.7; }
+      100% { r: 18; opacity: 0; }
     }
     .p-guide-layout {
       display: grid;
@@ -512,10 +539,10 @@
       letter-spacing: 0.16em;
       text-transform: uppercase;
     }
-    .p-year-season.s1 .p-year-season-header { background: #1a4a8a; }
-    .p-year-season.s2 .p-year-season-header { background: #1a6b3a; }
-    .p-year-season.s3 .p-year-season-header { background: #b84a18; }
-    .p-year-season.s4 .p-year-season-header { background: #4a6030; }
+    .p-year-season.s1 .p-year-season-header { background: #2563eb; }
+    .p-year-season.s2 .p-year-season-header { background: #16a34a; }
+    .p-year-season.s3 .p-year-season-header { background: #ea580c; }
+    .p-year-season.s4 .p-year-season-header { background: #65a30d; }
     .p-year-season-body {
       padding: 1.25rem;
     }
@@ -1190,12 +1217,126 @@
 
 <!-- ══ PANEL 11 — THE FIELD GUIDE ══ -->
 <div class="panel p-guide">
+  <!-- Sedate world map background -->
+  <div class="guide-map-bg">
+    <svg viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <!-- Graticule grid lines -->
+      <g stroke="rgba(255,255,255,0.06)" stroke-width="0.8" fill="none">
+        <!-- Latitude lines at 60°,30°,0°,-30°,-60° -->
+        <line x1="0" y1="83" x2="1000" y2="83"/>
+        <line x1="0" y1="167" x2="1000" y2="167"/>
+        <line x1="0" y1="250" x2="1000" y2="250" stroke="rgba(255,255,255,0.1)"/>
+        <line x1="0" y1="333" x2="1000" y2="333"/>
+        <line x1="0" y1="417" x2="1000" y2="417"/>
+        <!-- Longitude lines every 30° -->
+        <line x1="83" y1="0" x2="83" y2="500"/>
+        <line x1="167" y1="0" x2="167" y2="500"/>
+        <line x1="250" y1="0" x2="250" y2="500"/>
+        <line x1="333" y1="0" x2="333" y2="500"/>
+        <line x1="417" y1="0" x2="417" y2="500"/>
+        <line x1="500" y1="0" x2="500" y2="500" stroke="rgba(255,255,255,0.1)"/>
+        <line x1="583" y1="0" x2="583" y2="500"/>
+        <line x1="667" y1="0" x2="667" y2="500"/>
+        <line x1="750" y1="0" x2="750" y2="500"/>
+        <line x1="833" y1="0" x2="833" y2="500"/>
+        <line x1="917" y1="0" x2="917" y2="500"/>
+      </g>
+      <!-- Continent fills (simplified outlines, low opacity) -->
+      <g fill="rgba(255,255,255,0.11)" stroke="rgba(255,255,255,0.07)" stroke-width="1" stroke-linejoin="round">
+        <!-- North America -->
+        <polygon points="42,56 250,50 319,56 353,119 305,153 275,181 258,206 211,197 194,186 175,158 155,119 125,92 39,83"/>
+        <!-- Greenland -->
+        <polygon points="361,83 431,83 450,36 389,19 347,36"/>
+        <!-- South America -->
+        <polygon points="286,228 327,219 402,261 389,300 353,342 311,403 291,375 278,264"/>
+        <!-- Europe -->
+        <polygon points="475,147 486,86 528,95 578,53 650,69 653,97 597,133 561,147"/>
+        <!-- Africa -->
+        <polygon points="483,150 528,147 597,167 639,219 611,278 591,347 550,347 533,330 508,231 456,236 453,214"/>
+        <!-- Asia -->
+        <polygon points="572,133 650,69 778,50 944,69 950,106 858,156 833,242 789,247 722,228 625,217 603,172 622,139"/>
+        <!-- Australia -->
+        <polygon points="817,303 878,286 903,292 925,328 917,358 861,356 817,347"/>
+      </g>
+      <!-- Red meeting dots with pulse rings — full opacity -->
+      <g>
+        <!-- San Francisco -->
+        <circle cx="161" cy="145" r="12" fill="#e53e3e" opacity="0.15"><animate attributeName="r" values="6;20;6" dur="3s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.5;0;0.5" dur="3s" repeatCount="indefinite"/></circle>
+        <circle cx="161" cy="145" r="5" fill="#e53e3e"/>
+        <!-- New York -->
+        <circle cx="294" cy="137" r="10" fill="#e53e3e" opacity="0.12"><animate attributeName="r" values="5;17;5" dur="3.4s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.5;0;0.5" dur="3.4s" repeatCount="indefinite"/></circle>
+        <circle cx="294" cy="137" r="4.5" fill="#e53e3e"/>
+        <!-- London -->
+        <circle cx="500" cy="107" r="10" fill="#e53e3e" opacity="0.12"><animate attributeName="r" values="5;17;5" dur="2.8s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.5;0;0.5" dur="2.8s" repeatCount="indefinite"/></circle>
+        <circle cx="500" cy="107" r="4.5" fill="#e53e3e"/>
+        <!-- Nairobi -->
+        <circle cx="602" cy="254" r="10" fill="#e53e3e" opacity="0.12"><animate attributeName="r" values="5;17;5" dur="3.2s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.5;0;0.5" dur="3.2s" repeatCount="indefinite"/></circle>
+        <circle cx="602" cy="254" r="4.5" fill="#e53e3e"/>
+        <!-- Mumbai -->
+        <circle cx="702" cy="197" r="10" fill="#e53e3e" opacity="0.12"><animate attributeName="r" values="5;17;5" dur="3.6s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.5;0;0.5" dur="3.6s" repeatCount="indefinite"/></circle>
+        <circle cx="702" cy="197" r="4.5" fill="#e53e3e"/>
+        <!-- Tokyo -->
+        <circle cx="888" cy="151" r="10" fill="#e53e3e" opacity="0.12"><animate attributeName="r" values="5;17;5" dur="2.6s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.5;0;0.5" dur="2.6s" repeatCount="indefinite"/></circle>
+        <circle cx="888" cy="151" r="4.5" fill="#e53e3e"/>
+        <!-- São Paulo -->
+        <circle cx="371" cy="315" r="10" fill="#e53e3e" opacity="0.12"><animate attributeName="r" values="5;17;5" dur="3.8s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.5;0;0.5" dur="3.8s" repeatCount="indefinite"/></circle>
+        <circle cx="371" cy="315" r="4.5" fill="#e53e3e"/>
+      </g>
+    </svg>
+  </div>
   <div class="panel-inner">
     <span class="eyebrow eyebrow-white">The Field Guide</span>
     <div class="p-guide-layout">
       <div class="p-guide-left">
         <h2>Ecological knowledge made physical.</h2>
         <p>Every member receives a copy. 12 weeks of content, challenges, and worksheets. Members sketch, sample, measure, and document — then upload their work to The Telescope, where it becomes part of the global signal.</p>
+        <!-- Open field guide book illustration -->
+        <div class="guide-book-wrap">
+          <svg width="180" height="100" viewBox="0 0 180 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Book shadow -->
+            <ellipse cx="90" cy="97" rx="72" ry="4" fill="rgba(0,0,0,0.4)"/>
+            <!-- Left page -->
+            <rect x="4" y="6" width="84" height="88" rx="1" fill="#f0e8d2" stroke="#c8b89a" stroke-width="1"/>
+            <!-- Right page -->
+            <rect x="92" y="6" width="84" height="88" rx="1" fill="#ede5cf" stroke="#c8b89a" stroke-width="1"/>
+            <!-- Spine crease -->
+            <line x1="88" y1="6" x2="88" y2="94" stroke="#b0956e" stroke-width="2"/>
+            <line x1="92" y1="6" x2="92" y2="94" stroke="#b0956e" stroke-width="1.5"/>
+            <!-- Left page: nature sketch -->
+            <text x="10" y="20" font-family="Georgia, serif" font-size="6" fill="rgba(60,40,20,0.6)" font-style="italic">Field Notes</text>
+            <!-- Leaf sketch -->
+            <path d="M30,35 C30,35 22,50 30,62 C38,50 30,35 30,35Z" stroke="#4a7c59" stroke-width="1.2" fill="rgba(74,124,89,0.15)"/>
+            <line x1="30" y1="35" x2="30" y2="65" stroke="#4a7c59" stroke-width="0.8"/>
+            <path d="M24,48 Q30,44 36,48" stroke="#4a7c59" stroke-width="0.7" fill="none"/>
+            <path d="M23,54 Q30,50 37,54" stroke="#4a7c59" stroke-width="0.7" fill="none"/>
+            <!-- Small tree sketch -->
+            <line x1="58" y1="70" x2="58" y2="45" stroke="#5c3d1e" stroke-width="1.2"/>
+            <ellipse cx="58" cy="40" rx="10" ry="8" fill="rgba(74,124,89,0.2)" stroke="#4a7c59" stroke-width="0.8"/>
+            <!-- Red location pin -->
+            <circle cx="45" cy="72" r="4" fill="#e53e3e"/>
+            <circle cx="45" cy="72" r="2" fill="rgba(255,255,255,0.7)"/>
+            <!-- Handwriting lines -->
+            <line x1="10" y1="80" x2="80" y2="80" stroke="rgba(90,60,30,0.25)" stroke-width="0.8"/>
+            <line x1="10" y1="86" x2="65" y2="86" stroke="rgba(90,60,30,0.25)" stroke-width="0.8"/>
+            <!-- Right page: ruled notes -->
+            <line x1="98" y1="20" x2="168" y2="20" stroke="rgba(90,60,30,0.2)" stroke-width="0.7"/>
+            <line x1="98" y1="29" x2="168" y2="29" stroke="rgba(90,60,30,0.2)" stroke-width="0.7"/>
+            <line x1="98" y1="38" x2="168" y2="38" stroke="rgba(90,60,30,0.2)" stroke-width="0.7"/>
+            <line x1="98" y1="47" x2="168" y2="47" stroke="rgba(90,60,30,0.2)" stroke-width="0.7"/>
+            <line x1="98" y1="56" x2="168" y2="56" stroke="rgba(90,60,30,0.2)" stroke-width="0.7"/>
+            <line x1="98" y1="65" x2="168" y2="65" stroke="rgba(90,60,30,0.2)" stroke-width="0.7"/>
+            <line x1="98" y1="74" x2="168" y2="74" stroke="rgba(90,60,30,0.2)" stroke-width="0.7"/>
+            <line x1="98" y1="83" x2="168" y2="83" stroke="rgba(90,60,30,0.2)" stroke-width="0.7"/>
+            <!-- Scribbled note simulation on right page -->
+            <path d="M98,20 L138,20" stroke="rgba(40,30,20,0.4)" stroke-width="1"/>
+            <path d="M98,29 L155,29" stroke="rgba(40,30,20,0.35)" stroke-width="1"/>
+            <path d="M98,38 L125,38" stroke="rgba(40,30,20,0.3)" stroke-width="1"/>
+            <path d="M98,47 L148,47" stroke="rgba(40,30,20,0.35)" stroke-width="1"/>
+            <!-- Small red dot on right page - meeting location marked -->
+            <circle cx="158" cy="60" r="3.5" fill="#e53e3e" opacity="0.85"/>
+            <circle cx="158" cy="60" r="1.5" fill="rgba(255,255,255,0.8)"/>
+          </svg>
+        </div>
       </div>
       <div class="p-guide-right">
         <div class="p-guide-item">
@@ -1431,7 +1572,7 @@
 <script>
   // ── CTA buttons ──
   function ctaNo() {
-    showMsg("See you when everything's fixed.");
+    showMsg("We're all a little slow sometimes. Try again.");
     hidePlant();
   }
   function ctaMaybe() {
