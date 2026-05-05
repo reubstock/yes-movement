@@ -937,30 +937,123 @@
     }
 
     /* ─── Responsive ─── */
+    /* ── Tablet (≤800px) ── */
     @media (max-width: 800px) {
+      /* Panels */
+      .p-hero { padding: 5rem 1.5rem 4rem; }
+      .p-pull, .p-answer { padding: 3rem 1.5rem; }
+      .p-failures, .p-arch, .p-telescope, .p-groups, .p-guide,
+      .p-week1, .p-season, .p-nature, .p-year, .p-summit,
+      .p-who, .p-budget, .p-cta { padding: 3.5rem 1.5rem; }
+
+      /* Failures 5→2 col */
       .p-failures-grid { grid-template-columns: 1fr 1fr; }
       .p-failure-cell:nth-child(2n) { border-right: none; }
       .p-failure-cell { border-bottom: 1px solid #333; }
+
+      /* Two-col layouts → single col */
       .p-arch-grid, .p-telescope-layout, .p-groups-layout,
       .p-guide-layout, .p-summit-layout, .p-who-layout { grid-template-columns: 1fr; }
       .p-guide-left { border-right: none; border-bottom: 1px solid #2a2a2a; }
+      .p-guide-left, .p-guide-right { padding: 2rem 1.5rem; }
       .p-arch-cell { border-right: none !important; }
+
+      /* How it begins 5→2 col */
       .p-week1-flow { grid-template-columns: 1fr 1fr; }
       .p-week1-step:nth-child(2n) { border-right: none; }
-      .p-week1-step { border-bottom: 1px solid #111; }
+      .p-week1-step { border-bottom: 1px solid rgba(0,0,0,0.08); }
+
+      /* 12-week grid → 6 col */
       .p-season-grid { grid-template-columns: repeat(6, 1fr); }
-      .p-nature-hex { --hx: 100px; }
-      .p-nature-hex-row:nth-child(2) { margin-top: calc(100px * -0.08); }
+      .p-season-stat-row { grid-template-columns: 1fr; }
+      .p-season-stat { border-right: none !important; border-bottom: 1px solid #333; }
+      .p-season-stat:last-child { border-bottom: none; }
+
+      /* Hexagons */
+      .p-nature-hex { --hx: 105px; }
+      .p-nature-hex-row:nth-child(2) { margin-top: calc(105px * -0.08); }
+
+      /* Year grid → 2 col */
       .p-year-seasons { grid-template-columns: 1fr 1fr; }
       .p-year-season:nth-child(2n) { border-right: none; }
       .p-year-season:nth-child(3),
       .p-year-season:nth-child(4) { border-top: 1px solid #111; }
       .p-year-targets { grid-template-columns: 1fr 1fr; }
       .p-year-target:nth-child(2n) { border-right: none; }
+      .p-year-target:nth-child(1),
+      .p-year-target:nth-child(2) { border-bottom: 1px solid #111; }
+
+      /* Budget → 2 col */
       .p-budget-grid { grid-template-columns: 1fr 1fr; }
       .p-budget-cell:nth-child(2n) { border-right: none; }
       .p-budget-cell:nth-child(1),
       .p-budget-cell:nth-child(2) { border-bottom: 1px solid #333; }
+
+      /* CTA */
+      .p-cta-btns { flex-direction: column; align-items: center; gap: 0.75rem; }
+      .p-cta-btns button { width: 100%; max-width: 320px; }
+      .flowers-stage { max-width: 380px; }
+    }
+
+    /* ── Mobile (≤480px) ── */
+    @media (max-width: 480px) {
+      /* Panels — tighter padding */
+      .p-hero { padding: 3.5rem 1rem 3rem; }
+      .p-pull, .p-answer { padding: 2.5rem 1rem; }
+      .p-failures, .p-arch, .p-telescope, .p-groups, .p-guide,
+      .p-week1, .p-season, .p-nature, .p-year, .p-summit,
+      .p-who, .p-budget, .p-cta { padding: 2.5rem 1rem; }
+      .panel-inner { padding: 0 1rem; }
+
+      /* Failures → single col */
+      .p-failures-grid { grid-template-columns: 1fr; }
+      .p-failure-cell { border-right: none; }
+      .p-failure-cell:nth-child(2n) { border-right: none; }
+
+      /* How it begins → single col */
+      .p-week1-flow { grid-template-columns: 1fr; }
+      .p-week1-step:nth-child(2n) { border-right: none; }
+      .p-week1-step { border-bottom: 1px solid rgba(0,0,0,0.08); border-right: none; }
+
+      /* Season → 4 col */
+      .p-season-grid { grid-template-columns: repeat(4, 1fr); }
+      .p-season-week { padding: 0.75rem 0.3rem; }
+      .p-season-week-topic { font-size: 0.65rem; }
+
+      /* Hexagons → smaller */
+      .p-nature-hex { --hx: 82px; --hg: 8px; }
+      .p-nature-hex-row:nth-child(2) { margin-top: calc(82px * -0.08); }
+      .p-nature-hex-item span { font-size: 0.5rem; letter-spacing: 0.1em; }
+
+      /* Year → single col */
+      .p-year-seasons { grid-template-columns: 1fr; }
+      .p-year-season { border-right: none; border-bottom: 1px solid #111; }
+      .p-year-season:nth-child(2n) { border-right: none; }
+      .p-year-season:nth-child(3),
+      .p-year-season:nth-child(4) { border-top: none; }
+      .p-year-targets { grid-template-columns: 1fr 1fr; }
+
+      /* Budget → single col */
+      .p-budget-grid { grid-template-columns: 1fr; }
+      .p-budget-cell { border-right: none !important; border-bottom: 1px solid #333; }
+      .p-budget-cell:last-child { border-bottom: none; }
+
+      /* Groups header (1000 number) */
+      .p-groups-layout > div:first-child { margin-top: 0; }
+
+      /* Guide padding */
+      .p-guide-left, .p-guide-right { padding: 1.75rem 1.25rem; }
+
+      /* Summit */
+      .p-summit-layout { gap: 2rem; }
+
+      /* CTA garden */
+      .flowers-stage { max-width: 300px; }
+      .p-cta h2 { font-size: clamp(1.4rem, 6vw, 2rem); }
+      .p-cta-btns button { padding: 0.9rem 1.5rem; font-size: 0.78rem; }
+
+      /* CHANGE LIVES HERE panel */
+      .panel[style*="1a0a00"] { padding-left: 1rem !important; padding-right: 1rem !important; }
     }
   </style>
 </head>
