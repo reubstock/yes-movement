@@ -1310,38 +1310,10 @@
         <p>The Summit is the movement's exhale. Community, synthesis, renewal.</p>
       </div>
       <div class="p-summit-first">
-        <!-- Mississippi Headwaters scene -->
-        <div style="width:100%;height:160px;overflow:hidden;margin-bottom:1.25rem;border-radius:2px;background:#0d1f2d;position:relative;">
-          <svg width="100%" height="100%" viewBox="0 0 480 160" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="sky-g" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#1a3a52"/>
-                <stop offset="100%" stop-color="#2a6080"/>
-              </linearGradient>
-              <linearGradient id="water-g" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#1a4a6a"/>
-                <stop offset="100%" stop-color="#0d2a40"/>
-              </linearGradient>
-            </defs>
-            <rect width="480" height="100" fill="url(#sky-g)"/>
-            <rect y="100" width="480" height="60" fill="url(#water-g)"/>
-            <path d="M0,80 C20,70 40,72 60,68 C80,64 100,72 120,70 C140,68 160,62 180,65 C200,68 220,64 240,66 C260,68 280,62 300,65 C320,68 340,70 360,66 C380,62 400,68 420,65 C440,62 460,68 480,70 L480,100 L0,100Z" fill="#0d2d1a"/>
-            <path d="M0,92 C15,84 35,88 50,82 C70,76 90,86 110,82 C125,79 145,88 165,84 C182,80 200,90 215,86 L215,100 L0,100Z" fill="#071a0e"/>
-            <path d="M215,86 C232,82 250,92 270,88 C288,84 308,90 325,86 C342,82 360,90 380,86 C400,82 420,90 440,86 C455,83 470,90 480,88 L480,100 L215,100Z" fill="#071a0e"/>
-            <path d="M80,105 Q120,102 160,107 Q200,112 240,108 Q280,104 320,109" stroke="rgba(255,255,255,0.07)" stroke-width="1.5" fill="none"/>
-            <path d="M50,118 Q100,114 150,120 Q200,126 250,120 Q300,114 350,120 Q400,126 440,120" stroke="rgba(255,255,255,0.05)" stroke-width="1" fill="none"/>
-            <ellipse cx="195" cy="102" rx="14" ry="5" fill="#2a3d2a" stroke="#3a5a3a" stroke-width="0.5"/>
-            <ellipse cx="225" cy="103" rx="11" ry="4.5" fill="#253828" stroke="#3a5a3a" stroke-width="0.5"/>
-            <ellipse cx="252" cy="102" rx="13" ry="4.5" fill="#2a3d2a" stroke="#3a5a3a" stroke-width="0.5"/>
-            <ellipse cx="279" cy="103" rx="10" ry="4" fill="#253828" stroke="#3a5a3a" stroke-width="0.5"/>
-            <circle cx="60" cy="18" r="0.8" fill="rgba(255,255,255,0.6)"/>
-            <circle cx="140" cy="12" r="0.7" fill="rgba(255,255,255,0.5)"/>
-            <circle cx="220" cy="22" r="0.9" fill="rgba(255,255,255,0.7)"/>
-            <circle cx="310" cy="10" r="0.7" fill="rgba(255,255,255,0.5)"/>
-            <circle cx="400" cy="16" r="0.8" fill="rgba(255,255,255,0.6)"/>
-            <circle cx="450" cy="25" r="0.6" fill="rgba(255,255,255,0.4)"/>
-            <text x="240" y="148" font-family="Georgia,serif" font-size="9" fill="rgba(255,255,255,0.35)" text-anchor="middle" font-style="italic">Lake Itasca, Minnesota — Mississippi Headwaters</text>
-          </svg>
+        <!-- Mississippi Headwaters photo -->
+        <div style="width:100%;height:200px;overflow:hidden;margin-bottom:1.25rem;border-radius:2px;position:relative;">
+          <img src="https://images.unsplash.com/photo-1571780500401-15628aea52f8?w=900&q=85" alt="Lake Itasca, Minnesota — Mississippi Headwaters" style="width:100%;height:100%;object-fit:cover;object-position:center 40%;display:block;"/>
+          <div style="position:absolute;bottom:0;left:0;right:0;padding:0.5rem 0.75rem;background:linear-gradient(transparent,rgba(0,0,0,0.55));font-family:Georgia,serif;font-size:0.7rem;font-style:italic;color:rgba(255,255,255,0.6);">Lake Itasca, Minnesota — Mississippi Headwaters</div>
         </div>
         <span class="p-summit-first-label">First Summit</span>
         <h3>Water — Mississippi Headwaters</h3>
@@ -1538,118 +1510,109 @@
 
 <!-- ══ PANEL 11 — THE FIELD GUIDE ══ -->
 <div class="panel p-guide">
-  <!-- Dark world map background -->
+  <!-- US map background — equirectangular projection, lon -125→-66, lat 24→50 -->
+  <!-- x=(lon+125)/59×1000  y=(50-lat)/26×500  dot: Lake Itasca 47.2N,95.2W → 505,54 -->
   <div class="guide-map-bg">
     <svg viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-      <!-- Ocean -->
-      <rect width="1000" height="500" fill="#080c14"/>
-      <!-- Graticule -->
-      <g stroke="rgba(255,255,255,0.035)" stroke-width="0.7" fill="none">
-        <line x1="0" y1="83" x2="1000" y2="83"/><line x1="0" y1="167" x2="1000" y2="167"/>
-        <line x1="0" y1="250" x2="1000" y2="250" stroke="rgba(255,255,255,0.06)"/>
-        <line x1="0" y1="333" x2="1000" y2="333"/><line x1="0" y1="417" x2="1000" y2="417"/>
-        <line x1="83" y1="0" x2="83" y2="500"/><line x1="167" y1="0" x2="167" y2="500"/>
-        <line x1="250" y1="0" x2="250" y2="500"/><line x1="333" y1="0" x2="333" y2="500"/>
-        <line x1="417" y1="0" x2="417" y2="500"/>
-        <line x1="500" y1="0" x2="500" y2="500" stroke="rgba(255,255,255,0.06)"/>
-        <line x1="583" y1="0" x2="583" y2="500"/><line x1="667" y1="0" x2="667" y2="500"/>
-        <line x1="750" y1="0" x2="750" y2="500"/><line x1="833" y1="0" x2="833" y2="500"/>
-        <line x1="917" y1="0" x2="917" y2="500"/>
+      <!-- Background -->
+      <rect width="1000" height="500" fill="#060d18"/>
+      <!-- Continental US land -->
+      <path fill="#0e1e2e" stroke="#1d3d5c" stroke-width="1.8" stroke-linejoin="round" d="
+        M 12,29
+        C 14,52 15,78 17,105 C 17,130 17,148 17,155
+        C 21,180 30,208 41,234 C 52,260 67,284 84,308
+        C 101,328 120,350 132,374 L 136,432
+        L 200,460 L 237,462 L 315,452
+        L 316,368 L 357,368 L 357,445
+        L 420,466 L 467,467
+        C 492,460 514,446 534,428 C 554,410 572,392 590,370
+        C 610,348 630,330 644,310 C 652,292 653,270 655,250
+        L 658,240
+        C 666,226 682,220 700,220 C 716,221 728,234 734,252
+        C 739,272 742,298 745,324 C 749,350 754,374 757,398
+        C 757,420 750,442 738,460 L 728,470 L 716,472 L 706,462
+        C 700,446 698,426 700,408 C 706,386 716,362 726,338
+        C 734,316 739,292 741,268 L 744,248
+        C 736,232 720,226 706,232 C 694,240 683,256 673,272
+        C 665,288 665,304 676,308 L 694,308
+        C 712,300 726,284 738,268 C 752,250 764,232 776,214
+        C 788,198 804,186 820,178 C 836,170 852,158 864,146
+        C 872,132 872,118 876,106
+        C 888,92 904,78 920,64 C 930,56 936,47 934,44
+        L 984,50
+        L 984,100 C 960,100 940,100 908,100 L 866,100
+        C 848,113 834,126 812,136
+        C 798,144 782,150 762,152 C 742,154 724,152 706,150
+        C 692,146 680,136 668,124
+        C 652,108 636,94 618,82 C 598,68 578,56 556,46
+        C 534,36 516,26 508,22
+        L 475,20 L 354,20 L 153,20 L 136,20 L 50,26 L 12,29 Z"/>
+      <!-- State borders -->
+      <g stroke="#2a4e78" stroke-width="0.9" fill="none" opacity="0.9">
+        <!-- WA/OR (46N y=77) -->
+        <line x1="13" y1="77" x2="136" y2="77"/>
+        <!-- OR/CA (42N y=154) -->
+        <line x1="15" y1="154" x2="118" y2="154"/>
+        <!-- MT south / WY north (45N y=96) -->
+        <line x1="136" y1="96" x2="354" y2="96"/>
+        <!-- ID/WY (111W x=237) -->
+        <line x1="237" y1="20" x2="237" y2="96"/>
+        <!-- WY/UT (111W continuing south) -->
+        <line x1="237" y1="96" x2="237" y2="375"/>
+        <!-- WY/CO (41N y=173) -->
+        <line x1="237" y1="173" x2="354" y2="173"/>
+        <!-- CO/NM (37N y=250) -->
+        <line x1="237" y1="250" x2="354" y2="250"/>
+        <!-- MT/ND + WY/SD + CO/KS + NM east (104W x=354) already on border -->
+        <!-- ND/SD (46N y=77 — same as MT south) already drawn -->
+        <!-- SD/NE (43N y=125) -->
+        <line x1="354" y1="125" x2="475" y2="125"/>
+        <!-- NE/KS (40N y=192) -->
+        <line x1="354" y1="192" x2="530" y2="192"/>
+        <!-- KS/OK (37N y=250) -->
+        <line x1="354" y1="250" x2="530" y2="250"/>
+        <!-- MN/ND (97W x=475) north section -->
+        <line x1="475" y1="20" x2="475" y2="125"/>
+        <!-- MN/IA (43.5N y=125) -->
+        <line x1="475" y1="125" x2="542" y2="125"/>
+        <!-- MN/WI (roughly x=527) -->
+        <line x1="527" y1="20" x2="527" y2="125"/>
+        <!-- IA/MO (40.6N y=180) -->
+        <line x1="475" y1="180" x2="610" y2="180"/>
+        <!-- MO/AR + TN/KY (36.5N y=260) -->
+        <line x1="475" y1="260" x2="655" y2="260"/>
+        <!-- AR/LA + MS/TN (35N y=288) -->
+        <line x1="530" y1="288" x2="655" y2="288"/>
+        <!-- OK east (95W x=508) going to TX -->
+        <line x1="508" y1="250" x2="508" y2="375"/>
+        <!-- TX north (36.5N east of panhandle, y=260) already drawn -->
+        <!-- NC/VA / TN/VA (36.5N y=260, going east) -->
+        <line x1="655" y1="260" x2="748" y2="248"/>
+        <!-- VA/NC coast region -->
+        <line x1="748" y1="248" x2="775" y2="220"/>
+        <!-- Mississippi River -->
+        <path d="M 505,54 C 508,90 515,128 522,165 C 528,200 532,238 538,268
+                 C 543,298 550,328 562,355 C 573,378 582,402 590,422" stroke="#1e4060" stroke-width="1.8"/>
       </g>
-      <!-- Continents -->
-      <g fill="#1a2b1a" stroke="#2d442d" stroke-width="0.8" stroke-linejoin="round">
-        <!-- North America -->
-        <path d="M33,83 C48,70 65,60 75,57 C88,62 100,76 118,79 C130,79 142,79 152,108
-                 C162,128 172,153 186,173 C196,185 212,196 232,203 C244,208 256,214 263,222
-                 C268,218 265,208 268,198 C272,188 279,184 284,190 C282,200 278,207 284,200
-                 C290,190 293,175 294,158 C298,143 305,128 312,118 C320,110 332,108 344,113
-                 C352,116 358,112 352,103 C346,93 337,86 328,83 C318,80 308,80 300,85
-                 C292,90 284,89 274,78 C264,68 255,62 242,56 C226,50 208,46 190,46
-                 C172,46 155,50 140,54 C126,57 114,60 100,58 C86,56 72,60 60,67 Z"/>
-        <!-- Greenland -->
-        <path d="M362,80 C372,68 388,54 405,45 C420,36 432,33 440,40 C450,50 450,66 440,78
-                 C430,85 415,88 402,87 C388,86 374,85 362,80Z"/>
-        <!-- South America -->
-        <path d="M267,228 C274,220 284,217 297,220 C312,224 326,232 338,242 C352,253 363,267
-                 370,284 C377,300 379,318 374,336 C369,352 358,365 346,375 C334,384 321,390
-                 310,394 C299,398 290,395 285,385 C280,373 279,358 281,342 C284,326 287,310
-                 283,293 C279,276 272,260 268,245 C265,235 264,230 267,228Z"/>
-        <!-- Europe (detailed) -->
-        <path d="M472,147 C476,134 480,120 484,104 C488,90 494,76 506,68 C520,60 534,58 548,61
-                 C560,64 570,70 578,60 C588,48 603,40 620,44 C637,47 650,58 654,72 C658,86
-                 651,100 638,110 C624,120 608,126 592,131 C576,136 558,140 542,143 C526,145
-                 510,146 496,146 Z"/>
-        <!-- Scandinavia -->
-        <path d="M490,60 C494,50 500,40 508,35 C516,42 518,55 514,67 C510,78 502,85 494,80
-                 C487,75 487,68 490,60Z"/>
-        <!-- Africa -->
-        <path d="M480,150 C492,144 508,141 524,142 C540,144 556,150 568,160 C580,170 588,184
-                 594,200 C600,216 602,234 598,252 C594,268 584,282 572,294 C559,307 546,317
-                 536,328 C528,337 524,345 522,350 C520,354 516,352 513,343 C510,332 508,318
-                 506,302 C503,284 500,266 493,248 C486,230 477,214 469,198 C462,182 457,167
-                 460,155 C462,148 470,148 480,150Z"/>
-        <!-- Madagascar -->
-        <path d="M620,285 C624,275 630,268 636,268 C641,270 643,280 640,292 C637,303 630,310
-                 624,308 C618,305 617,295 620,285Z"/>
-        <!-- Asia (main body) -->
-        <path d="M572,132 C584,122 598,112 614,102 C632,90 652,78 675,66 C698,54 724,46 752,43
-                 C780,40 808,42 834,48 C858,54 878,64 894,76 C908,86 916,98 916,112 C916,126
-                 906,138 890,148 C874,157 855,162 834,165 C812,168 788,166 764,162 C740,158
-                 714,152 688,148 C662,144 636,144 614,148 C596,152 580,158 566,152
-                 C556,147 555,138 572,132Z"/>
-        <!-- Indian subcontinent -->
-        <path d="M690,160 C698,165 703,175 703,188 C703,202 698,218 690,230 C682,240 672,246
-                 662,244 C652,241 645,232 642,220 C639,207 640,193 645,182 C650,172 658,165
-                 668,161 C676,158 684,157 690,160Z"/>
-        <!-- SE Asia peninsula -->
-        <path d="M732,155 C740,162 744,174 742,187 C740,199 732,210 722,216 C714,220 707,217
-                 702,208 C697,198 696,185 700,174 C704,163 712,156 720,153 C726,151 730,153 732,155Z"/>
-        <!-- Japan -->
-        <path d="M890,125 C895,118 902,114 907,117 C912,120 913,128 910,136 C907,144 900,149
-                 894,146 C888,143 886,132 890,125Z"/>
-        <!-- Australia -->
-        <path d="M808,293 C820,282 838,276 856,274 C873,272 890,276 902,285 C913,293 919,306
-                 918,320 C917,334 910,346 900,354 C890,361 877,364 864,362 C851,360 840,354
-                 832,344 C824,334 818,322 814,309 C810,298 808,296 808,293Z"/>
-        <!-- New Zealand (tiny) -->
-        <path d="M940,360 C942,354 947,350 951,352 C954,355 953,362 950,368 C947,373 942,375
-                 939,372 C937,368 938,364 940,360Z"/>
+      <!-- Great Lakes (darker water) -->
+      <g fill="#050c18" stroke="#1a3860" stroke-width="1">
+        <!-- Superior -->
+        <path d="M 558,48 C 578,42 600,38 620,40 C 645,42 666,50 680,60 C 666,68 648,72 626,72 C 600,72 578,68 558,60 Z"/>
+        <!-- Michigan (N-S oval) -->
+        <ellipse cx="643" cy="118" rx="17" ry="42"/>
+        <!-- Huron -->
+        <ellipse cx="735" cy="110" rx="24" ry="34"/>
+        <!-- Erie -->
+        <ellipse cx="740" cy="152" rx="40" ry="10"/>
+        <!-- Ontario -->
+        <ellipse cx="790" cy="124" rx="30" ry="9"/>
       </g>
-      <!-- Major rivers — subtle dark teal lines -->
-      <g stroke="#1e3830" stroke-width="1.2" fill="none" opacity="0.8">
-        <!-- Mississippi -->
-        <path d="M237,119 C235,136 233,156 236,178 C239,198 245,212 250,224"/>
-        <!-- Amazon -->
-        <path d="M282,248 C298,244 318,241 340,244 C362,247 376,254 385,258"/>
-        <!-- Nile -->
-        <path d="M558,196 C556,178 554,160 556,142 C558,126 562,112 564,98"/>
-        <!-- Congo -->
-        <path d="M530,238 C542,233 556,230 568,234 C580,238 588,246 592,254"/>
-        <!-- Yangtze -->
-        <path d="M760,148 C778,150 798,152 816,152 C834,152 850,150 862,148"/>
-        <!-- Ob (Siberia) -->
-        <path d="M748,58 C748,74 746,92 745,108 C744,122 743,134 740,148"/>
-      </g>
-      <!-- Major lakes — dark water patches -->
-      <g fill="#0a1520" stroke="#142030" stroke-width="0.5" opacity="0.9">
-        <!-- Great Lakes -->
-        <ellipse cx="258" cy="117" rx="14" ry="5"/>
-        <ellipse cx="274" cy="120" rx="9" ry="5"/>
-        <!-- Lake Baikal -->
-        <ellipse cx="776" cy="94" rx="4" ry="14"/>
-        <!-- Caspian Sea -->
-        <ellipse cx="634" cy="124" rx="7" ry="15"/>
-        <!-- Lake Victoria -->
-        <ellipse cx="592" cy="252" rx="8" ry="7"/>
-        <!-- Lake Chad -->
-        <ellipse cx="540" cy="198" rx="6" ry="5"/>
-      </g>
-      <!-- Single pulsing dot — Mississippi Headwaters (Lake Itasca, MN: 47.2°N, 95.2°W) -->
-      <circle cx="236" cy="119" r="16" fill="#e53e3e" opacity="0">
+      <!-- Red dot — Lake Itasca (47.2°N, 95.2°W → 505, 54) -->
+      <circle cx="505" cy="54" r="5" fill="#e53e3e"/>
+      <circle cx="505" cy="54" r="5" fill="#e53e3e" opacity="0">
         <animate attributeName="r" values="6;22;6" dur="2.4s" repeatCount="indefinite"/>
         <animate attributeName="opacity" values="0.5;0;0.5" dur="2.4s" repeatCount="indefinite"/>
       </circle>
-      <circle cx="236" cy="119" r="5" fill="#e53e3e"/>
     </svg>
   </div>
   <div class="panel-inner">
