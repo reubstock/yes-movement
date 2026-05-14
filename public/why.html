@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fund — YES Movement</title>
   <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; }
     body { background: #fff; color: #111; margin: 0; }
@@ -1055,6 +1058,51 @@
       /* CHANGE LIVES HERE panel */
       .panel[style*="1a0a00"] { padding-left: 1rem !important; padding-right: 1rem !important; }
     }
+
+    /* ══════════════════════════════════
+       GEIST FONT + UNIFORM SLIDE HEIGHT
+       Applied to all panels except hero
+    ══════════════════════════════════ */
+
+    /* Uniform full-viewport-height slides */
+    .panel:not(.p-hero) {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    /* Panel inner fills full width as flex child */
+    .panel:not(.p-hero) > .panel-inner {
+      width: 100%;
+      padding-top: 4rem;
+      padding-bottom: 4rem;
+    }
+
+    /* Geist on all non-hero text — specificity beats all single-class rules */
+    .panel:not(.p-hero),
+    .panel:not(.p-hero) h1,
+    .panel:not(.p-hero) h2,
+    .panel:not(.p-hero) h3,
+    .panel:not(.p-hero) h4,
+    .panel:not(.p-hero) h5,
+    .panel:not(.p-hero) p,
+    .panel:not(.p-hero) li,
+    .panel:not(.p-hero) a,
+    .panel:not(.p-hero) cite,
+    .panel:not(.p-hero) em,
+    .panel:not(.p-hero) strong,
+    .panel:not(.p-hero) span,
+    .panel:not(.p-hero) label,
+    .panel:not(.p-hero) div {
+      font-family: 'Geist', Arial, sans-serif;
+    }
+
+    /* Mobile: allow shorter slides on small screens */
+    @media (max-width: 800px) {
+      .panel:not(.p-hero) { min-height: unset; }
+      .panel:not(.p-hero) > .panel-inner { padding-top: 3rem; padding-bottom: 3rem; }
+    }
+
   </style>
 </head>
 <body>
@@ -1191,7 +1239,7 @@
 <!-- ══ PANEL 3b — CHANGE LIVES HERE ══ -->
 <div class="panel" style="background:#1a0a00;padding:1.5rem 2rem 5rem;text-align:center;">
   <div style="max-width:720px;margin:0 auto;">
-    <div style="font-family:Arial,sans-serif;font-size:clamp(2.2rem,6vw,4.8rem);font-weight:900;letter-spacing:-0.02em;color:#fff;line-height:1;text-transform:uppercase;margin-bottom:2rem;">CHANGE LIVES HERE</div>
+    <div style="font-family:'Geist',Arial,sans-serif;font-size:clamp(2.2rem,6vw,4.8rem);font-weight:900;letter-spacing:-0.02em;color:#fff;line-height:1;text-transform:uppercase;margin-bottom:2rem;">CHANGE LIVES HERE</div>
     <!-- Glowing red dot centered below "here" -->
     <div style="display:flex;justify-content:center;margin-bottom:2rem;">
       <svg width="36" height="36" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;">
@@ -1406,7 +1454,7 @@
         <!-- Mississippi Headwaters photo -->
         <div style="width:100%;height:200px;overflow:hidden;margin-bottom:1.25rem;border-radius:2px;position:relative;">
           <img src="https://images.unsplash.com/photo-1571780500401-15628aea52f8?w=900&q=85" alt="Lake Itasca, Minnesota — Mississippi Headwaters" style="width:100%;height:100%;object-fit:cover;object-position:center 40%;display:block;"/>
-          <div style="position:absolute;bottom:0;left:0;right:0;padding:0.5rem 0.75rem;background:linear-gradient(transparent,rgba(0,0,0,0.55));font-family:Georgia,serif;font-size:0.7rem;font-style:italic;color:rgba(255,255,255,0.6);">Lake Itasca, Minnesota — Mississippi Headwaters</div>
+          <div style="position:absolute;bottom:0;left:0;right:0;padding:0.5rem 0.75rem;background:linear-gradient(transparent,rgba(0,0,0,0.55));font-family:'Geist',Arial,sans-serif;font-size:0.7rem;font-style:italic;color:rgba(255,255,255,0.6);">Lake Itasca, Minnesota — Mississippi Headwaters</div>
         </div>
         <span class="p-summit-first-label">First Summit</span>
         <h3>Water — Mississippi Headwaters</h3>
@@ -1898,7 +1946,7 @@
       <span class="eyebrow eyebrow-white">YES Groups</span>
       <div style="text-align:right;">
         <div style="font-size:clamp(2.5rem,5vw,4rem);font-weight:300;color:#fff;letter-spacing:-0.03em;line-height:1;">1,000</div>
-        <div style="font-family:Arial,sans-serif;font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-top:0.35rem;">Year 1 target — groups</div>
+        <div style="font-family:'Geist',Arial,sans-serif;font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-top:0.35rem;">Year 1 target — groups</div>
       </div>
     </div>
     <div class="p-groups-layout">
