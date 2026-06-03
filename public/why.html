@@ -262,10 +262,11 @@
     }
     .p-telescope-stat {
       border: 1px solid #111;
+      background: #fff;
     }
     .p-telescope-stat-row {
       padding: 1.5rem;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid #e5e5e5;
       display: flex;
       justify-content: space-between;
       align-items: baseline;
@@ -276,12 +277,12 @@
       font-size: 0.65rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: #999;
+      color: #111;
     }
     .p-telescope-stat-val {
       font-size: 1.1rem;
-      font-weight: 400;
-      color: #111;
+      font-weight: 600;
+      color: #000;
     }
 
     /* ══════════════════════════════════
@@ -1445,29 +1446,62 @@
           </div>
         </div>
 
-        <!-- Score summary -->
-        <div>
-          <div style="font-family:Arial,sans-serif;font-size:0.58rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#999;margin-bottom:0.75rem;">Readiness score</div>
-          <div style="border:1px solid #ddd;background:#fff;padding:1.25rem 1rem;">
-            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;text-align:center;margin-bottom:1rem;">
-              <div>
-                <div style="font-size:2rem;font-weight:300;color:#155724;">7</div>
-                <div style="font-family:Arial,sans-serif;font-size:0.58rem;text-transform:uppercase;color:#155724;letter-spacing:0.1em;">Slides ready</div>
+        <!-- Score + Target Funders stacked -->
+        <div style="display:flex;flex-direction:column;gap:1.5rem;">
+
+          <!-- Readiness score -->
+          <div>
+            <div style="font-family:Arial,sans-serif;font-size:0.58rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#999;margin-bottom:0.75rem;">Readiness score</div>
+            <div style="border:1px solid #ddd;background:#fff;padding:1.25rem 1rem;">
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;text-align:center;margin-bottom:1rem;">
+                <div>
+                  <div style="font-size:2rem;font-weight:300;color:#155724;">7</div>
+                  <div style="font-family:Arial,sans-serif;font-size:0.58rem;text-transform:uppercase;color:#155724;letter-spacing:0.1em;">Slides ready</div>
+                </div>
+                <div>
+                  <div style="font-size:2rem;font-weight:300;color:#856404;">4</div>
+                  <div style="font-family:Arial,sans-serif;font-size:0.58rem;text-transform:uppercase;color:#856404;letter-spacing:0.1em;">Need work</div>
+                </div>
+                <div>
+                  <div style="font-size:2rem;font-weight:300;color:#721c24;">2</div>
+                  <div style="font-family:Arial,sans-serif;font-size:0.58rem;text-transform:uppercase;color:#721c24;letter-spacing:0.1em;">Missing</div>
+                </div>
               </div>
-              <div>
-                <div style="font-size:2rem;font-weight:300;color:#856404;">4</div>
-                <div style="font-family:Arial,sans-serif;font-size:0.58rem;text-transform:uppercase;color:#856404;letter-spacing:0.1em;">Need work</div>
+              <div style="height:8px;background:#eee;border-radius:4px;overflow:hidden;">
+                <div style="height:100%;width:58%;background:linear-gradient(90deg,#28a745 0%,#ffc107 58%,#dc3545 83%);border-radius:4px;"></div>
               </div>
-              <div>
-                <div style="font-size:2rem;font-weight:300;color:#721c24;">2</div>
-                <div style="font-family:Arial,sans-serif;font-size:0.58rem;text-transform:uppercase;color:#721c24;letter-spacing:0.1em;">Missing</div>
-              </div>
+              <div style="font-family:Arial,sans-serif;font-size:0.65rem;color:#888;margin-top:0.6rem;text-align:center;">58% pitch-ready · not yet ready to send</div>
             </div>
-            <div style="height:8px;background:#eee;border-radius:4px;overflow:hidden;">
-              <div style="height:100%;width:58%;background:linear-gradient(90deg,#28a745 0%,#ffc107 58%,#dc3545 83%);border-radius:4px;"></div>
-            </div>
-            <div style="font-family:Arial,sans-serif;font-size:0.65rem;color:#888;margin-top:0.6rem;text-align:center;">58% pitch-ready · not yet ready to send</div>
           </div>
+
+          <!-- Target Funders -->
+          <div>
+            <div style="font-family:Arial,sans-serif;font-size:0.58rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#999;margin-bottom:0.75rem;">Target Funders</div>
+            <div style="border:1px solid #ddd;background:#fff;">
+              <div style="padding:0.9rem 1rem;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:baseline;">
+                <div>
+                  <div style="font-size:0.85rem;font-weight:600;color:#111;">Gates Foundation</div>
+                  <div style="font-family:Arial,sans-serif;font-size:0.65rem;color:#888;margin-top:0.15rem;">Agricultural systems · EBF prior grantee</div>
+                </div>
+                <div style="font-family:Arial,sans-serif;font-size:0.6rem;padding:0.2rem 0.5rem;background:#d4edda;color:#155724;border-radius:2px;white-space:nowrap;">Warm</div>
+              </div>
+              <div style="padding:0.9rem 1rem;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:baseline;">
+                <div>
+                  <div style="font-size:0.85rem;font-weight:600;color:#111;">Bloomberg Philanthropies</div>
+                  <div style="font-family:Arial,sans-serif;font-size:0.65rem;color:#888;margin-top:0.15rem;">Climate · civic engagement · media initiatives</div>
+                </div>
+                <div style="font-family:Arial,sans-serif;font-size:0.6rem;padding:0.2rem 0.5rem;background:#fff3cd;color:#856404;border-radius:2px;white-space:nowrap;">Cold outreach</div>
+              </div>
+              <div style="padding:0.9rem 1rem;display:flex;justify-content:space-between;align-items:baseline;">
+                <div>
+                  <div style="font-size:0.85rem;font-weight:600;color:#111;">Robert Wood Johnson Foundation</div>
+                  <div style="font-family:Arial,sans-serif;font-size:0.65rem;color:#888;margin-top:0.15rem;">Health equity · community wellbeing · Equity pillar</div>
+                </div>
+                <div style="font-family:Arial,sans-serif;font-size:0.6rem;padding:0.2rem 0.5rem;background:#fff3cd;color:#856404;border-radius:2px;white-space:nowrap;">Cold outreach</div>
+              </div>
+            </div>
+          </div>
+
         </div>
 
       </div>
