@@ -1010,6 +1010,53 @@
       .p-cta-btns { flex-direction: column; align-items: center; gap: 0.75rem; }
       .p-cta-btns button { width: 100%; max-width: 320px; }
       .flowers-stage { max-width: 380px; }
+
+      /* Pull quote → stack photo above text */
+      .pull-quote-layout { grid-template-columns: 1fr !important; text-align: center; }
+      .pull-quote-layout img { width: 120px !important; height: 120px !important; margin: 0 auto; }
+
+      /* Google Activator → 2 col */
+      .google-act-grid { grid-template-columns: 1fr 1fr !important; }
+      .google-act-grid > div:nth-child(2n) { border-right: none !important; }
+      .google-act-grid > div:nth-child(1),
+      .google-act-grid > div:nth-child(2) { border-bottom: 1px solid #e5e5e5; }
+
+      /* Why Now → single col */
+      .why-now-grid { grid-template-columns: 1fr !important; }
+      .why-now-grid > div { border-right: none !important; border-bottom: 1px solid #e5e5e5; }
+      .why-now-grid > div:last-child { border-bottom: none; }
+
+      /* Theory of Change → hide arrows, stack boxes */
+      .toc-top-row, .toc-bot-row { grid-template-columns: 1fr !important; gap: 0 !important; }
+      .toc-top-row > div[style*="padding:0"], .toc-bot-row > div[style*="padding:0"] { display: none !important; }
+      .toc-connector { display: none !important; }
+
+      /* Differentiation → 2 col */
+      .diff-grid { grid-template-columns: 1fr 1fr !important; }
+      .diff-grid > div:nth-child(2n) { border-right: none !important; }
+      .diff-grid > div:nth-child(1),
+      .diff-grid > div:nth-child(2) { border-bottom: 1px solid #e5e5e5; }
+      .diff-grid > div:nth-child(3) { border-bottom: 1px solid #e5e5e5; }
+
+      /* Workbook → single col */
+      .workbook-body { grid-template-columns: 1fr !important; }
+
+      /* Budget years → single col */
+      .budget-years-grid { grid-template-columns: 1fr !important; }
+      .budget-years-grid > div:first-child { border-right: none !important; border-bottom: 1px solid #333; }
+
+      /* Success → 2 col */
+      .success-grid { grid-template-columns: 1fr 1fr !important; }
+      .success-grid > div:nth-child(2n) { border-right: none !important; }
+      .success-grid > div:nth-child(1),
+      .success-grid > div:nth-child(2) { border-bottom: 1px solid #111; }
+      .success-footer-grid { grid-template-columns: 1fr !important; }
+      .success-footer-grid > div { border-right: none !important; border-bottom: 1px solid #111; }
+      .success-footer-grid > div:last-child { border-bottom: none; }
+
+      /* Review slides → 2 col */
+      .review-grid { grid-template-columns: 1fr 1fr !important; }
+      .review-grid > div:nth-child(2n) { border-right: none !important; }
     }
 
     /* ── Mobile (≤480px) ── */
@@ -1071,6 +1118,29 @@
 
       /* CHANGE LIVES HERE panel */
       .panel[style*="1a0a00"] { padding-left: 1rem !important; padding-right: 1rem !important; }
+
+      /* Pull quote → tighter */
+      .pull-quote-layout { gap: 1.5rem !important; }
+      .pull-quote-layout img { width: 90px !important; height: 90px !important; }
+
+      /* Google Activator → single col */
+      .google-act-grid { grid-template-columns: 1fr !important; }
+      .google-act-grid > div { border-right: none !important; border-bottom: 1px solid #e5e5e5; }
+      .google-act-grid > div:last-child { border-bottom: none; }
+
+      /* Diff → single col */
+      .diff-grid { grid-template-columns: 1fr !important; }
+      .diff-grid > div { border-right: none !important; border-bottom: 1px solid #e5e5e5; }
+      .diff-grid > div:last-child { border-bottom: none; }
+
+      /* Success → single col */
+      .success-grid { grid-template-columns: 1fr !important; }
+      .success-grid > div { border-right: none !important; border-bottom: 1px solid #111; }
+      .success-grid > div:last-child { border-bottom: none; }
+
+      /* Review slides → single col */
+      .review-grid { grid-template-columns: 1fr !important; }
+      .review-grid > div { border-right: none !important; }
     }
 
     /* ══════════════════════════════════
@@ -1146,7 +1216,7 @@
       <div style="font-family:Arial,sans-serif;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:#999;">$5M Philanthropic Ask · 20 min presentation</div>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid #ddd;">
+    <div class="review-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid #ddd;">
 
       <!-- Slide 1 -->
       <div style="padding:1.25rem 1.2rem;border-right:1px solid #ddd;border-bottom:1px solid #ddd;">
@@ -1543,7 +1613,7 @@
 
 <!-- ══ PANEL 2 — PULL QUOTE ══ -->
 <div class="panel p-pull" style="text-align:left;">
-  <div style="display:grid;grid-template-columns:auto 1fr;gap:3rem;align-items:center;max-width:1000px;margin:0 auto;">
+  <div class="pull-quote-layout" style="display:grid;grid-template-columns:auto 1fr;gap:3rem;align-items:center;max-width:1000px;margin:0 auto;">
     <img src="/images/douglas-gayeton.jpg" alt="Douglas Gayeton" style="width:180px;height:180px;object-fit:cover;object-position:center top;border-radius:50%;flex-shrink:0;display:block;">
     <div>
       <p style="font-size:clamp(1.5rem,3.2vw,2.4rem);font-style:italic;color:#000;margin:0 0 1rem;line-height:1.35;">"Nobody gets out of bed to do less bad. But tell us to save the planet, and we're there."</p>
@@ -1573,7 +1643,7 @@
     <h2 style="font-size:clamp(1.6rem,3vw,2.6rem);font-weight:300;letter-spacing:-0.02em;color:#000;margin:0 0 2.5rem;line-height:1.2;max-width:820px;">What Running Google's Food &amp; Sustainability<br>Moonshot Activator Taught Us</h2>
 
     <!-- Stats + lists grid -->
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;border:1px solid #e5e5e5;">
+    <div class="google-act-grid" style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;border:1px solid #e5e5e5;">
 
       <!-- # of Activators -->
       <div style="padding:1.75rem 1.5rem;border-right:1px solid #e5e5e5;">
@@ -1724,7 +1794,7 @@
   <div class="panel-inner">
     <span class="eyebrow">Why 2026</span>
     <h2 style="font-size:clamp(1.8rem,3.5vw,3rem);font-weight:300;letter-spacing:-0.02em;margin:0.5rem 0 2.5rem;line-height:1.2;color:#000;">The top-down approach has stalled.<br>A bottom-up moment has arrived.</h2>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid #e5e5e5;">
+    <div class="why-now-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid #e5e5e5;">
 
       <!-- Box 1: Network -->
       <div style="padding:2rem 1.75rem;border-right:1px solid #e5e5e5;">
@@ -1855,7 +1925,7 @@
     <!-- Flow diagram: 3 top + 3 bottom, circular -->
     <div style="max-width:860px;margin:0 auto;">
       <!-- Top row -->
-      <div style="display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:0;margin-bottom:0;">
+      <div class="toc-top-row" style="display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:0;margin-bottom:0;">
         <div style="border:1px solid #2a2a2a;padding:1.4rem 1.25rem;">
           <div style="font-family:Arial,sans-serif;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-bottom:0.4rem;">01</div>
           <div style="font-size:0.9rem;font-weight:500;color:#fff;margin-bottom:0.35rem;">Telescope broadcasts</div>
@@ -1875,7 +1945,7 @@
         </div>
       </div>
       <!-- Connecting line down on right side, up on left -->
-      <div style="display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;">
+      <div class="toc-connector" style="display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;">
         <div style="height:2rem;border-left:1px solid #2a2a2a;margin-left:50%;"></div>
         <div></div>
         <div></div>
@@ -1883,7 +1953,7 @@
         <div style="height:2rem;border-right:1px solid #2a2a2a;margin-right:0;border-right-width:0;border-left:1px solid #2a2a2a;margin-left:calc(100% - 1px);"></div>
       </div>
       <!-- Bottom row (reversed) -->
-      <div style="display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:0;">
+      <div class="toc-bot-row" style="display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:0;">
         <div style="border:1px solid #2a2a2a;padding:1.4rem 1.25rem;background:rgba(255,255,255,0.03);">
           <div style="font-family:Arial,sans-serif;font-size:0.52rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-bottom:0.4rem;">06</div>
           <div style="font-size:0.9rem;font-weight:500;color:#c9a84c;margin-bottom:0.35rem;">Movement grows</div>
@@ -1913,7 +1983,7 @@
   <div class="panel-inner">
     <span class="eyebrow">How YES is different</span>
     <h2 style="font-size:clamp(1.6rem,3.2vw,2.6rem);font-weight:300;letter-spacing:-0.02em;margin:0.5rem 0 2.5rem;line-height:1.2;color:#000;">Not a campaign. Not a coalition. Not an app. A movement infrastructure.</h2>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);border:1px solid #e5e5e5;">
+    <div class="diff-grid" style="display:grid;grid-template-columns:repeat(4,1fr);border:1px solid #e5e5e5;">
       <div style="padding:1.75rem 1.5rem;border-right:1px solid #e5e5e5;">
         <div style="font-family:Arial,sans-serif;font-size:0.58rem;letter-spacing:0.16em;text-transform:uppercase;color:#bbb;margin-bottom:1rem;">Climate NGO</div>
         <div style="font-size:1rem;font-weight:500;color:#111;margin-bottom:0.6rem;">Advocacy &amp; litigation</div>
@@ -2156,7 +2226,7 @@
       </div>
 
       <!-- Page body -->
-      <div style="padding:1.75rem 2rem 2rem;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+      <div class="workbook-body" style="padding:1.75rem 2rem 2rem;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
 
         <!-- Left col: Observe + Sketch -->
         <div>
@@ -2687,7 +2757,7 @@
     <span class="eyebrow eyebrow-white">The investment — $5M over 2 years</span>
 
     <!-- Two-year columns -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;border:1px solid #333;margin-top:2.5rem;">
+    <div class="budget-years-grid" style="display:grid;grid-template-columns:1fr 1fr;border:1px solid #333;margin-top:2.5rem;">
       <!-- Year 1 -->
       <div style="padding:2rem 2.25rem;border-right:1px solid #333;">
         <div style="font-family:Arial,sans-serif;font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:0.5rem;">Year 1</div>
@@ -2763,7 +2833,7 @@
     <span class="eyebrow">What success looks like</span>
     <h2 style="font-size:clamp(1.6rem,3.2vw,2.6rem);font-weight:300;letter-spacing:-0.02em;margin:0.5rem 0 2.5rem;line-height:1.2;color:#000;">Milestones at 6, 12, 18, and 24 months.</h2>
 
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);border:1px solid #111;">
+    <div class="success-grid" style="display:grid;grid-template-columns:repeat(4,1fr);border:1px solid #111;">
       <!-- Season 1 -->
       <div style="border-right:1px solid #111;">
         <div style="background:#2563eb;color:#fff;padding:0.75rem 1.25rem;font-family:Arial,sans-serif;font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;">Month 6 — Season 1</div>
@@ -2843,7 +2913,7 @@
     </div>
 
     <!-- Measurement note -->
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);border:1px solid #111;border-top:none;">
+    <div class="success-footer-grid" style="display:grid;grid-template-columns:repeat(3,1fr);border:1px solid #111;border-top:none;">
       <div style="padding:1.25rem;border-right:1px solid #111;">
         <div style="font-family:Arial,sans-serif;font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:#999;margin-bottom:0.4rem;">We measure</div>
         <div style="font-size:0.82rem;color:#333;line-height:1.6;">Groups active, members trained, local actions documented, broadcasts produced, Telescope audience size</div>
