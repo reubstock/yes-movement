@@ -1768,12 +1768,22 @@
     <span class="eyebrow eyebrow-white">Four components. One system.</span>
     <div class="p-arch-grid">
       <div class="p-arch-cell">
-        <!-- Telescope icon: broadcast signal + lens -->
+        <!-- Telescope icon: actual refractor telescope on tripod -->
         <svg class="p-arch-icon" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="18" cy="18" r="6" stroke="#c9a84c" stroke-width="1.8"/>
-          <path d="M18 4 L18 8M18 28 L18 32M4 18 L8 18M28 18 L32 18" stroke="#c9a84c" stroke-width="1.8" stroke-linecap="round"/>
-          <path d="M8.1 8.1 L11 11M25 25 L27.9 27.9M27.9 8.1 L25 11M11 25 L8.1 27.9" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
-          <circle cx="18" cy="18" r="2.5" fill="#c9a84c"/>
+          <!-- Main tube body (parallelogram pointing upper-right) -->
+          <path d="M 8,25 L 25,10 L 28,13 L 11,28 Z" stroke="#c9a84c" stroke-width="1.5" stroke-linejoin="round"/>
+          <!-- Objective lens housing (wider flange at upper-right end) -->
+          <path d="M 25,8 L 30,9 L 32,13 L 28,13 L 25,10 Z" stroke="#c9a84c" stroke-width="1.3" stroke-linejoin="round"/>
+          <!-- Eyepiece (small tube extending from lower-left end) -->
+          <path d="M 8,25 L 5,27 L 7,30 L 11,28 Z" stroke="#c9a84c" stroke-width="1.3" stroke-linejoin="round"/>
+          <!-- Focus knob on tube body -->
+          <line x1="17" y1="16" x2="18" y2="19" stroke="#c9a84c" stroke-width="2" stroke-linecap="round"/>
+          <!-- Mount pivot circle -->
+          <circle cx="19" cy="25" r="1.8" stroke="#c9a84c" stroke-width="1.3"/>
+          <!-- Tripod legs -->
+          <line x1="19" y1="26.5" x2="12" y2="35" stroke="#c9a84c" stroke-width="1.3" stroke-linecap="round"/>
+          <line x1="19" y1="26.5" x2="26" y2="35" stroke="#c9a84c" stroke-width="1.3" stroke-linecap="round"/>
+          <line x1="19" y1="26.5" x2="19" y2="35" stroke="#c9a84c" stroke-width="1.3" stroke-linecap="round"/>
         </svg>
         <span class="p-arch-num">01</span>
         <h3>The Telescope</h3>
