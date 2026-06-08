@@ -140,25 +140,97 @@
       border-top: 1px solid rgba(255,255,255,0.1);
       margin: 1.25rem 0;
     }
-    .cf-progress-label {
+    /* ── Hero arc gauge ── */
+    .cf-gauge-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0.5rem 0 1rem;
+      position: relative;
+    }
+    .cf-gauge-svg { width: 100%; max-width: 220px; overflow: visible; }
+    .cf-gauge-track {
+      fill: none;
+      stroke: #1e1e1e;
+      stroke-width: 10;
+      stroke-linecap: round;
+    }
+    .cf-gauge-fill {
+      fill: none;
+      stroke-width: 10;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 1.2s cubic-bezier(0.22,1,0.36,1);
+    }
+    .cf-gauge-tick {
+      stroke: #333;
+      stroke-width: 2;
+    }
+    .cf-gauge-center {
+      position: absolute;
+      top: 28%;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      pointer-events: none;
+    }
+    .cf-gauge-pct {
+      display: block;
+      font-family: 'Geist', Arial, sans-serif;
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      font-weight: 700;
+      color: #fff;
+      line-height: 1;
+    }
+    .cf-gauge-funded-label {
+      font-family: Arial, sans-serif;
+      font-size: 0.55rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-top: 0.2rem;
+      display: block;
+    }
+    .cf-gauge-amounts {
+      display: flex;
+      gap: 0.4rem;
+      align-items: baseline;
+      margin-top: 0.15rem;
+    }
+    .cf-gauge-raised {
+      font-family: 'Geist', Arial, sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #fff;
+    }
+    .cf-gauge-goal {
       font-family: Arial, sans-serif;
       font-size: 0.72rem;
-      color: rgba(255,255,255,0.55);
+      color: rgba(255,255,255,0.35);
+    }
+
+    /* ── Card dot segments ── */
+    .cf-dots {
+      display: flex;
+      gap: 3px;
+      margin: 0.65rem 0 0.35rem;
+    }
+    .cf-dot {
+      flex: 1;
+      height: 6px;
+      border-radius: 1px;
+      background: #1f1f1f;
+      transition: background 0.3s ease;
+    }
+    .cf-dot.lit { /* filled by JS */ }
+    .cf-card-amounts {
+      font-family: Arial, sans-serif;
+      font-size: 0.68rem;
+      display: flex;
+      gap: 0.3rem;
+      align-items: baseline;
       margin-bottom: 0.5rem;
     }
-    .cf-progress-track {
-      width: 100%;
-      height: 5px;
-      background: #1f1f1f;
-      border-radius: 3px;
-      overflow: hidden;
-      margin-bottom: 1rem;
-    }
-    .cf-progress-fill {
-      height: 100%;
-      border-radius: 3px;
-      transition: width 0.4s ease;
-    }
+    .cf-card-goal-lbl { color: rgba(255,255,255,0.28); }
     .cf-fund-btn {
       width: 100%;
       padding: 0.85rem 1rem;
@@ -280,22 +352,6 @@
       font-family: Arial, sans-serif;
       font-size: 0.72rem;
       color: rgba(255,255,255,0.38);
-    }
-    .cf-mini-track {
-      width: 100%;
-      height: 3px;
-      background: #1f1f1f;
-      border-radius: 2px;
-      overflow: hidden;
-    }
-    .cf-mini-fill {
-      height: 100%;
-      border-radius: 2px;
-    }
-    .cf-card-raised {
-      font-family: Arial, sans-serif;
-      font-size: 0.68rem;
-      color: rgba(255,255,255,0.35);
     }
     .cf-card-fund {
       align-self: flex-end;
@@ -573,9 +629,28 @@
       </div>
       <span class="cf-category-pill" id="hero-category-pill"></span>
       <hr class="cf-divider" />
-      <div class="cf-progress-label" id="hero-progress-label"></div>
-      <div class="cf-progress-track">
-        <div class="cf-progress-fill" id="hero-progress-fill"></div>
+      <!-- Arc gauge -->
+      <div class="cf-gauge-wrap">
+        <svg class="cf-gauge-svg" viewBox="0 0 220 130" xmlns="http://www.w3.org/2000/svg">
+          <!-- Track -->
+          <path class="cf-gauge-track" d="M 18,112 A 92,92 0 0,1 202,112"/>
+          <!-- Tick marks at 25%, 50%, 75% -->
+          <g stroke="#2a2a2a" stroke-width="2" stroke-linecap="round">
+            <line x1="110" y1="22" x2="110" y2="30"/><!-- 50% top -->
+            <line x1="35" y1="77" x2="42" y2="71"/><!-- ~25% left -->
+            <line x1="185" y1="77" x2="178" y2="71"/><!-- ~75% right -->
+          </g>
+          <!-- Fill arc -->
+          <path class="cf-gauge-fill" id="hero-gauge-fill" d="M 18,112 A 92,92 0 0,1 202,112"/>
+        </svg>
+        <div class="cf-gauge-center">
+          <span class="cf-gauge-pct" id="hero-gauge-pct">0%</span>
+          <span class="cf-gauge-funded-label">funded</span>
+        </div>
+        <div class="cf-gauge-amounts">
+          <span class="cf-gauge-raised" id="hero-gauge-raised">$0</span>
+          <span class="cf-gauge-goal" id="hero-gauge-goal">of $0</span>
+        </div>
       </div>
       <button class="cf-fund-btn" onclick="openFundModal(null)">Fund This Action</button>
       <a class="cf-share-link" href="#">Share this action →</a>
@@ -719,11 +794,32 @@
     pill.textContent = (action.nature_category || '').toUpperCase();
     pill.style.background = c;
     const p = pct(action.raised, action.target);
-    document.getElementById('hero-progress-label').textContent =
-      '$' + (action.raised || 0) + ' raised of $' + (action.target || 0) + ' goal — ' + p + '% funded';
-    const fill = document.getElementById('hero-progress-fill');
-    fill.style.width = p + '%';
-    fill.style.background = c;
+    // Arc gauge
+    const ARC_LEN = Math.PI * 92; // radius=92 → ≈289
+    const gaugeFill = document.getElementById('hero-gauge-fill');
+    gaugeFill.style.stroke = c;
+    gaugeFill.style.strokeDasharray = ARC_LEN;
+    gaugeFill.style.strokeDashoffset = ARC_LEN; // start empty
+    document.getElementById('hero-gauge-goal').textContent = 'of $' + (action.target || 0);
+    // Animate: arc fills + numbers count up
+    const raised = action.raised || 0;
+    const target = action.target || 1;
+    const duration = 1400;
+    const startTime = performance.now();
+    function tickGauge(now) {
+      const t = Math.min((now - startTime) / duration, 1);
+      const ease = 1 - Math.pow(1 - t, 3);
+      const curPct = Math.round(p * ease);
+      gaugeFill.style.strokeDashoffset = ARC_LEN * (1 - (p * ease / 100));
+      document.getElementById('hero-gauge-pct').textContent = curPct + '%';
+      document.getElementById('hero-gauge-raised').textContent = '$' + Math.round(raised * ease);
+      if (t < 1) requestAnimationFrame(tickGauge);
+      else {
+        document.getElementById('hero-gauge-pct').textContent = p + '%';
+        document.getElementById('hero-gauge-raised').textContent = '$' + raised;
+      }
+    }
+    requestAnimationFrame(tickGauge);
 
     // If video_url set, swap to iframe
     if (action.video_url) {
@@ -758,8 +854,13 @@
         </div>
         <div class="cf-card-title">${action.title}</div>
         <div class="cf-card-who">${action.person || ''} &middot; ${action.location || ''}</div>
-        <div class="cf-mini-track"><div class="cf-mini-fill" style="width:${p}%;background:${c};"></div></div>
-        <div class="cf-card-raised">$${action.raised || 0} raised of $${action.target || 0}</div>
+        <div class="cf-dots" data-pct="${p}" data-color="${c}">
+          ${Array.from({length:10},(_,i)=>`<span class="cf-dot${i < Math.ceil(p/10) ? ' lit' : ''}" style="${i < Math.ceil(p/10) ? 'background:'+c : ''}"></span>`).join('')}
+        </div>
+        <div class="cf-card-amounts">
+          <span style="color:${c};font-weight:600;">$${action.raised||0}</span>
+          <span class="cf-card-goal-lbl">of $${action.target||0}</span>
+        </div>
         <button class="cf-card-fund" onclick="openFundModal(${action.id})">Fund &rarr;</button>
       </div>
     </div>`;
@@ -776,6 +877,28 @@
       return;
     }
     grid.innerHTML = actions.map(renderCard).join('');
+    // Animate dots on scroll into view
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const wrap = entry.target;
+        const p = parseInt(wrap.dataset.pct) || 0;
+        const c = wrap.dataset.color || '#fff';
+        const dots = wrap.querySelectorAll('.cf-dot');
+        const filled = Math.ceil(p / 10);
+        dots.forEach((dot, i) => {
+          setTimeout(() => {
+            if (i < filled) dot.style.background = c;
+          }, i * 60);
+        });
+        observer.unobserve(wrap);
+      });
+    }, { threshold: 0.4 });
+    // Reset dots to dark first, then let observer animate them
+    grid.querySelectorAll('.cf-dots').forEach(wrap => {
+      wrap.querySelectorAll('.cf-dot').forEach(d => d.style.background = '#1f1f1f');
+      observer.observe(wrap);
+    });
   }
 
   function applyFilter(filter) {
