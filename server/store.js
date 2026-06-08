@@ -145,7 +145,7 @@ async function init() {
   const { rows: ca } = await sql`SELECT COUNT(*) FROM crowdfund_actions`;
   if (parseInt(ca[0].count) === 0) {
     await pool.query(`INSERT INTO crowdfund_actions (title, person, location, formula, nature_category, target, raised, description, video_url) VALUES
-      ('Clean out the Mill Creek Gulley', 'Sarah Chen', 'Petaluma, CA', 'Creek Cleaning', 'Water', 200, 47, 'Mill Creek runs through the heart of Petaluma, but years of runoff have filled the gulley with debris. This action will clear 200 feet of waterway and restore natural flow.', NULL),
+      ('Clean out the Mill Creek Gulley', 'Sarah Chen', 'Petaluma, CA', 'Creek Cleaning', 'Water', 200, 47, 'Mill Creek runs through the heart of Petaluma, but years of runoff have filled the gulley with debris. This action will clear 200 feet of waterway and restore natural flow.', 'https://www.youtube.com/embed/4rVTWsQ23Pk'),
       ('Plant Native Species Along Adobe Creek', 'Marcus Webb', 'Petaluma, CA', 'Native Planting', 'Biodiversity', 350, 120, 'Adobe Creek''s banks have been overtaken by invasive species. This action plants 50 native species to restore the riparian corridor.', NULL),
       ('Monitor Air Quality Around Highway 101', 'Priya Nair', 'Novato, CA', 'Air Quality Mapping', 'Air', 150, 0, 'Residents near Highway 101 report higher rates of respiratory issues. This action deploys 5 air quality sensors to document and advocate.', NULL),
       ('Document Soil Health in Sonoma Valley', 'Tom Garfield', 'Sonoma, CA', 'Soil Sampling', 'Soil', 175, 88, 'Industrial agriculture has depleted soil health across the valley. This action collects and tests 20 soil samples to establish a health baseline.', NULL),
@@ -153,6 +153,8 @@ async function init() {
       ('Restore Access to Community Garden', 'James Okafor', 'Richmond, CA', 'Equity Mapping', 'Equity', 250, 65, 'A historic community garden in Richmond has lost its public pathway access. This action maps, documents, and campaigns for restoration of equitable access.', NULL)
     `);
   }
+  // Ensure video_url is set on existing records (migration)
+  await pool.query(`UPDATE crowdfund_actions SET video_url = 'https://www.youtube.com/embed/4rVTWsQ23Pk' WHERE title = 'Clean out the Mill Creek Gulley' AND (video_url IS NULL OR video_url = '')`);
 }
 
 // run init once on startup (non-blocking — routes wait for it via initPromise)
