@@ -123,6 +123,36 @@ async function init() {
     await sql`INSERT INTO actions (title, description, location, country, date)
       VALUES ('Urban Soil Restoration', 'Rebuilding topsoil in community garden beds.', 'Petaluma', 'United States', '2026-03-15')`;
   }
+
+  // Crowdfund actions table
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS crowdfund_actions (
+      id SERIAL PRIMARY KEY,
+      title TEXT NOT NULL,
+      person TEXT,
+      location TEXT,
+      formula TEXT,
+      nature_category TEXT,
+      target INT DEFAULT 0,
+      raised INT DEFAULT 0,
+      description TEXT,
+      video_url TEXT,
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    )
+  `);
+
+  // Seed crowdfund actions
+  const { rows: ca } = await sql`SELECT COUNT(*) FROM crowdfund_actions`;
+  if (parseInt(ca[0].count) === 0) {
+    await pool.query(`INSERT INTO crowdfund_actions (title, person, location, formula, nature_category, target, raised, description, video_url) VALUES
+      ('Clean out the Mill Creek Gulley', 'Sarah Chen', 'Petaluma, CA', 'Creek Cleaning', 'Water', 200, 47, 'Mill Creek runs through the heart of Petaluma, but years of runoff have filled the gulley with debris. This action will clear 200 feet of waterway and restore natural flow.', NULL),
+      ('Plant Native Species Along Adobe Creek', 'Marcus Webb', 'Petaluma, CA', 'Native Planting', 'Biodiversity', 350, 120, 'Adobe Creek''s banks have been overtaken by invasive species. This action plants 50 native species to restore the riparian corridor.', NULL),
+      ('Monitor Air Quality Around Highway 101', 'Priya Nair', 'Novato, CA', 'Air Quality Mapping', 'Air', 150, 0, 'Residents near Highway 101 report higher rates of respiratory issues. This action deploys 5 air quality sensors to document and advocate.', NULL),
+      ('Document Soil Health in Sonoma Valley', 'Tom Garfield', 'Sonoma, CA', 'Soil Sampling', 'Soil', 175, 88, 'Industrial agriculture has depleted soil health across the valley. This action collects and tests 20 soil samples to establish a health baseline.', NULL),
+      ('Audit Carbon Footprint of Local Businesses', 'Elena Vasquez', 'San Rafael, CA', 'Carbon Audit', 'Carbon', 400, 210, '10 local businesses have agreed to participate in a community carbon audit. This action documents, calculates, and publishes results.', NULL),
+      ('Restore Access to Community Garden', 'James Okafor', 'Richmond, CA', 'Equity Mapping', 'Equity', 250, 65, 'A historic community garden in Richmond has lost its public pathway access. This action maps, documents, and campaigns for restoration of equitable access.', NULL)
+    `);
+  }
 }
 
 // run init once on startup (non-blocking — routes wait for it via initPromise)
@@ -233,6 +263,24 @@ module.exports = {
     },
     delete: async (id) => {
       await pool.query('DELETE FROM group_members WHERE id = $1', [id]);
+    },
+  },
+
+  crowdfundActions: {
+    all: async (category) => {
+      if (category) {
+        const { rows } = await pool.query(
+          'SELECT * FROM crowdfund_actions WHERE nature_category = $1 ORDER BY id ASC',
+          [category]
+        );
+        return rows;
+      }
+      const { rows } = await pool.query('SELECT * FROM crowdfund_actions ORDER BY id ASC');
+      return rows;
+    },
+    get: async (id) => {
+      const { rows } = await pool.query('SELECT * FROM crowdfund_actions WHERE id = $1', [id]);
+      return rows[0] || null;
     },
   },
 

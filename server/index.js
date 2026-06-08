@@ -17,6 +17,7 @@ app.use('/api/members', require('./routes/members'));
 app.use('/api/summits', require('./routes/summits'));
 app.use('/api/groups', require('./routes/groups'));
 app.use('/api/actions', require('./routes/actions'));
+app.use('/api/crowdfund-actions', require('./routes/crowdfund-actions'));
 
 
 app.get('*', (req, res) => {
