@@ -3,573 +3,146 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>YES Movement — GoFundMe for the Planet</title>
+  <title>YES Movement</title>
   <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
-    /* ── Identity bar ── */
-    .identity-bar {
-      width: 100%;
-      background: #111;
-      text-align: center;
-      padding: 0.55rem 1rem;
-      font-family: 'Geist', Arial, sans-serif;
-      font-size: 0.6rem;
-      letter-spacing: 0.3em;
-      color: rgba(255,255,255,0.35);
-      text-transform: uppercase;
+    @keyframes pulse-ring {
+      0%   { transform: scale(1);   opacity: 0.8; }
+      70%  { transform: scale(2.4); opacity: 0;   }
+      100% { transform: scale(2.4); opacity: 0;   }
     }
-
-    /* ── Hero ── */
-    .cf-hero {
-      background: #0a0a0a;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      padding: 4rem 2rem;
+    .map-marker {
+      display: flex; align-items: center;
+      cursor: pointer;
+      pointer-events: auto;
     }
-    .cf-hero-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-      width: 100%;
-      display: grid;
-      grid-template-columns: 60fr 40fr;
-      gap: 4rem;
-      align-items: center;
-    }
-    .cf-video-panel {
-      position: relative;
-      aspect-ratio: 16/9;
-      background: #111;
-      border: 1px solid #1a1a1a;
-      border-radius: 4px;
-      overflow: hidden;
-    }
-    .cf-video-panel .play-btn {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .cf-video-panel .play-circle {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      border: 2px solid rgba(255,255,255,0.85);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0,0,0,0.4);
-    }
-    .cf-video-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: linear-gradient(transparent, rgba(0,0,0,0.75));
-      padding: 1rem 1rem 0.75rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.15rem;
-    }
-    .cf-video-overlay .loc {
-      font-family: Arial, sans-serif;
-      font-size: 0.65rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.6);
-    }
-    .cf-video-overlay .person {
-      font-family: Arial, sans-serif;
-      font-size: 0.7rem;
-      color: rgba(255,255,255,0.85);
-    }
-
-    /* Hero formula card */
-    .cf-formula-card {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
-    .cf-byline {
-      font-family: Arial, sans-serif;
-      font-size: 0.6rem;
-      letter-spacing: 0.22em;
-      color: rgba(255,255,255,0.45);
-      text-transform: uppercase;
-      margin-bottom: 0.65rem;
-    }
-    .cf-action-title {
-      font-family: Georgia, serif;
-      font-size: clamp(1.4rem, 3vw, 2.2rem);
-      font-weight: 400;
-      color: #fff;
-      line-height: 1.25;
-      margin-bottom: 1rem;
-    }
-    .cf-formula-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      font-family: Arial, sans-serif;
-      font-size: 0.65rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      margin-bottom: 0.5rem;
-    }
-    .cf-formula-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-    .cf-category-pill {
-      display: inline-block;
-      font-family: Arial, sans-serif;
-      font-size: 0.6rem;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      padding: 0.22rem 0.65rem;
-      border-radius: 20px;
-      color: #fff;
-      margin-bottom: 1.5rem;
-    }
-    .cf-divider {
-      border: none;
-      border-top: 1px solid rgba(255,255,255,0.1);
-      margin: 1.25rem 0;
-    }
-    /* ── Hero arc gauge ── */
-    .cf-gauge-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin: 0.5rem 0 1rem;
-      position: relative;
-    }
-    .cf-gauge-svg { width: 100%; max-width: 220px; overflow: visible; }
-    .cf-gauge-track {
-      fill: none;
-      stroke: #1e1e1e;
-      stroke-width: 10;
-      stroke-linecap: round;
-    }
-    .cf-gauge-fill {
-      fill: none;
-      stroke-width: 10;
-      stroke-linecap: round;
-      transition: stroke-dashoffset 1.2s cubic-bezier(0.22,1,0.36,1);
-    }
-    .cf-gauge-tick {
-      stroke: #333;
-      stroke-width: 2;
-    }
-    .cf-gauge-center {
-      position: absolute;
-      top: 28%;
-      left: 50%;
-      transform: translateX(-50%);
-      text-align: center;
+    .map-marker .dot-wrap { position: relative; width: 28px; height: 28px; flex-shrink: 0; }
+    .map-marker .ring {
+      position: absolute; inset: 8px; border-radius: 50%;
+      animation: pulse-ring 1.8s ease-out infinite;
       pointer-events: none;
     }
-    .cf-gauge-pct {
-      display: block;
-      font-family: 'Geist', Arial, sans-serif;
-      font-size: clamp(1.6rem, 4vw, 2.2rem);
-      font-weight: 700;
-      color: #fff;
-      line-height: 1;
+    .map-marker .dot {
+      position: absolute; inset: 8px; border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,0.9);
     }
-    .cf-gauge-funded-label {
-      font-family: Arial, sans-serif;
-      font-size: 0.55rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.35);
-      margin-top: 0.2rem;
-      display: block;
-    }
-    .cf-gauge-amounts {
-      display: flex;
-      gap: 0.4rem;
-      align-items: baseline;
-      margin-top: 0.15rem;
-    }
-    .cf-gauge-raised {
-      font-family: 'Geist', Arial, sans-serif;
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #fff;
-    }
-    .cf-gauge-goal {
-      font-family: Arial, sans-serif;
-      font-size: 0.72rem;
-      color: rgba(255,255,255,0.35);
-    }
-
-    /* ── Card dot segments ── */
-    .cf-dots {
-      display: flex;
-      gap: 3px;
-      margin: 0.65rem 0 0.35rem;
-    }
-    .cf-dot {
-      flex: 1;
-      height: 6px;
-      border-radius: 1px;
-      background: #1f1f1f;
-      transition: background 0.3s ease;
-    }
-    .cf-dot.lit { /* filled by JS */ }
-    .cf-card-amounts {
-      font-family: Arial, sans-serif;
-      font-size: 0.68rem;
-      display: flex;
-      gap: 0.3rem;
-      align-items: baseline;
-      margin-bottom: 0.5rem;
-    }
-    .cf-card-goal-lbl { color: rgba(255,255,255,0.28); }
-    .cf-fund-btn {
-      width: 100%;
-      padding: 0.85rem 1rem;
-      background: #15803d;
-      color: #fff;
-      border: none;
-      border-radius: 3px;
-      font-family: Arial, sans-serif;
-      font-size: 0.8rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
+    /* Popup card is also clickable */
+    .popup-clickable {
       cursor: pointer;
-      transition: background 0.2s;
     }
-    .cf-fund-btn:hover { background: #166534; }
-    .cf-share-link {
-      display: block;
-      text-align: center;
-      margin-top: 0.85rem;
-      font-family: Arial, sans-serif;
-      font-size: 0.72rem;
-      color: rgba(255,255,255,0.35);
-      cursor: pointer;
-      text-decoration: none;
-      transition: color 0.2s;
+    .popup-clickable:hover {
+      opacity: 0.92;
     }
-    .cf-share-link:hover { color: rgba(255,255,255,0.65); }
-
-    /* ── Filter bar ── */
-    .cf-filter-bar {
-      background: #0a0a0a;
-      padding: 2rem 2rem 0;
-      display: flex;
-      justify-content: center;
-    }
-    .cf-filters {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .cf-filter-pill {
-      font-family: Arial, sans-serif;
-      font-size: 0.62rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      padding: 0.38rem 0.9rem;
-      border-radius: 20px;
-      border: 1px solid rgba(255,255,255,0.18);
-      background: transparent;
-      color: rgba(255,255,255,0.55);
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .cf-filter-pill:hover {
-      border-color: rgba(255,255,255,0.45);
-      color: rgba(255,255,255,0.85);
-    }
-    .cf-filter-pill.active {
+    /* Summit — yellow */
+    .summit-marker .ring { background: rgba(245,197,24,0.4); }
+    .summit-marker .dot  { background: #f5c518; box-shadow: 0 0 8px rgba(245,197,24,0.9); }
+    /* Group — green */
+    .group-marker .ring { background: rgba(22,163,74,0.4); }
+    .group-marker .dot  { background: #16a34a; box-shadow: 0 0 8px rgba(22,163,74,0.9); }
+    /* Action — red */
+    .action-marker .ring { background: rgba(220,38,38,0.4); }
+    .action-marker .dot  { background: #dc2626; box-shadow: 0 0 8px rgba(220,38,38,0.9); }
+    /* dark popup */
+    .dark-popup .leaflet-popup-content-wrapper {
+      background: rgba(10,10,10,0.92);
+      border: 1px solid rgba(255,255,255,0.12);
       color: #fff;
-      border-color: transparent;
-    }
-
-    /* ── Action grid ── */
-    .cf-grid-section {
-      background: #0a0a0a;
-      padding: 1.5rem 0 4rem;
-    }
-    .cf-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: #1a1a1a;
-    }
-    .cf-card {
-      background: #0a0a0a;
-      display: flex;
-      flex-direction: column;
-    }
-    .cf-card-video {
-      position: relative;
-      aspect-ratio: 16/9;
-      background: #111;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+      padding: 0;
       overflow: hidden;
+      border-radius: 14px;
     }
-    .cf-card-video .mini-play {
+    .dark-popup .leaflet-popup-content {
+      margin: 0;
+      padding: 0.56rem;
+    }
+    .dark-popup .leaflet-popup-content img {
+      margin: -0.56rem -0.56rem 0.45rem;
+      width: calc(100% + 1.12rem);
+      max-width: none;
+      border-radius: 14px 14px 0 0;
+    }
+    .dark-popup .leaflet-popup-content h4 { font-size: 0.78rem !important; }
+    .dark-popup .leaflet-popup-content p  { font-size: 0.62rem !important; }
+    .dark-popup .leaflet-popup-tip { background: rgba(10,10,10,0.92); }
+    .dark-popup .leaflet-popup-content p,
+    .dark-popup .leaflet-popup-content h4 { color: #ffffff !important; }
+    .leaflet-pane         { z-index: 400 !important; }
+    .leaflet-top,
+    .leaflet-bottom       { z-index: 500 !important; }
+    .leaflet-marker-pane  { pointer-events: auto !important; }
+    .leaflet-marker-icon,
+    .leaflet-marker-shadow { pointer-events: auto !important; }
+
+    /* Map sidebar */
+    #map-sidebar {
       position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0.5;
-      transition: opacity 0.2s;
-    }
-    .cf-card:hover .mini-play { opacity: 0.8; }
-    .cf-card-body {
-      padding: 1rem;
-      background: #111;
-      flex: 1;
+      left: 0; top: 0; bottom: 0;
+      width: 260px;
+      background: transparent;
+      z-index: 10;
+      pointer-events: auto;
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.6rem;
+      padding: 0.85rem 0.75rem;
+      text-align: left;
     }
-    .cf-card-meta {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      flex-wrap: wrap;
+    #map-sidebar .sidebar-card {
+      background: rgba(10,10,10,0.72);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 8px;
+      padding: 0.9rem 1rem;
+      border: 1px solid rgba(255,255,255,0.08);
     }
-    .cf-card-title {
-      font-family: Georgia, serif;
-      font-size: 1rem;
-      font-weight: 500;
-      color: #fff;
-      line-height: 1.35;
-    }
-    .cf-card-who {
+    #map-sidebar .sidebar-label {
       font-family: Arial, sans-serif;
-      font-size: 0.72rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
       color: rgba(255,255,255,0.38);
+      margin-bottom: 0.65rem;
     }
-    .cf-card-fund {
-      align-self: flex-end;
-      margin-top: auto;
-      padding: 0.35rem 0.85rem;
-      background: #15803d;
-      color: #fff;
-      border: none;
-      border-radius: 2px;
-      font-family: Arial, sans-serif;
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      cursor: pointer;
-      transition: background 0.2s;
+    @media (max-width: 640px) {
+      #map-sidebar { display: none; }
     }
-    .cf-card-fund:hover { background: #166534; }
 
-    /* ── How It Works ── */
-    .cf-how {
-      background: #fff;
-      padding: 5rem 2rem;
+    /* ── Mobile stats bar (shown below map on small screens) ── */
+    #mobile-map-stats {
+      display: none;
+      background: rgba(10,10,10,0.92);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 0.55rem 1.25rem;
+      gap: 1.5rem;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      z-index: 10;
     }
-    .cf-how-inner {
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-    .cf-how h2 {
-      font-family: Georgia, serif;
-      font-size: clamp(1.6rem, 3vw, 2.2rem);
-      font-weight: 400;
-      color: #111;
-      text-align: center;
-      margin-bottom: 3rem;
-    }
-    .cf-how-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 3rem;
-    }
-    .cf-how-step {
+    #mobile-map-stats .stat-item {
       display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.75rem;
-    }
-    .cf-how-icon {
-      width: 40px;
-      height: 40px;
-      color: #111;
-    }
-    .cf-how-step h3 {
-      font-family: Georgia, serif;
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #111;
-    }
-    .cf-how-step p {
-      font-family: Georgia, serif;
-      font-size: 0.92rem;
-      line-height: 1.7;
-      color: #444;
-    }
-
-    /* ── Start Action CTA ── */
-    .cf-cta {
-      background: #0a0a0a;
-      padding: 6rem 2rem;
-      text-align: center;
-    }
-    .cf-cta h2 {
-      font-family: Georgia, serif;
-      font-size: clamp(1.8rem, 4vw, 3rem);
-      font-weight: 400;
-      color: #fff;
-      margin-bottom: 1rem;
-    }
-    .cf-cta p {
-      font-family: Arial, sans-serif;
-      font-size: 0.9rem;
-      color: rgba(255,255,255,0.5);
-      margin-bottom: 2rem;
-      max-width: 420px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .cf-cta-btn {
-      display: inline-block;
-      padding: 0.9rem 2.5rem;
-      background: #15803d;
-      color: #fff;
-      border: none;
-      border-radius: 3px;
-      font-family: Arial, sans-serif;
-      font-size: 0.85rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      cursor: pointer;
-      text-decoration: none;
-      transition: background 0.2s;
-    }
-    .cf-cta-btn:hover { background: #166534; }
-    .cf-cta-note {
-      margin-top: 1rem;
+      align-items: center;
+      gap: 0.4rem;
       font-family: Arial, sans-serif;
       font-size: 0.72rem;
-      color: rgba(255,255,255,0.25);
+      font-weight: 600;
     }
-
-    /* ── Fund Modal ── */
-    .cf-modal-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.7);
-      z-index: 500;
-      align-items: center;
-      justify-content: center;
-    }
-    .cf-modal-backdrop.open { display: flex; }
-    .cf-modal {
-      background: #111;
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 6px;
-      padding: 2rem;
-      max-width: 400px;
-      width: 90%;
-      position: relative;
-    }
-    .cf-modal h3 {
-      font-family: Georgia, serif;
-      font-size: 1.2rem;
-      font-weight: 400;
-      color: #fff;
-      margin-bottom: 0.5rem;
-    }
-    .cf-modal p {
-      font-family: Arial, sans-serif;
-      font-size: 0.82rem;
-      color: rgba(255,255,255,0.5);
-      margin-bottom: 1.25rem;
-    }
-    .cf-modal input[type="email"] {
-      width: 100%;
-      padding: 0.7rem 0.9rem;
-      background: #0a0a0a;
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 3px;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      font-size: 0.85rem;
-      margin-bottom: 0.75rem;
-      outline: none;
-    }
-    .cf-modal input[type="email"]::placeholder { color: rgba(255,255,255,0.25); }
-    .cf-modal input[type="email"]:focus { border-color: rgba(255,255,255,0.35); }
-    .cf-modal-submit {
-      width: 100%;
-      padding: 0.75rem;
-      background: #15803d;
-      color: #fff;
-      border: none;
-      border-radius: 3px;
-      font-family: Arial, sans-serif;
-      font-size: 0.8rem;
+    #mobile-map-stats .stat-badge {
+      background: #fff;
+      color: #111;
+      border-radius: 10px;
+      padding: 0.05rem 0.4rem;
+      font-size: 0.65rem;
       font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: background 0.2s;
     }
-    .cf-modal-submit:hover { background: #166534; }
-    .cf-modal-close {
-      position: absolute;
-      top: 0.75rem;
-      right: 1rem;
-      background: none;
-      border: none;
-      color: rgba(255,255,255,0.4);
-      font-size: 1.4rem;
-      cursor: pointer;
-      line-height: 1;
+    #mobile-map-stats a.stat-item {
+      opacity: 1;
+      transition: opacity 0.15s;
     }
-    .cf-modal-close:hover { color: rgba(255,255,255,0.75); }
-    .cf-modal-success {
-      display: none;
-      text-align: center;
-      padding: 1rem 0;
-      font-family: Georgia, serif;
-      font-size: 1rem;
-      color: #fff;
-    }
-
-    /* ── Responsive ── */
-    @media (max-width: 900px) {
-      .cf-hero-inner {
-        grid-template-columns: 1fr;
-        gap: 2.5rem;
-      }
-      .cf-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      .cf-how-grid {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-      }
-    }
-    @media (max-width: 560px) {
-      .cf-grid {
-        grid-template-columns: 1fr;
-      }
-      .cf-hero {
-        padding: 2rem 1.25rem;
-      }
-      .cf-filter-bar {
-        padding: 1.5rem 1.25rem 0;
-      }
+    #mobile-map-stats a.stat-item:active {
+      opacity: 0.65;
     }
   </style>
 </head>
@@ -582,156 +155,114 @@
     <li><a href="/events.html">Summits</a></li>
     <li><a href="/members.html">Groups</a></li>
     <li><a href="/about.html">About</a></li>
-    <li><a href="/map.html" style="font-family:Arial,sans-serif;font-size:0.72rem;color:rgba(255,255,255,0.45);letter-spacing:0.08em;text-transform:uppercase;">View Map</a></li>
     <li><a href="/deck.html" style="background:#15803d;color:#fff;padding:0.45rem 1rem;border-radius:2px;font-family:Arial,sans-serif;font-size:0.75rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;">Deck</a></li>
     <li><button onclick="openAddActionModal()" style="background:#dc2626;color:#fff;border:none;border-radius:2px;padding:0.45rem 1rem;font-family:Arial,sans-serif;font-size:0.75rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;">+ Log Action</button></li>
   </ul>
-  <button class="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+  <button class="nav-toggle" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
-<!-- ── FILTER PILLS ── -->
-<div class="cf-filter-bar">
-  <div class="cf-filters" id="cf-filters">
-    <button class="cf-filter-pill active" data-filter="ALL" style="background:#fff;color:#111;border-color:#fff;">ALL</button>
-    <button class="cf-filter-pill" data-filter="Water">WATER</button>
-    <button class="cf-filter-pill" data-filter="Air">AIR</button>
-    <button class="cf-filter-pill" data-filter="Soil">SOIL</button>
-    <button class="cf-filter-pill" data-filter="Carbon">CARBON</button>
-    <button class="cf-filter-pill" data-filter="Biodiversity">BIODIVERSITY</button>
-    <button class="cf-filter-pill" data-filter="Equity">EQUITY</button>
+<section class="hero">
+  <div id="hero-map"></div>
+
+  <!-- Left sidebar -->
+  <div id="map-sidebar">
+
+    <!-- Latest Broadcast -->
+    <div class="sidebar-card">
+      <div class="sidebar-label">Latest Broadcast</div>
+      <div style="position:relative;background:#000;border-radius:3px;aspect-ratio:16/9;overflow:hidden;border:1px solid rgba(255,255,255,0.08);">
+        <!-- Thumbnail + play button -->
+        <div id="broadcast-thumb" style="position:absolute;inset:0;cursor:pointer;" onclick="playBroadcast()">
+          <img src="/images/broadcast-thumb.jpg" style="width:100%;height:100%;object-fit:cover;display:block;" />
+          <div style="position:absolute;inset:0;background:rgba(0,0,0,0.28);display:flex;align-items:center;justify-content:center;">
+            <svg width="52" height="52" viewBox="0 0 52 52" style="filter:drop-shadow(0 2px 8px rgba(0,0,0,0.6));">
+              <polygon points="14,8 44,26 14,44" fill="white"/>
+            </svg>
+          </div>
+        </div>
+        <!-- YouTube iframe (loads on click) -->
+        <iframe id="broadcast-iframe" src="" style="display:none;position:absolute;inset:0;width:100%;height:100%;border:none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    </div>
+
+    <!-- Movement in Progress -->
+    <div class="sidebar-card" style="overflow-y:auto;flex:1;">
+      <div style="font-family:Arial,sans-serif;font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.38);margin-bottom:0.65rem;white-space:nowrap;">Movement in Progress</div>
+
+      <!-- Legend with counts -->
+      <div style="margin-bottom:0.9rem;padding-bottom:0.7rem;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;flex-direction:column;gap:0.35rem;">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-family:Arial,sans-serif;font-size:0.62rem;color:#16a34a;font-weight:600;">Groups</span>
+          <span id="legend-count-groups" style="font-family:Arial,sans-serif;font-size:0.68rem;font-weight:700;background:#fff;color:#111;border-radius:10px;padding:0.05rem 0.45rem;min-width:20px;text-align:center;">0</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-family:Arial,sans-serif;font-size:0.62rem;color:#dc2626;font-weight:600;">Actions</span>
+          <span id="legend-count-actions" style="font-family:Arial,sans-serif;font-size:0.68rem;font-weight:700;background:#fff;color:#111;border-radius:10px;padding:0.05rem 0.45rem;min-width:20px;text-align:center;">0</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-family:Arial,sans-serif;font-size:0.62rem;color:#f5c518;font-weight:600;">Summits</span>
+          <span id="legend-count-summits" style="font-family:Arial,sans-serif;font-size:0.68rem;font-weight:700;background:#fff;color:#111;border-radius:10px;padding:0.05rem 0.45rem;min-width:20px;text-align:center;">0</span>
+        </div>
+      </div>
+
+      <!-- Groups -->
+      <div style="font-family:Arial,sans-serif;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,0.9);text-decoration:underline;margin-bottom:0.4rem;">GROUPS</div>
+      <div id="sidebar-groups" style="margin-bottom:0.85rem;"></div>
+
+      <!-- Actions -->
+      <div style="font-family:Arial,sans-serif;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,0.9);text-decoration:underline;margin-bottom:0.4rem;">ACTIONS</div>
+      <div id="sidebar-actions" style="margin-bottom:0.85rem;"></div>
+
+      <!-- Summits -->
+      <div style="font-family:Arial,sans-serif;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,0.9);text-decoration:underline;margin-bottom:0.4rem;">SUMMITS</div>
+      <div id="sidebar-summits"></div>
+    </div>
+
   </div>
+
+</section>
+
+<!-- Mobile stats bar (visible only on small screens) -->
+<div id="mobile-map-stats">
+  <a href="/members.html" class="stat-item" style="color:#16a34a;text-decoration:none;">
+    Groups <span id="mobile-count-groups" class="stat-badge">0</span>
+  </a>
+  <a href="/?logaction" class="stat-item" style="color:#dc2626;text-decoration:none;">
+    Actions <span id="mobile-count-actions" class="stat-badge">0</span>
+  </a>
+  <a href="/events.html" class="stat-item" style="color:#f5c518;text-decoration:none;">
+    Summits <span id="mobile-count-summits" class="stat-badge">0</span>
+  </a>
 </div>
 
-<!-- ── HERO ── -->
-<section class="cf-hero">
-  <div class="cf-hero-inner">
-
-    <!-- Left: video panel -->
-    <div class="cf-video-panel" id="hero-video-panel">
-      <div class="play-btn">
-        <div class="play-circle">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><polygon points="6,4 20,12 6,20"/></svg>
-        </div>
-      </div>
-      <div class="cf-video-overlay">
-        <span class="loc" id="hero-location"></span>
-        <span class="person" id="hero-person"></span>
-      </div>
-    </div>
-
-    <!-- Right: formula card -->
-    <div class="cf-formula-card">
-      <div class="cf-byline" id="hero-byline"></div>
-      <h1 class="cf-action-title" id="hero-title">Loading…</h1>
-      <div id="hero-formula-badge" class="cf-formula-badge">
-        <span class="cf-formula-dot" id="hero-dot"></span>
-        <span id="hero-formula-text"></span>
-      </div>
-      <span class="cf-category-pill" id="hero-category-pill"></span>
-      <hr class="cf-divider" />
-      <!-- Arc gauge -->
-      <div class="cf-gauge-wrap">
-        <svg class="cf-gauge-svg" viewBox="0 0 220 130" xmlns="http://www.w3.org/2000/svg">
-          <!-- Track -->
-          <path class="cf-gauge-track" d="M 18,112 A 92,92 0 0,1 202,112"/>
-          <!-- Tick marks at 25%, 50%, 75% -->
-          <g stroke="#2a2a2a" stroke-width="2" stroke-linecap="round">
-            <line x1="110" y1="22" x2="110" y2="30"/><!-- 50% top -->
-            <line x1="35" y1="77" x2="42" y2="71"/><!-- ~25% left -->
-            <line x1="185" y1="77" x2="178" y2="71"/><!-- ~75% right -->
-          </g>
-          <!-- Fill arc -->
-          <path class="cf-gauge-fill" id="hero-gauge-fill" d="M 18,112 A 92,92 0 0,1 202,112"/>
-        </svg>
-        <div class="cf-gauge-center">
-          <span class="cf-gauge-pct" id="hero-gauge-pct">0%</span>
-          <span class="cf-gauge-funded-label">funded</span>
-        </div>
-        <div class="cf-gauge-amounts">
-          <span class="cf-gauge-raised" id="hero-gauge-raised">$0</span>
-          <span class="cf-gauge-goal" id="hero-gauge-goal">of $0</span>
-        </div>
-      </div>
-      <button class="cf-fund-btn" onclick="openFundModal(null)">Fund This Action</button>
-      <a class="cf-share-link" href="#">Share this action →</a>
-    </div>
-
+<section class="section">
+  <div class="section-header">
+    <p class="section-label">On The Horizon</p>
+    <h2 class="section-title">Upcoming <span>Events</span></h2>
+    <div class="section-rule"></div>
+  </div>
+  <div class="events-grid" id="home-events">
+    <div class="loading">Loading events…</div>
+  </div>
+  <div style="text-align:center;margin-top:2.5rem;">
+    <a href="/events.html" class="btn btn-outline">All Events</a>
   </div>
 </section>
 
-<!-- ── ACTION GRID ── -->
-
-<div class="cf-grid-section">
-  <div class="cf-grid" id="cf-grid">
-    <!-- populated by JS -->
-  </div>
+<div class="cta-section">
+  <h2>Ready to Join?</h2>
+  <p>Membership is open to those who are ready to say yes.</p>
+  <a href="/about.html#join" class="btn btn-primary">Get Involved</a>
 </div>
-
-<!-- ── HOW IT WORKS ── -->
-<section class="cf-how">
-  <div class="cf-how-inner">
-    <h2>How It Works</h2>
-    <div class="cf-how-grid">
-      <div class="cf-how-step">
-        <svg class="cf-how-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="20" cy="20" r="8" stroke="#111" stroke-width="2"/>
-          <line x1="20" y1="2" x2="20" y2="10" stroke="#111" stroke-width="2" stroke-linecap="round"/>
-          <line x1="20" y1="30" x2="20" y2="38" stroke="#111" stroke-width="2" stroke-linecap="round"/>
-          <line x1="2" y1="20" x2="10" y2="20" stroke="#111" stroke-width="2" stroke-linecap="round"/>
-          <line x1="30" y1="20" x2="38" y2="20" stroke="#111" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-        <h3>Choose an action</h3>
-        <p>Find something happening near you. Every action is local, specific, and tied to one of the Nature Six.</p>
-      </div>
-      <div class="cf-how-step">
-        <svg class="cf-how-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="4" y="10" width="32" height="22" rx="2" stroke="#111" stroke-width="2"/>
-          <path d="M13 22 L18 27 L27 16" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <h3>Fund the formula</h3>
-        <p>Each action uses a proven formula. Your contribution funds the specific steps needed to complete it.</p>
-      </div>
-      <div class="cf-how-step">
-        <svg class="cf-how-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <polygon points="8,5 32,20 8,35" stroke="#111" stroke-width="2" stroke-linejoin="round" fill="none"/>
-        </svg>
-        <h3>See it happen</h3>
-        <p>Action-takers upload video updates. Your contribution shows up on The Telescope.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── START AN ACTION CTA ── -->
-<section class="cf-cta">
-  <h2>Have an action in mind?</h2>
-  <p>Describe what you want to do and where. We'll help you build the formula.</p>
-  <a href="/about.html" class="cf-cta-btn">Start an Action</a>
-  <div class="cf-cta-note">Actions typically take 2–4 hours and $50–$500 to complete.</div>
-</section>
 
 <footer>
   <div class="footer-brand">✦ YES Movement</div>
   <p>Say yes to what matters.</p>
 </footer>
 
-<!-- ── Fund Modal ── -->
-<div class="cf-modal-backdrop" id="fund-modal">
-  <div class="cf-modal">
-    <button class="cf-modal-close" onclick="closeFundModal()">&times;</button>
-    <div id="fund-modal-form">
-      <h3>Funding coming soon.</h3>
-      <p>Leave your email and we'll notify you when this action is ready to fund.</p>
-      <input type="email" id="fund-email" placeholder="your@email.com" />
-      <button class="cf-modal-submit" onclick="submitFundModal()">Notify me</button>
-    </div>
-    <div class="cf-modal-success" id="fund-modal-success">
-      You're on the list. We'll be in touch.
-    </div>
-  </div>
-</div>
-
-<!-- Add Action Modal (preserved from original) -->
+<!-- Add Action Modal -->
 <div id="action-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:300;align-items:center;justify-content:center;">
   <div style="background:#fff;border:1px solid #ddd;border-radius:4px;padding:2rem;max-width:460px;width:90%;position:relative;">
     <button onclick="closeAddActionModal()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:#888;font-size:1.5rem;cursor:pointer;">&times;</button>
@@ -754,212 +285,329 @@
       <button type="submit" class="btn btn-primary" style="width:100%;background:#dc2626;">Log Action</button>
     </form>
     <div id="action-success" style="display:none;padding:1.5rem 0;text-align:center;color:#333;">
-      <p style="font-size:1.1rem;">Action logged. It will appear on the map shortly.</p>
+      <p style="font-size:1.1rem;">✓ Action logged. It will appear on the map shortly.</p>
     </div>
   </div>
 </div>
 
-<script src="/js/nav.js"></script>
-<script>
-  const NATURE_COLORS = {
-    Water:        '2563eb',
-    Air:          '0ea5e9',
-    Carbon:       '374151',
-    Soil:         '92400e',
-    Biodiversity: '16a34a',
-    Equity:       'c9a84c'
-  };
-
-  function colorFor(cat) {
-    return '#' + (NATURE_COLORS[cat] || 'ffffff');
-  }
-
-  function pct(raised, target) {
-    if (!target) return 0;
-    return Math.min(100, Math.round((raised / target) * 100));
-  }
-
-  // ── Hero render ──
-  function renderHero(action) {
-    const c = colorFor(action.nature_category);
-    document.getElementById('hero-title').textContent = action.title;
-    document.getElementById('hero-byline').textContent =
-      (action.person || '').toUpperCase() + (action.location ? ' · ' + action.location.toUpperCase() : '');
-    document.getElementById('hero-location').textContent = action.location || '';
-    document.getElementById('hero-person').textContent = action.person || '';
-    document.getElementById('hero-formula-text').textContent = (action.formula || '').toUpperCase();
-    document.getElementById('hero-dot').style.background = c;
-    document.getElementById('hero-formula-badge').style.color = c;
-    const pill = document.getElementById('hero-category-pill');
-    pill.textContent = (action.nature_category || '').toUpperCase();
-    pill.style.background = c;
-    const p = pct(action.raised, action.target);
-    // Arc gauge
-    const ARC_LEN = Math.PI * 92; // radius=92 → ≈289
-    const gaugeFill = document.getElementById('hero-gauge-fill');
-    gaugeFill.style.stroke = c;
-    gaugeFill.style.strokeDasharray = ARC_LEN;
-    gaugeFill.style.strokeDashoffset = ARC_LEN; // start empty
-    document.getElementById('hero-gauge-goal').textContent = 'of $' + (action.target || 0);
-    // Animate: arc fills + numbers count up
-    const raised = action.raised || 0;
-    const target = action.target || 1;
-    const duration = 1400;
-    const startTime = performance.now();
-    function tickGauge(now) {
-      const t = Math.min((now - startTime) / duration, 1);
-      const ease = 1 - Math.pow(1 - t, 3);
-      const curPct = Math.round(p * ease);
-      gaugeFill.style.strokeDashoffset = ARC_LEN * (1 - (p * ease / 100));
-      document.getElementById('hero-gauge-pct').textContent = curPct + '%';
-      document.getElementById('hero-gauge-raised').textContent = '$' + Math.round(raised * ease);
-      if (t < 1) requestAnimationFrame(tickGauge);
-      else {
-        document.getElementById('hero-gauge-pct').textContent = p + '%';
-        document.getElementById('hero-gauge-raised').textContent = '$' + raised;
-      }
-    }
-    requestAnimationFrame(tickGauge);
-
-    // If video_url set, swap to iframe
-    if (action.video_url) {
-      const panel = document.getElementById('hero-video-panel');
-      const iframe = document.createElement('iframe');
-      iframe.src = action.video_url;
-      iframe.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:none;';
-      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-      iframe.allowFullscreen = true;
-      panel.innerHTML = '';
-      panel.appendChild(iframe);
-    }
-  }
-
-  // ── Card render ──
-  function renderCard(action) {
-    const c = colorFor(action.nature_category);
-    const p = pct(action.raised, action.target);
-    return `<div class="cf-card">
-      <div class="cf-card-video">
-        ${action.video_url
-          ? `<iframe src="${action.video_url}" style="position:absolute;inset:0;width:100%;height:100%;border:none;" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>`
-          : `<div class="mini-play"><svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="14" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/><polygon points="12,9 24,16 12,23" fill="rgba(255,255,255,0.6)"/></svg></div>`
-        }
+<!-- Edit Action Modal -->
+<div id="edit-action-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:300;align-items:center;justify-content:center;">
+  <div style="background:#fff;border:1px solid #ddd;border-radius:4px;padding:2rem;max-width:460px;width:90%;position:relative;">
+    <button onclick="closeEditAction()" style="position:absolute;top:1rem;right:1rem;background:none;border:none;color:#888;font-size:1.5rem;cursor:pointer;">&times;</button>
+    <h3 style="margin-bottom:1.5rem;font-weight:400;">Edit Action</h3>
+    <form id="edit-action-form">
+      <input type="hidden" name="id" />
+      <div class="form-group"><label>Action Title *</label><input type="text" name="title" required /></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div class="form-group"><label>City *</label><input type="text" name="location" required /></div>
+        <div class="form-group"><label>Country *</label><input type="text" name="country" required /></div>
       </div>
-      <div class="cf-card-body">
-        <div class="cf-card-meta">
-          <span style="display:inline-flex;align-items:center;gap:0.3rem;font-family:Arial,sans-serif;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:${c};">
-            <span style="width:6px;height:6px;border-radius:50%;background:${c};flex-shrink:0;"></span>
-            ${(action.formula || '').toUpperCase()}
-          </span>
-        </div>
-        <div class="cf-card-title">${action.title}</div>
-        <div class="cf-card-who">${action.person || ''} &middot; ${action.location || ''}</div>
-        <div class="cf-dots" data-pct="${p}" data-color="${c}">
-          ${Array.from({length:10},(_,i)=>`<span class="cf-dot${i < Math.ceil(p/10) ? ' lit' : ''}" style="${i < Math.ceil(p/10) ? 'background:'+c : ''}"></span>`).join('')}
-        </div>
-        <div class="cf-card-amounts">
-          <span style="color:${c};font-weight:600;">$${action.raised||0}</span>
-          <span class="cf-card-goal-lbl">of $${action.target||0}</span>
-        </div>
-        <button class="cf-card-fund" onclick="openFundModal(${action.id})">Fund &rarr;</button>
+      <div class="form-group"><label>Date</label><input type="date" name="date" /></div>
+      <div class="form-group"><label>Description</label><textarea name="description" style="min-height:72px;" placeholder="What happened?"></textarea></div>
+      <div class="form-group">
+        <label>Photo <span style="color:#aaa;font-size:0.8rem;">(leave blank to keep existing)</span></label>
+        <input type="file" id="edit-action-image-input" accept="image/*" style="width:100%;padding:0.5rem 0;font-family:Arial,sans-serif;font-size:0.85rem;color:#555;" />
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;background:#dc2626;">Save Changes</button>
+    </form>
+    <div id="edit-action-success" style="display:none;padding:1.5rem 0;text-align:center;color:#333;">
+      <p style="font-size:1.1rem;">✓ Action updated.</p>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  const isMobile = window.innerWidth < 640;
+  // Desktop: offset west to keep markers visible past the 260px sidebar
+  // Mobile: no sidebar, so centre directly on the continental US
+  const initView  = isMobile ? [38, -96] : [42, -106];
+  const initZoom  = isMobile ? 3 : 4.5;
+
+  const heroMap = L.map('hero-map', {
+    zoomControl: false,
+    scrollWheelZoom: !isMobile,
+    dragging: true,
+    touchZoom: true,
+    doubleClickZoom: true,
+    keyboard: true,
+    attributionControl: false,
+    zoomSnap: 0.5,
+    zoomDelta: 0.5,
+  }).setView(initView, initZoom);
+  L.control.zoom({ position: 'topright' }).addTo(heroMap);
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    maxZoom: 19,
+    subdomains: 'abcd',
+  }).addTo(heroMap);
+
+  // ── Global state (window-scoped so inline onclick handlers can reach it) ──
+  window._markerRefs  = {};
+  window._openPopupKeys = [];
+  window._zoomBackTimer = null;
+
+  window._cancelZoomBack = function() {
+    if (window._zoomBackTimer) { clearTimeout(window._zoomBackTimer); window._zoomBackTimer = null; }
+  };
+  window._scheduleZoomBack = function() {
+    window._cancelZoomBack();
+    window._zoomBackTimer = setTimeout(function() {
+      window._zoomBackTimer = null;
+      heroMap.flyTo(initView, initZoom, { duration: 2.2, easeLinearity: 0.12 });
+    }, 7000);
+  };
+  window._openManagedPopup = function(key) {
+    var m = window._markerRefs[key];
+    if (!m) return;
+    if (m.isPopupOpen()) return;
+    if (window._openPopupKeys.length >= 3) {
+      var oldKey = window._openPopupKeys.shift();
+      var oldM = window._markerRefs[oldKey];
+      if (oldM) oldM.closePopup();
+    }
+    window._openPopupKeys.push(key);
+    m.openPopup();
+  };
+  window._mapMarkerClick = function(key) {
+    window._cancelZoomBack();
+    var m = window._markerRefs[key];
+    if (!m) return;
+    var target = m.getLatLng();
+    var currentCenter = heroMap.getCenter();
+    var distMeters = heroMap.distance(currentCenter, target);
+    var SIXTY_MILES = 96560; // metres
+    var alreadyZoomedIn = heroMap.getZoom() > (initZoom + 1.5);
+
+    if (distMeters > SIXTY_MILES && alreadyZoomedIn) {
+      // Pull back to country view, then dive into the new marker
+      heroMap.once('moveend', function() {
+        heroMap.flyTo(target, 8, { duration: 2.2, easeLinearity: 0.12 });
+        setTimeout(function() { window._openManagedPopup(key); }, 600);
+        window._scheduleZoomBack();
+      });
+      heroMap.flyTo(initView, initZoom, { duration: 1.8, easeLinearity: 0.18 });
+    } else {
+      // Close enough — cinematic direct zoom
+      heroMap.flyTo(target, 8, { duration: 1.8, easeLinearity: 0.12 });
+      setTimeout(function() { window._openManagedPopup(key); }, 500);
+      window._scheduleZoomBack();
+    }
+  };
+  heroMap.on('dragstart', window._cancelZoomBack);
+
+  async function geocode(location, country) {
+    const q = encodeURIComponent(`${location}, ${country}`);
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=1`, { headers: { 'Accept-Language': 'en' } });
+      const data = await res.json();
+      return data.length ? { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) } : null;
+    } catch { return null; }
+  }
+
+  async function safeJson(res) {
+    try { return res.ok ? await res.json() : []; }
+    catch(e) { console.warn('JSON parse failed:', e); return []; }
+  }
+
+  let allActionsData = [];
+
+  async function plotMarkersOnHero() {
+    const delay = ms => new Promise(r => setTimeout(r, ms));
+    const autoOpenKeys = [];
+    try {
+      const [summitsRes, groupsRes] = await Promise.all([
+        fetch('/api/summits'), fetch('/api/groups')
+      ]);
+      const summits = await safeJson(summitsRes);
+      const groups  = await safeJson(groupsRes);
+
+      let actions = [];
+      try {
+        const actionsRes = await fetch('/api/actions');
+        actions = await safeJson(actionsRes);
+        allActionsData = actions;
+      } catch(e) { console.warn('Actions fetch failed:', e); }
+
+      populateSidebar(summits, groups, actions);
+
+      const items = [
+        ...groups.map(g =>  ({ type: 'group',  data: g })),
+        ...summits.map(s => ({ type: 'summit', data: s })),
+        ...actions.map(a => ({ type: 'action', data: a })),
+      ];
+
+      // Add all markers silently — no flyTo, no tour
+      for (let i = 0; i < items.length; i++) {
+        const { type, data } = items[i];
+
+        let coords;
+        if (data.lat && data.lng) {
+          coords = { lat: data.lat, lng: data.lng };
+        } else {
+          if (i > 0) await delay(1100);
+          coords = await geocode(data.location, data.country);
+        }
+        if (!coords) continue;
+
+        const key = `${type}-${data.id}`;   // must be before popupHtml uses it
+        let popupHtml;
+        if (type === 'summit') {
+          const d = new Date(data.date + 'T00:00:00');
+          const dateStr = d.toLocaleDateString('en', { day: 'numeric', month: 'long', year: 'numeric' });
+          popupHtml = `<div class="popup-clickable" onclick="window._mapMarkerClick('${key}')" style="min-width:220px;max-width:260px;">
+            ${data.image ? `<img src="${data.image}" alt="${data.title}" style="width:100%;height:120px;object-fit:cover;display:block;" />` : ''}
+            <div style="font-family:Arial,sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#f5c518;margin-bottom:0.35rem;">Summit</div>
+            <h4 style="margin:0 0 0.4rem;font-size:1rem;color:#fff;font-family:Georgia,serif;">${data.title}</h4>
+            <p style="margin:0 0 0.2rem;font-size:0.82rem;color:#fff;font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}</p>
+            <p style="margin:0 0 0.2rem;font-size:0.82rem;color:#fff;font-family:Arial,sans-serif;">📅 ${dateStr}${data.time ? ' at ' + data.time : ''}</p>
+            ${data.host_name ? `<p style="margin:0 0 0.2rem;font-size:0.82rem;color:#fff;font-family:Arial,sans-serif;">👤 ${data.host_name}</p>` : ''}
+            ${data.description ? `<p style="margin:0.5rem 0 0;font-size:0.82rem;color:#fff;font-family:Arial,sans-serif;">${data.description}</p>` : ''}
+            <a href="/events.html" onclick="event.stopPropagation()" style="display:inline-block;margin-top:0.75rem;font-size:0.75rem;font-family:Arial,sans-serif;color:#f5c518;text-decoration:none;letter-spacing:0.05em;">View all summits →</a>
+          </div>`;
+        } else if (type === 'group') {
+          popupHtml = `<div class="popup-clickable" onclick="window._mapMarkerClick('${key}')" style="min-width:220px;max-width:260px;">
+            ${data.image ? `<img src="${data.image}" alt="${data.name}" style="width:100%;height:120px;object-fit:cover;display:block;" />` : ''}
+            <div style="font-family:Arial,sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#16a34a;margin-bottom:0.35rem;">Group</div>
+            <h4 style="margin:0 0 0.4rem;font-size:1rem;color:#fff;font-family:Georgia,serif;">${data.name}</h4>
+            <p style="margin:0 0 0.2rem;font-size:0.82rem;color:#fff;font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}</p>
+            ${data.description ? `<p style="margin:0.5rem 0 0;font-size:0.82rem;color:#fff;font-family:Arial,sans-serif;">${data.description}</p>` : ''}
+            <a href="/members.html" onclick="event.stopPropagation()" style="display:inline-block;margin-top:0.75rem;font-size:0.75rem;font-family:Arial,sans-serif;color:#16a34a;text-decoration:none;letter-spacing:0.05em;">View all groups →</a>
+          </div>`;
+        } else {
+          const dateStr = data.date ? new Date(data.date + 'T00:00:00').toLocaleDateString('en', { day: 'numeric', month: 'long', year: 'numeric' }) : null;
+          popupHtml = `<div class="popup-clickable" onclick="window._mapMarkerClick('${key}')" style="min-width:220px;max-width:260px;">
+            <div style="font-family:Arial,sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#dc2626;margin-bottom:0.35rem;">Action</div>
+            <h4 style="margin:0 0 0.4rem;font-size:1rem;color:#fff;font-family:Georgia,serif;">${data.title}</h4>
+            <p style="margin:0 0 0.2rem;font-size:0.82rem;color:#fff;font-family:Arial,sans-serif;">📍 ${data.location}, ${data.country}</p>
+            ${dateStr ? `<p style="margin:0 0 0.2rem;font-size:0.82rem;color:#fff;font-family:Arial,sans-serif;">📅 ${dateStr}</p>` : ''}
+            ${data.description ? `<p style="margin:0.5rem 0 0;font-size:0.82rem;color:#fff;font-family:Arial,sans-serif;">${data.description}</p>` : ''}
+            <a href="#" onclick="openEditActionById(${data.id});event.stopPropagation();return false;" style="display:inline-block;margin-top:0.6rem;font-size:0.72rem;font-family:Arial,sans-serif;color:rgba(255,255,255,0.55);text-decoration:underline;">Edit →</a>
+          </div>`;
+        }
+
+        const popup = L.popup({ className: 'dark-popup', maxWidth: 210, autoPan: isMobile, autoClose: false, closeOnClick: false }).setContent(popupHtml);
+        const markerClass = type === 'group' ? 'group-marker' : type === 'summit' ? 'summit-marker' : 'action-marker';
+        const icon = L.divIcon({
+          className: '',
+          html: `<div class="map-marker ${markerClass}" onclick="window._mapMarkerClick('${key}')"><div class="dot-wrap"><div class="ring"></div><div class="dot"></div></div></div>`,
+          iconSize: [28, 28], iconAnchor: [14, 14], popupAnchor: [0, -14],
+        });
+        const m = L.marker([coords.lat, coords.lng], { icon, interactive: true }).bindPopup(popup).addTo(heroMap);
+        m.off('click'); // remove bindPopup's auto-open handler — our onclick handles it
+        window._markerRefs[key] = m;
+        if (!isMobile) m.on('mouseover', function() { window._openManagedPopup(key); });
+        m.on('popupclose', function() {
+          const idx = window._openPopupKeys.indexOf(key);
+          if (idx !== -1) window._openPopupKeys.splice(idx, 1);
+        });
+
+        // Lazy-load image for action popups (allSlim omits image column)
+        if (type === 'action') {
+          const actionId = data.id;
+          let imageLoaded = false;
+          m.on('popupopen', async function() {
+            if (imageLoaded) return;
+            try {
+              const res = await fetch(`/api/actions/${actionId}`);
+              if (!res.ok) return;
+              const full = await res.json();
+              if (!full.image) return;
+              imageLoaded = true;
+              const ds = full.date ? new Date(full.date + 'T00:00:00').toLocaleDateString('en', { day: 'numeric', month: 'long', year: 'numeric' }) : null;
+              this.getPopup().setContent(`<div class="popup-clickable" onclick="window._mapMarkerClick('${key}')" style="min-width:220px;max-width:260px;">
+                <img src="${full.image}" alt="" style="width:100%;height:120px;object-fit:cover;display:block;" />
+                <div style="font-family:Arial,sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#dc2626;margin-bottom:0.35rem;">Action</div>
+                <h4 style="margin:0 0 0.4rem;font-size:1rem;color:#fff;font-family:Georgia,serif;">${full.title}</h4>
+                <p style="margin:0 0 0.2rem;font-size:0.82rem;color:#fff;font-family:Arial,sans-serif;">📍 ${full.location}, ${full.country}</p>
+                ${ds ? `<p style="margin:0 0 0.2rem;font-size:0.82rem;color:#fff;font-family:Arial,sans-serif;">📅 ${ds}</p>` : ''}
+                ${full.description ? `<p style="margin:0.5rem 0 0;font-size:0.82rem;color:#fff;font-family:Arial,sans-serif;">${full.description}</p>` : ''}
+                <a href="#" onclick="openEditActionById(${full.id});event.stopPropagation();return false;" style="display:inline-block;margin-top:0.6rem;font-size:0.72rem;font-family:Arial,sans-serif;color:rgba(255,255,255,0.55);text-decoration:underline;">Edit →</a>
+              </div>`);
+            } catch(e) {}
+          });
+        }
+
+        // Collect auto-open candidates (open after all markers are placed)
+        const itemTitle = (data.title || data.name || '').toLowerCase();
+        if (
+          itemTitle.includes('zelda') ||
+          itemTitle.includes('local') ||
+          itemTitle.includes('red barn') ||
+          itemTitle.includes('new orleans')
+        ) autoOpenKeys.push(key);
+      }
+
+      // Open up to 3 named popups now that all markers exist
+      for (const k of autoOpenKeys.slice(0, 3)) {
+        window._openManagedPopup(k);
+      }
+
+    } catch (e) { console.error(e); }
+  }
+
+  plotMarkersOnHero();
+
+  // ── Sidebar population ──
+  function sidebarItem(dot, title, sub, onclick) {
+    return `<div onclick="${onclick}" style="display:flex;align-items:flex-start;gap:0.45rem;padding:0.35rem 0;border-bottom:1px solid rgba(255,255,255,0.06);cursor:pointer;" onmouseover="this.style.background='rgba(255,255,255,0.04)'" onmouseout="this.style.background='none'">
+      <div style="width:11px;height:11px;border-radius:50%;${dot};flex-shrink:0;margin-top:0.28rem;"></div>
+      <div>
+        <div style="font-family:Arial,sans-serif;font-size:0.72rem;color:rgba(255,255,255,0.78);line-height:1.3;">${title}</div>
+        <div style="font-family:Arial,sans-serif;font-size:0.6rem;color:rgba(255,255,255,0.35);margin-top:0.05rem;">${sub}</div>
       </div>
     </div>`;
   }
 
-  // ── Grid render ──
-  let allActions = [];
-  let activeFilter = 'ALL';
+  function populateSidebar(summits, groups, actions) {
+    const el = id => document.getElementById(id);
+    const none = '<div style="font-family:Arial,sans-serif;font-size:0.68rem;color:rgba(255,255,255,0.25);padding:0.2rem 0;">None yet</div>';
 
-  function renderGrid(actions) {
-    const grid = document.getElementById('cf-grid');
-    if (!actions.length) {
-      grid.innerHTML = '<div style="background:#111;padding:3rem 2rem;font-family:Arial,sans-serif;font-size:0.85rem;color:rgba(255,255,255,0.35);text-align:center;grid-column:1/-1;">No actions in this category yet.</div>';
-      return;
-    }
-    grid.innerHTML = actions.map(renderCard).join('');
-    // Animate dots on scroll into view
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
-        const wrap = entry.target;
-        const p = parseInt(wrap.dataset.pct) || 0;
-        const c = wrap.dataset.color || '#fff';
-        const dots = wrap.querySelectorAll('.cf-dot');
-        const filled = Math.ceil(p / 10);
-        dots.forEach((dot, i) => {
-          setTimeout(() => {
-            if (i < filled) dot.style.background = c;
-          }, i * 60);
-        });
-        observer.unobserve(wrap);
-      });
-    }, { threshold: 0.4 });
-    // Reset dots to dark first, then let observer animate them
-    grid.querySelectorAll('.cf-dots').forEach(wrap => {
-      wrap.querySelectorAll('.cf-dot').forEach(d => d.style.background = '#1f1f1f');
-      observer.observe(wrap);
-    });
+    // Legend counts (desktop sidebar + mobile bar)
+    el('legend-count-groups').textContent = groups.length;
+    el('legend-count-actions').textContent = actions.length;
+    el('legend-count-summits').textContent = summits.length;
+    el('mobile-count-groups').textContent = groups.length;
+    el('mobile-count-actions').textContent = actions.length;
+    el('mobile-count-summits').textContent = summits.length;
+
+    el('sidebar-actions').innerHTML = actions.length
+      ? actions.slice(0,2).map(a => sidebarItem(
+          'background:#dc2626;box-shadow:0 0 4px rgba(220,38,38,0.9)',
+          a.title, `📍 ${a.location}, ${a.country}`,
+          `flyToMarker('action',${a.id})`
+        )).join('') : none;
+
+    el('sidebar-groups').innerHTML = groups.length
+      ? groups.slice(0,2).map(g => sidebarItem(
+          'background:#16a34a;box-shadow:0 0 4px rgba(22,163,74,0.9)',
+          g.name, `📍 ${g.location}, ${g.country}`,
+          `flyToMarker('group',${g.id})`
+        )).join('') : none;
+
+    el('sidebar-summits').innerHTML = summits.length
+      ? summits.slice(0,2).map(s => sidebarItem(
+          'background:#f5c518;box-shadow:0 0 4px rgba(245,197,24,0.9)',
+          s.title, `📍 ${s.location}, ${s.country}`,
+          `flyToMarker('summit',${s.id})`
+        )).join('') : none;
   }
 
-  function applyFilter(filter) {
-    activeFilter = filter;
-    const filtered = filter === 'ALL'
-      ? allActions
-      : allActions.filter(a => a.nature_category === filter);
-    renderGrid(filtered);
+  // ── Fly to marker (sidebar links) ──
+  function flyToMarker(type, id) {
+    window._mapMarkerClick(`${type}-${id}`);
   }
 
-  // ── Filter pills ──
-  document.getElementById('cf-filters').addEventListener('click', e => {
-    const pill = e.target.closest('.cf-filter-pill');
-    if (!pill) return;
-    const filter = pill.dataset.filter;
-
-    // Reset all pills
-    document.querySelectorAll('.cf-filter-pill').forEach(p => {
-      p.classList.remove('active');
-      p.style.background = '';
-      p.style.color = '';
-      p.style.borderColor = '';
-    });
-
-    // Activate clicked
-    pill.classList.add('active');
-    if (filter === 'ALL') {
-      pill.style.background = '#fff';
-      pill.style.color = '#111';
-      pill.style.borderColor = '#fff';
-    } else {
-      const c = colorFor(filter);
-      pill.style.background = c;
-      pill.style.color = '#fff';
-      pill.style.borderColor = c;
-    }
-
-    applyFilter(filter);
-  });
-
-  // ── Fund modal ──
-  function openFundModal(actionId) {
-    document.getElementById('fund-modal-form').style.display = '';
-    document.getElementById('fund-modal-success').style.display = 'none';
-    document.getElementById('fund-email').value = '';
-    document.getElementById('fund-modal').classList.add('open');
+  // ── Broadcast player ──
+  function playBroadcast() {
+    document.getElementById('broadcast-thumb').style.display = 'none';
+    const iframe = document.getElementById('broadcast-iframe');
+    iframe.src = 'https://www.youtube.com/embed/Ayd5tHQiyJE?autoplay=1';
+    iframe.style.display = 'block';
   }
-  function closeFundModal() {
-    document.getElementById('fund-modal').classList.remove('open');
-  }
-  function submitFundModal() {
-    const email = document.getElementById('fund-email').value.trim();
-    if (!email) return;
-    document.getElementById('fund-modal-form').style.display = 'none';
-    document.getElementById('fund-modal-success').style.display = 'block';
-  }
-  document.getElementById('fund-modal').addEventListener('click', e => {
-    if (e.target === document.getElementById('fund-modal')) closeFundModal();
-  });
 
-  // ── Add Action modal (preserved) ──
+
+  // ── Add Action modal ──
   function openAddActionModal() {
     document.getElementById('action-modal').style.display = 'flex';
   }
@@ -970,6 +618,7 @@
     document.getElementById('action-success').style.display = 'none';
     document.getElementById('action-preview-wrap').style.display = 'none';
   }
+
   function previewActionImage(input) {
     const wrap = document.getElementById('action-preview-wrap');
     const preview = document.getElementById('action-preview');
@@ -977,8 +626,12 @@
       const reader = new FileReader();
       reader.onload = e => { preview.src = e.target.result; wrap.style.display = 'block'; };
       reader.readAsDataURL(input.files[0]);
-    } else { wrap.style.display = 'none'; }
+    } else {
+      wrap.style.display = 'none';
+    }
   }
+
+  // ── Image compression (keeps payload under Vercel's 4.5MB limit) ──
   function compressImage(file) {
     return new Promise(resolve => {
       const reader = new FileReader();
@@ -989,14 +642,14 @@
           let w = img.width, h = img.height;
           if (w > MAX || h > MAX) {
             if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
-            else       { w = Math.round(w * MAX / h); h = MAX; }
+            else        { w = Math.round(w * MAX / h); h = MAX; }
           }
           const canvas = document.createElement('canvas');
           canvas.width = w; canvas.height = h;
           canvas.getContext('2d').drawImage(img, 0, 0, w, h);
           let q = 0.82, dataUrl;
           do { dataUrl = canvas.toDataURL('image/jpeg', q); q -= 0.08; }
-          while (dataUrl.length > 1024 * 1024 * 2.5 && q > 0.25);
+          while (dataUrl.length > 1024 * 1024 * 2.5 && q > 0.25); // target <2.5MB base64
           resolve(dataUrl);
         };
         img.src = e.target.result;
@@ -1004,6 +657,56 @@
       reader.readAsDataURL(file);
     });
   }
+
+  // ── Edit Action modal ──
+  function openEditActionById(id) {
+    const a = allActionsData.find(x => x.id === id);
+    if (a) openEditAction(a);
+  }
+  function openEditAction(a) {
+    const form = document.getElementById('edit-action-form');
+    form.elements['id'].value = a.id;
+    form.elements['title'].value = a.title || '';
+    form.elements['location'].value = a.location || '';
+    form.elements['country'].value = a.country || '';
+    form.elements['date'].value = a.date || '';
+    form.elements['description'].value = a.description || '';
+    document.getElementById('edit-action-image-input').value = '';
+    document.getElementById('edit-action-success').style.display = 'none';
+    document.getElementById('edit-action-form').style.display = '';
+    document.getElementById('edit-action-modal').style.display = 'flex';
+  }
+  function closeEditAction() {
+    document.getElementById('edit-action-modal').style.display = 'none';
+    document.getElementById('edit-action-form').reset();
+    document.getElementById('edit-action-success').style.display = 'none';
+    document.getElementById('edit-action-form').style.display = '';
+  }
+  document.getElementById('edit-action-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.textContent = 'Saving…';
+    btn.disabled = true;
+    const data = Object.fromEntries(new FormData(e.target));
+    const id = data.id;
+    delete data.id;
+    const fileInput = document.getElementById('edit-action-image-input');
+    if (fileInput.files && fileInput.files[0]) {
+      data.image = await compressImage(fileInput.files[0]);
+    }
+    try {
+      const res = await fetch(`/api/actions/${id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+      if (!res.ok) throw new Error(`Server error ${res.status}`);
+      document.getElementById('edit-action-form').style.display = 'none';
+      document.getElementById('edit-action-success').style.display = 'block';
+    } catch (err) {
+      console.error(err);
+      alert('Something went wrong. Please try again.');
+      btn.textContent = 'Save Changes';
+      btn.disabled = false;
+    }
+  });
+
   document.getElementById('action-form').addEventListener('submit', async e => {
     e.preventDefault();
     const btn = e.target.querySelector('button[type="submit"]');
@@ -1016,7 +719,7 @@
     }
     try {
       const res = await fetch('/api/actions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-      if (!res.ok) throw new Error('Server error');
+      if (!res.ok) throw new Error(`Server error ${res.status}`);
       document.getElementById('action-form').style.display = 'none';
       document.getElementById('action-success').style.display = 'block';
     } catch (err) {
@@ -1026,26 +729,31 @@
       btn.disabled = false;
     }
   });
-
-  // ── Bootstrap ──
-  async function loadActions() {
+</script>
+<script src="/js/nav.js"></script>
+<script>
+  async function loadHomeData() {
     try {
-      const res = await fetch('/api/crowdfund-actions');
-      if (!res.ok) throw new Error('API error');
-      allActions = await res.json();
-      if (allActions.length) {
-        renderHero(allActions[0]);
+      const res = await fetch('/api/summits?upcoming=true');
+      const events = await res.json();
+      const el = document.getElementById('home-events');
+      if (events.length === 0) {
+        el.innerHTML = '<div class="empty-state"><div class="empty-icon">🗓</div><p>No upcoming events.</p></div>';
+      } else {
+        el.innerHTML = events.slice(0, 3).map(ev => {
+          const d = new Date(ev.date + 'T00:00:00');
+          const dateStr = d.toLocaleDateString('en', { day: 'numeric', month: 'long', year: 'numeric' });
+          return `<div class="card">
+            <h3>${ev.title}</h3>
+            <p style="margin-bottom:0.5rem;">📍 ${ev.location}, ${ev.country}</p>
+            <p>📅 ${dateStr}${ev.host_name ? ' &middot; 👤 ' + ev.host_name : ''}</p>
+            ${ev.description ? '<p style="margin-top:0.5rem;">' + ev.description + '</p>' : ''}
+          </div>`;
+        }).join('');
       }
-      renderGrid(allActions);
-    } catch (err) {
-      console.error('Failed to load crowdfund actions:', err);
-      document.getElementById('cf-grid').innerHTML =
-        '<div style="background:#111;padding:3rem 2rem;font-family:Arial,sans-serif;font-size:0.85rem;color:rgba(255,255,255,0.35);text-align:center;grid-column:1/-1;">Could not load actions.</div>';
-    }
+    } catch (e) { console.error(e); }
   }
-
-  loadActions();
-
+  loadHomeData();
   if (new URLSearchParams(window.location.search).has('logaction')) openAddActionModal();
 </script>
 </body>
